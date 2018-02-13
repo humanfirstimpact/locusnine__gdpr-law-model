@@ -1,0 +1,298 @@
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-item/paper-icon-item.html">
+<link rel="import" href="../paper-styles/typography.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../mdb-radio-list/mdb-radio-list.html">
+<link rel="import" href="../mdb-title/mdb-title.html">
+<link rel="import" href="../mdb-simple-list/mdb-simple-list.html">
+<link rel="import" href="../mdb-search-box/mdb-search-box.html">
+<link rel="import" href="mdb-dimension-finder-item.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`mdb-dimension-finder`
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--mdb-dimension-finder-header-container` | Mixin applied to dimension finder header container | `{}`
+`--mdb-dimension-finder-list` | Mixin applied to dimension finder list | `{}`
+`--mdb-dimension-finder-list-item` | Mixin applied to dimension finder list item | `{}`
+`--mdb-dimension-finder-list-item-text` | Mixin applied to dimension finder list item text | `{}`
+`--mdb-dimension-finder-radio-button` | Mixin applied to dimension finder sorting radio buttons | `{}`
+`--mdb-dimension-finder-searchbox-container` | Mixin applied to dimension finder searchbox container | `{}`
+`--mdb-dimension-finder-searchbox` | Mixin applied to dimension finder searchbox | `{}`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-dimension-finder">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        padding: 10px;
+        background: #fff;
+        --mdb-search-box-container: {
+          margin: 0;
+        }
+        --mdb-title: {
+          font-size: 1.5em;
+        }
+        --mdb-list-item: {
+          font-size: 1em;
+          padding-left: var(--standard-padding, 20px);
+          padding-right: var(--standard-padding, 20px);
+          @apply(--mdb-dimension-finder-list-item);
+        }
+        --mdb-simple-list-empty: {
+          margin-top: var(--standard-padding, 20px);
+          margin-left: var(--standard-padding, 20px);
+          margin-right: var(--standard-padding, 20px);
+          text-align: justify;
+          font-family: Roboto;
+          position: absolute;
+        }
+        --mdb-radio-list-container: {
+          @apply(--layout-horizontal);
+          margin-bottom: 10px;
+        }
+        @apply(--paper-font-common-base);
+      }
+
+      :host .dimension-finder {
+        overflow: auto;
+        height: 250px;
+      }
+
+      :host[allow-sorting] .dimension-finder {
+        border-top: 0;
+      }
+
+      :host .dimension-finder mdb-simple-list {
+        min-height: 4em;
+        @apply(--mdb-dimension-finder-list)
+      }
+
+      :host .header {
+        position: relative;
+        @apply(--mdb-dimension-finder-header-container);
+      }
+
+      :host .header paper-checkbox {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translate(0, -50%);
+      }
+
+      :host paper-radio-button {
+        text-align: center;
+        flex: 1 1 50%;
+        padding: 8px 5px;
+        box-sizing: border-box;
+      }
+
+      :host paper-radio-button:last-child {
+        right: 0;
+      }
+    </style>
+
+    <div class="header">
+      <mdb-title help-text="[[helpText]]" level="3">[[dimension]]</mdb-title>
+      <template is="dom-if" if="[[allDimensionsAllowed]]">
+        <paper-checkbox hidden checked="{{showAllDimensions}}">ALL</paper-checkbox>
+      </template>
+    </div>
+
+    <template is="dom-if" if="[[allowSorting]]">
+      <mdb-radio-list size="small" selected="{{sortBy}}">
+        <paper-radio-button name="alphabetically">ALL</paper-radio-button>
+        <paper-radio-button name="recommendation">RECOMMENDED</paper-radio-button>
+      </mdb-radio-list>
+    </template>
+    <div class="dimension-finder">
+      <mdb-search-box placeholder="Search for [[_toLowerCase(dimension)]] name" search-path="label" source="[[_items]]" search-results="{{_searchResults}}"></mdb-search-box>
+      <mdb-simple-list height="{{height}}" items="{{_searchResults}}" empty-message="[[emptyMessage]]">
+        <template>
+          <mdb-dimension-finder-item id="[[item.id]]" name="[[item.label]]" checked="{{item.checked}}" show-system-recommendation="[[item.showSystemRecommendation]]"
+            show-human-verification="[[item.showHumanVerification]]" recommendation="[[item.predictedColumns]]" human-verified="[[item.humanVerified]]"
+            system-recommended="[[item.predictedColumns]]" show-item-checkbox="[[item.showItemCheckbox]]"></mdb-dimension-finder-item>
+        </template>
+      </mdb-simple-list>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-dimension-finder',
+
+      properties: {
+        //Type of dimension
+        dimension: {
+          type: String
+        },
+
+        selectedDimension: {
+          type: String,
+          value: '',
+          notify: true
+        },
+
+        allowSorting: {
+          type: Boolean,
+          value: false
+        },
+
+        showItemCheckbox: {
+          type: Boolean,
+          value: false
+        },
+
+        showSystemRecommendation: {
+          type: Boolean,
+          value: false
+        },
+
+        showHumanVerification: {
+          type: Boolean,
+          value: false
+        },
+
+        helpText: {
+          type: String
+        },
+
+        height: {
+          type: Number,
+          value: 320
+        },
+
+        items: {
+          type: Array,
+          value: [],
+          notify: true,
+          observer: '_itemsChanged'
+        },
+
+        _items: {
+          type: Array,
+          value: [],
+          readOnly: true
+        },
+
+        _searchResults: {
+          type: Array,
+          value: []
+        },
+
+        sortBy: {
+          type: String,
+          value: 'recommendation',
+          observer: '_sortDimension'
+        },
+
+        showAllDimensions: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          notify: true
+        },
+
+        allDimensionsAllowed: {
+          type: Boolean,
+          value: false
+        },
+
+        emptyMessage: String,
+
+        dataLoaded: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      uncheckItems: function (itemIds) {
+        if ((itemIds || []).length == 0)
+          return;
+
+        var itemElements = this.querySelectorAll('mdb-dimension-finder-item')
+          .forEach(function (itemElement) {
+            if (itemIds.indexOf(itemElement.id) >= 0)
+              itemElement.checked = false;
+          });
+      },
+
+      ready: function () {
+        this.showAllDimensions = this.allDimensionsAllowed ? this.showAllDimensions : true
+      },
+
+      attached: function () {
+        var that = this,
+          list = this.querySelector('mdb-simple-list');
+        if (list) {
+          list.addEventListener('selected-item-changed', function () {
+            var selected = this.selected;
+            var items = that.querySelectorAll('mdb-dimension-finder-item');
+
+            if (items && items.length > 0) {
+              items.forEach(function (item, index) {
+                if (index == selected) {
+                  Polymer.dom(item).setAttribute('selected', true);
+                } else {
+                  Polymer.dom(item).removeAttribute('selected');
+                }
+              });
+            }
+            that.selectedDimension = this.selectedItem;
+          });
+          list.addEventListener('dimension-checked', function (e) {
+            var args = e.detail || {};
+            args.dimension = that.dimension;
+            that.fire('dimension-checked', args);
+          });
+        }
+      },
+
+      _itemsChanged: function () {
+        var that = this;
+        this.set('selectedDimension', undefined);
+        this._set_items(this.items.map(function (e) {
+          e.showHumanVerification = that.showHumanVerification;
+          e.showSystemRecommendation = that.showSystemRecommendation;
+          e.showItemCheckbox = that.showItemCheckbox;
+          return e;
+        }));
+        this._sortDimension();
+      },
+
+      _toLowerCase: function (str) {
+        return str.toLowerCase();
+      },
+
+      _sortDimension: function () {
+
+        var that = this;
+        var sortBy = this.sortBy;
+        this.showAllDimensions = sortBy === 'recommendation' ? false : true;
+        var items = JSON.parse(JSON.stringify(!this.showAllDimensions ? this.items.filter(function (e) {
+          return !!e.predictedColumns;
+        }) : this.items));
+
+        var sorted = items.sort(function (a, b) {
+          return (b.predictedColumns || 0) - (a.predictedColumns || 0);
+        });
+
+        this.set('_searchResults', JSON.parse(JSON.stringify(sorted)));
+        this.emptyMessage = this.dataLoaded ? !sorted.length ? 'No ' + (!this.showAllDimensions ? 'system recommended ' : '') + this.dimension + 's found.' : '' : '';
+      }
+    })
+  </script>
+</dom-module>

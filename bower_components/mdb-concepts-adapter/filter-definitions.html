@@ -1,0 +1,116 @@
+<script>
+    
+    (function(container){
+        var filterTypes = {
+            equals: 'eq',
+            contains: 'co',
+            greaterThan: 'gt',
+            greaterThanOrEquals: 'ge',
+            lessThan: 'lt',
+            lessThanOrEquals: 'le',
+            startsWith: 'sw',
+            endsWith: 'ew',
+            matchAll: 'every',
+            matchNone: 'not'
+        };
+
+        function Filter(filterType, field, value){
+            var _filterType = filterType;
+            var _field = field;
+            var _value = value;
+
+            var serializeSingleValue = function(value){
+                return ["'", value,"'"].join('');
+            }
+
+            var serializeFilterValue = function(value){
+                if(!(value instanceof Array))
+                    return serializeSingleValue(value);
+
+                var serializedValues = value.map(function(_val){
+                    return serializeSingleValue(_val);
+                }).join(',');
+
+                return ['[', serializedValues,']'].join('');
+            }
+
+            this.toString = function(){
+                var filterValue = serializeFilterValue(_value);
+
+                var filterString =  [_field, _filterType, filterValue].join(' ');
+                
+                if(_value instanceof Array)
+                    return ['(', filterString,')'].join('');
+                
+                return filterString;
+            }
+        }
+
+        var AggregateFilter = function(filters, aggregationToken){
+            if(!filters || !(filters instanceof Array))
+                throw "filters needs to a non-empty collection of type: Filter";
+
+            for(var i=0; i<filters.length; i++){
+                if(!(filters[i] instanceof Filter))
+                    throw "all filters should be instances of type: Filter";
+            }
+
+            var _filters = filters;
+            var _aggregationToken = [' ', aggregationToken, ' '].join('');
+
+            this.toString = function(){
+                return _filters.map(function(filter){
+                    return filter.toString();
+                }).join(_aggregationToken);
+            }
+        }
+
+        var All = function(filters){
+            AggregateFilter.call(this, filters, 'and');
+        }
+
+        var AnyOne = function(filters){
+            AggregateFilter.call(this, filters, 'or');
+        }
+
+        container.FilterFactory = {
+            equals: function(field, value){
+                return new Filter(filterTypes.equals, field, value);
+            },
+            contains: function(field, value){
+                return new Filter(filterTypes.contains, field, value);
+            },
+            greaterThan: function(field, value){
+                return new Filter(filterTypes.greaterThan, field, value);
+            },
+            greaterThanOrEquals: function(field, value){
+                return new Filter(filterTypes.greaterThanOrEquals, field, value);
+            },
+            lessThan: function(field, value){
+                return new Filter(filterTypes.lessThan, field, value);
+            },
+            lessThanOrEquals: function(field, value){
+                return new Filter(filterTypes.lessThanOrEquals, field, value);
+            },
+            startsWith: function(field, value){
+                return new Filter(filterTypes.startsWith, field, value);
+            },
+            endsWith: function(field, value){
+                return new Filter(filterTypes.endsWith, field, value);
+            },
+            matchAll: function(field, valueCollection){
+                return new Filter(filterTypes.matchAll , field, valueCollection);
+            },
+            matchNone: function(field, valueCollection){
+                return new Filter(filterTypes.matchNone, field, valueCollection);
+            },
+            all: function(filters){
+                return new All(filters);
+            },
+            anyOne: function(filters){
+                return new AnyOne(filters);
+            }
+        }
+    })(window);
+
+</script>

@@ -1,0 +1,121 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../font-roboto/roboto.html">
+
+<!--
+`mdb-metric-display`
+Stats component
+
+The following custom properties and mixins are also available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--stat-value` | Mixin applied to the stat value | `{}`
+`--stat-description` | Mixin applied to stat description | `{}`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-metric-display">
+  <template>
+    <style>
+       :host {
+        font-family: 'Roboto', 'Noto', sans-serif;
+        flex: 1;
+        flex-basis: 0.000000001px;
+        border: 1px solid var(--mdb-border-color, #000);
+        border-right: 0;
+        height: 135px;
+        position: relative;
+      }
+
+      section {
+        padding: 10px;
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+      }
+
+      .stat-value {
+        font-size: 2em;
+        color: var(--mdb-primary-text-dark, #000);
+        @apply(--stat-value);
+      }
+
+      .stat-description {
+        font-size: 1.3em;
+        font-weight: 400;
+        margin: 0;
+        color: var(--mdb-secondary-text-dark, #000);
+        @apply(--stat-description);
+      }
+
+      .stat-secondary-info{
+        font-size: 1.1em;
+      }
+    </style>
+    <section class="stat">
+      <span class="stat-value">[[stat-value]]</span>
+      <p class="stat-description">[[stat-description]]</p>
+      <p class="stat-description stat-secondary-info">[[statSecondaryInfo]]</p>
+    </section>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-metric-display',
+
+      properties: {
+        name: {
+          type: String,
+          value: 'mdb-metric-display',
+          readOnly: true
+        },
+
+        statValue: String,
+
+        statDescription: String,
+
+        statSecondaryInfo: {
+          type: String
+        }
+      },
+
+    });
+  </script>
+</dom-module>
+
+<dom-module id="mdb-metric-display-container">
+  <template>
+    <style>
+       :host {
+        -webkit-display: flex;
+        display: flex;
+        line-height: 1.5;
+      }
+
+       ::content mdb-metric-display:last-of-type {
+        border-right: 1px solid var(--mdb-border-color, #000);
+      }
+    </style>
+    <content></content>
+  </template>
+  <script>
+    Polymer({
+
+      is: 'mdb-metric-display-container',
+
+      properties: {
+        name: {
+          type: String,
+          value: 'mdb-metric-display-container',
+          readOnly: true
+        },
+      },
+
+    });
+  </script>
+</dom-module>

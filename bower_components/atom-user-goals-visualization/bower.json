@@ -1,0 +1,16 @@
+{
+  "name": "atom-user-goals-visualization",
+  "main": "atom-user-goals-visualization.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "mdb-radio-list": "git://github.com/makedatabetter-dev/mdb-radio-list.git",
+    "atom-google-sheet-adapter": "git://github.com/makedatabetter-dev/atom-google-sheet-adapter.git",
+    "d3": "v3.4.13"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  }
+}

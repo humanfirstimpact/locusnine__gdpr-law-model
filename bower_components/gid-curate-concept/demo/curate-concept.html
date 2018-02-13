@@ -1,0 +1,100 @@
+<link rel="import" href="../gid-curate-concept.html">
+
+<dom-module id="curate-concept">
+  <template>
+       <style>
+		  	table, th, td {
+		    border: 1px solid grey;
+		    border-collapse: collapse;
+			}
+			td {
+			    text-align: center;
+			}
+  		</style>
+  		<h1>Curate Concept</h1>
+        <gid-curate-concept user='1' api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
+        concept='100357'
+        api-token = 'xxxxxxxxxx'
+        curate = true
+        response='{{response}}'>
+        </gid-curate-concept>
+        
+        <template is="dom-if" if="[[isConceptCurated]]">
+	        <template is="dom-repeat" items="[[response]]">
+	                <table style="width:100%">
+					  <tr>
+					    <th>Synonyms</th>
+					    <th>Patterns</th>
+					    <th>Related Concepts</th>
+					    <th>Example Values</th>
+					    <th>Example Columns</th>
+					  </tr>
+					  <tr>
+					    <td valign="top">
+					     <template is="dom-repeat" items="[[item.synonyms]]">
+					     	<p>{{item.label}}</p>
+					     </template>
+					    </td>
+					    <td valign="top">
+					     <template is="dom-repeat" items="[[item.patterns]]">
+					     	<p>{{item.label}}</p>
+					     </template>
+					    </td>
+					    <td valign="top">
+					     <template is="dom-repeat" items="[[item.relatedDomains]]">
+					     	<p>{{item.label}}</p>
+					     </template>
+					    </td>
+					    <td valign="top">
+					     <template is="dom-repeat" items="[[item.exampleValues]]">
+					     	<p>{{item.label}}</p>
+					     </template>
+					    </td>
+					    <td valign="top">
+					     <template is="dom-repeat" items="[[item.exampleColumns]]">
+					     	<p>{{item.label}}</p>
+					     </template>
+					    </td>
+					  </tr>
+					</table>
+	        </template>
+        </template>
+        <template is="dom-if" if="![[isConceptCurated]]">
+            <div class="horizontal-section">
+                <p>{{response.developerMessage}}</p>
+            </div>
+        </template>
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'curate-concept',
+        properties:{
+	 	   	    response: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true,
+     	          observer: 'responseReceived'
+     	        },
+     	        isConceptCreated: {
+     	        	type: Boolean,
+     	        	value: false
+     	        }
+        },
+         responseReceived: function () {
+        	 if(this.response){
+        		 if(this.response.length > 0){	
+     				if(this.response.errorCode){
+     					this.isConceptCurated = false;
+     				}
+     				else{
+     					this.isConceptCurated =  true;
+     				}
+             	 }
+        	 }
+         }
+      });
+    })();
+  </script>
+</dom-module>

@@ -1,0 +1,242 @@
+<!--
+  Wrapper component for concepts
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+<!--
+`gid-list-concepts`
+
+
+A data component to get list of concepts and its metadata for given user id
+
+    <gid-list-concepts user='1' concepts='{{concepts}}'></gid-list-concepts>
+    
+The property 'user' is mandatory.
+
+The property 'concepts' returns the response against the rest call.
+
+- `limit`  & `offset` - use limit and offset parameters to paginate records
+
+If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
+
+API endpoint:
+
+    GET /domains
+
+Input:
+
+- User (Query param)
+
+Output:
+
+- List of concepts with key metadata (items being displayed on listing page)
+
+
+The output of this components will be as follows:
+
+    {
+      "domains": [
+        {
+          "id": "100462",
+          "label": "CASE-NUMBER",
+          "owner": {
+            "id": "111001",
+            "label": "Angela"
+          },
+          "predictedColumns": 0,
+          "confirmedColumns": 0,
+          "eta": 0,
+          "coverage": 0,
+          "classificationAccuracyPercentage": 5
+        }    
+      ]
+    }
+
+@demo demo/index.html
+-->
+<dom-module id="gid-list-concepts">
+  <template>
+ 		 <!-- fetch entity _path  -->
+        	<gid-api entity = '{{_apiEntity}}' path-key= '{{_pathKey}}' path='{{_path}}'></gid-api>
+         <!--  fetch entity _path -->
+         
+         <!-- concepts -->	
+			<gid-api auto=false
+				method="GET" api-url={{_conceptsUrl}} response='{{conceptsResponse}}' error='{{conceptsError}}'
+				api-params={{_conceptsParams}} api-token = {{_conceptsToken}}
+				api-timeout={{_conceptsTimeout}} ></gid-api>			
+	    <!-- concepts -->
+
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'gid-list-concepts',
+        properties:{
+        	    /*Authorization token for accessing rest api*/
+	        	apiToken: {
+	            	type: String,
+	                notify: true,
+	                value : ''
+	            },
+	            /*Base url*/
+	        	apiUrl:{
+	            	type: String,
+	    	        notify: true,
+	    	        value: ''
+	    	 	},
+	    	   /*Concepts url sent to gid-api*/
+        	   _conceptsUrl:{
+                	type: String,
+        	        notify: true
+        	 	},
+        	   /*Concepts timeout sent to gid-api*/
+        	    _conceptsTimeout : {
+            		type: Number,
+        	        notify: true,
+        	        value : 0
+        	    },
+        	    /*Concepts response sent to gid-api. This is a private property*/
+        	    conceptsResponse : {
+	     	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : '_conceptsResponseReceived'
+        	  	},
+        	  	/*Concepts error sent to gid-api. This is a private property*/
+        	  	conceptsError : {
+        	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : '_conceptsErrorReceived'
+        	  	},
+        	  	/*Concepts params sent to gid-api*/
+        	    _conceptsParams : {
+	     	   		type: String,
+	     	   		notify : true
+     	   	    },
+     	   	   /*Concepts token sent to gid-api*/
+     	   		_conceptsToken: {
+	             	type: String,
+	                notify: true
+	            },
+	            /*Array listing the parameters*/
+             	_paramsArr: {
+  	           	   type: Array,
+  	           	   notify: true,
+  	           	   value: ["offset", "limit", "user"]
+                },
+                /*Object for storing success/error response*/
+     	   	    concepts: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true
+     	        },
+     	        /*Limit parameter to paginate records*/
+     	      	limit: {
+               	   type: String,
+                   notify: true,
+                   value: ''
+                },
+                /*Offset parameter to paginate records*/
+                offset: {
+                	type: String,
+                	notify: true,
+                	value: ''
+                },
+                /*User Id*/
+     	        user: {
+     	        	type: String,
+     	        	value : '',
+     	        	notify :  true,
+                    observer: '_userModified'
+     	        },
+     	       /*The api path key*/
+     	        _pathKey: {
+                	type: String,
+                    notify: true,
+                    value: ''
+                },
+                /*The api path*/
+                _path: {
+                	type: String,
+                    notify: true,
+                    value: '',
+                    observer: '_pathReceived'
+                },
+                /*Api entity sent to gid-api*/
+                _apiEntity: {
+                	type: String,
+                    notify: true
+                }
+                
+        },
+        /* Observer of user id */
+        _userModified:  function(){
+        	if (this.user) {
+        	 	if (!this.apiUrl) {
+	      			this._conceptsUrl = this.importPath + 'assets/json/list-concepts.json';
+	                this._conceptsTimeout =  this._conceptsTimeout - 1;
+      			}
+        		else {
+        			this._pathKey =  'default';
+         			this._apiEntity = 'LIST-CONCEPTS';
+         		}
+         	}
+        },
+        /* Observer for api path */
+        _pathReceived: function(){
+        	if(this._path){
+        		var res = this._path.split(/{([^}]+)}/);
+        		for (var i in res) {
+        			if(!res[i].startsWith("/")){
+        					if(this[res[i]]){
+        						res[i] = this[res[i]];
+        					}
+        			}
+        		}
+       			this._conceptsUrl = this.apiUrl + res.join("");
+       			var paramsObj = {};
+       			for (var i in this._paramsArr){
+                	if(this[this._paramsArr[i]]){
+                		paramsObj[this._paramsArr[i]]= this[this._paramsArr[i]];;
+                		}
+                	
+                }
+       			this._conceptsParams = JSON.stringify(paramsObj);
+       			if(this.apiToken){
+       				this._conceptsToken =  this.apiToken;
+       			}
+       			this._conceptsTimeout =  this._conceptsTimeout - 1;
+        		
+        	}
+        },
+        /* Success response handler */
+        _conceptsResponseReceived : function(newvalue, oldvalue){
+            this._reset();
+            if(newvalue != null){
+  	             this.async(function() {
+  	         		this.concepts =  this.concepts.concat(newvalue.domains);
+  	   		 	          }, 500);
+            }
+           	
+           },
+         /* Error response handler */
+         _conceptsErrorReceived : function(newvalue, oldvalue){
+            this._reset();
+            if(newvalue != null){
+  	             this.async(function() {
+  	         		this.concepts =  this.concepts.concat(newvalue.response);
+  	   		 	          }, 500);
+            }
+           	
+           },
+           /* Reset method */
+           _reset : function(){
+        	   this.concepts = [];
+        	   this._apiEntity = '';
+   			   this._path = '';
+           }
+      });
+    })();
+  </script>
+</dom-module>

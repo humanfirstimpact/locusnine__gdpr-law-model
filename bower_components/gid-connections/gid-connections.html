@@ -1,0 +1,445 @@
+<!--
+  Wrapper component for addConnection
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+<!--
+`gid-connections`
+
+A data component to add/test/list a connections
+
+This component covers three functionality. The details are listed below:
+
+## Add Connection
+The field 'action' needs to set to 'ADD' in order to add a connection.
+
+    <gid-connections action='ADD' api-url='https://virtserver.swaggerhub.com/srimanta.maji/DISCOVERY/1'
+    connection-name='{{connectionName}}' db-name='{{dbName}}' host='{{host}}' port='{{port}}'
+    db-type='{{dbType}}' db-user='{{dbUser}}' password='{{password}}'
+    application='{{application}}' lob='{{application}}'
+    api-token='{{apiToken}}'
+    conn-response='{{response}}' conn-error='{{error}}'>
+    </gid-connections>
+
+
+The fields 'action', 'connection-name', 'db-name', 'host', 'port', 'db-type', 'db-user', 'password', 'application' &
+'lob' are mandatory.
+
+The property 'conn-response' returns the response against the rest call.
+The property 'conn-error' returns the error response against the rest call.
+
+
+**Input**
+ - `action` - Trigger to perform a specific action
+ - `api-url` - Base url
+ - `api-token` - Authorization token for accessing rest api
+ - `connection-name` - Common Name of database
+ - `db-name` -  Instance name
+ - `host` - IP of system where database is deployed
+ - `port` - Port on which database is running
+ - `db-type` - Database type
+ - `db-user` - User name for database access
+ - `password` - Password for database access
+ - `application` - Application
+ - `lob` - Line of business
+
+Output:
+ {
+   "database": {
+     "connectionName": "string",
+     "commonName": "string",
+     "message": "string"
+   }
+ }
+
+ ## Test Connection
+The field 'action' needs to set to 'TEST' in order to test a connection.
+
+    <gid-connections action='TEST' api-url='https://virtserver.swaggerhub.com/srimanta.maji/DISCOVERY/1'
+    db-name='{{dbName}}' host='{{host}}' port='{{port}}'
+    db-type='{{dbType}}' db-user='{{dbUser}}' password='{{password}}'
+    api-token='{{apiToken}}'
+    conn-response='{{response}}' conn-error='{{error}}'>
+    </gid-connections>
+
+
+## List Connections
+The field 'action' needs to be set to 'LIST' in order to get the list of connections.
+
+A data component to get list of connections and its metadata for given user id
+
+    <gid-connections action="LIST" api-url='https://virtserver.swaggerhub.com/srimanta.maji/DISCOVERY/1' api-token={{api-token}}
+    limit='[[limit]]' offset='[[offset]]' user='1' filter='[[filter]]' conn-response='{{response}}' conn-error='{{error}}'>
+    </gid-connections>
+
+The property 'user' is mandatory.
+
+The property 'conn-response' returns the response against the rest call. Key 'databases' contains array of connections & key '_meta' contains paging information (if exists)
+
+- `limit`  & `offset` - use limit and offset parameters to paginate records. These are optional
+- `filter` - use filter parameter to filtered records. This is optional
+
+Output:
+
+- List of connections with key 'databases' (items being displayed on listing page)
+{"databases": Array, "_meta": Object}
+
+
+The output of this components will be as follows:
+
+{
+	"databases": [{
+		"id": "-3250952192666617532",
+		"label": "CONSUMER_RELATIONSHIP",
+		"dbName": "CONSUMER_RELATIONSHIP",
+		"host": "host_ip",
+		"port": 1530,
+		"dbType": "Derby",
+		"application": {
+			"id": "102540266",
+			"label": "Customer Mangement System"
+		},
+		"lob": {
+			"id": "100850160",
+			"label": "GLOBAL"
+		}
+	}],
+	"_meta":{
+            "total": 5, "limit": 10, "offset": 0
+	}
+}
+
+
+@demo demo/index.html
+-->
+<dom-module id="gid-connections">
+    <template>
+        <!-- fetch entity _path  -->
+        <gid-api entity='{{_apiEntity}}' path-key='{{_pathKey}}' path='{{_path}}'></gid-api>
+        <!--  fetch entity _path -->
+
+        <!-- fetch concept details -->
+        <gid-api id='gidConnAPI' auto=false
+                 api-url={{_connUrl}}
+                 response='{{_connResponse}}'
+                 error='{{_connError}}'
+                 request-body={{_connRequestBody}}
+                 api-token={{_addConnToken}}
+                 api-timeout={{_addConnTimeout}}></gid-api>
+        <!--method="POST" -->
+        <!--api-content-type="application/x-www-form-urlencoded" -->
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            Polymer({
+                is: 'gid-connections',
+                properties: {
+                    /*Trigger to perform a specific action*/
+                    action: {
+                        type: String,
+                        notify: true,
+                        value: '',
+                        observer: '_actionObserver'
+                    },
+                    /*Action to http method map object*/
+                    _actionResultMap: {
+                        type: Object,
+                        value: {
+                            "ADD": {"http": "POST", "contentType": "application/x-www-form-urlencoded"},
+                            "TEST": {"http": "POST", "contentType": "application/x-www-form-urlencoded"},
+                            "LIST": {"http": "GET", "contentType": "application/json"}
+                        }
+                    },
+                    /*Authorization token for accessing rest api*/
+                    apiToken: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Base url*/
+                    apiUrl: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*The api path*/
+                    _path: {
+                        type: String,
+                        notify: true,
+                        value: '',
+                        observer: '_pathReceived'
+                    },
+                    /*The api path key*/
+                    _pathKey: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Api entity sent to gid-api*/
+                    _apiEntity: {
+                        type: String,
+                        notify: true
+                    },
+                    /*User Id*/
+                    user: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    /*User id is stored here. This is a private property*/
+                    _owner: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+
+                    /*Array listing the body-parameters*/
+                    _bodyParamsArr: {
+                        type: Array,
+                        value: ["connectionName", "dbName", "host", "port", "dbType", "dbUser", "password", "application", "lob"]
+                    },
+                    /*Object to map public-attribute name to private-api-attribute name */
+                    _paramsMap: {
+                        type: Object,
+                        value: {
+                            "dbName": "label",
+                            "dbUser": "user"
+                        }
+                    },
+                    /*Array listing the query-param*/
+                    _queryParamsArr: {
+                        type: Array,
+                        value: ["limit", "offset", "filter"]
+                    },
+                    /*Parameter object*/
+                    _paramsObj: {
+                        type: Object,
+                        notify: true,
+                        value: {}
+                    },
+                    /*Request body sent to gid-api*/
+                    _connRequestBody: {
+                        type: Object,
+                        notify: true,
+                        value: {}
+                    },
+                    /*Url sent to gid-api*/
+                    _connUrl: {
+                        type: String,
+                        notify: true
+                    },
+                    /*Response sent to gid-api.*/
+                    _connResponse: {
+                        type: Object,
+                        notify: true,
+                        observer: '_connResponseReceived'
+                    },
+                    /*Error sent to gid-api.*/
+                    _connError: {
+                        type: String,
+                        notify: true,
+                        observer: '_connErrorReceived'
+                    },
+                    /*Object for storing success response*/
+                    connResponse: {
+                        type: Object,
+                        value: {},
+                        notify: true
+                    },
+                    /*Object for storing error response*/
+                    connError: {
+                        type: Object,
+                        value: {},
+                        notify: true
+                    },
+                    connectionName: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    dbName: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    host: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    port: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    dbType: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    dbUser: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    password: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    application: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    lob: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    /*Limit parameter to paginate records*/
+                    limit: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Offset parameter to paginate records*/
+                    offset: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Parameters for filter*/
+                    filter: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*set it true to test a connection*/
+                    _testConnection: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    /*Timeout sent to gid-api*/
+                    _addConnTimeout: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    /*Token sent to gid-api*/
+                    _addConnToken: {
+                        type: String,
+                        notify: true
+                    }
+                },
+                /* Reset method */
+                _reset: function () {
+                    this._apiEntity = '';
+                    this._path = '';
+                    this.action = "";
+                    this._testConnection = false;
+
+                },
+                /* Observer of 'action' flag */
+                _actionObserver: function () {
+                    if (this.action) {
+                        this._owner = this.user;
+                        this.async(function () {
+                            if (this.apiUrl) {
+                                this._pathKey = 'default';
+                                this._apiEntity = 'connections.' + this.action;
+                            }
+                        }, 500);
+                    }
+                },
+                /* Observer for api path */
+                _pathReceived: function () {
+                    if (this._path && this._path.length > 0) {
+                        var res = this._path.split(/{([^}]+)}/);
+                        for (var i in res) {
+                            if (!res[i].startsWith("/")) {
+                                if (this[res[i]]) {
+                                    res[i] = this[res[i]];
+                                }
+                            }
+                        }
+                        this._connUrl = this.apiUrl + res.join("");
+
+
+                        this._paramsObj = {};
+                        for (var i in this._bodyParamsArr) {
+                            var isPublicPrivateNameDiffer = this._paramsMap[this._bodyParamsArr[i]];
+                            if (isPublicPrivateNameDiffer) {
+                                if (this[this._bodyParamsArr[i]])
+                                    this._paramsObj[this._paramsMap[this._bodyParamsArr[i]]] = this[this._bodyParamsArr[i]];
+                            } else {
+                                if (this[this._bodyParamsArr[i]])
+                                    this._paramsObj[this._bodyParamsArr[i]] = this[this._bodyParamsArr[i]];
+                            }
+                        }
+                        var tempObj = {"database": this._paramsObj};
+                        this._connRequestBody["definition"] = JSON.stringify(tempObj);
+
+                        this._paramsObj = {};
+                        for (var i in this._queryParamsArr) {
+                            var isPublicPrivateNameDiffer = this._paramsMap[this._queryParamsArr[i]];
+                            if (isPublicPrivateNameDiffer) {
+                                if (this[this._queryParamsArr[i]])
+                                    this._paramsObj[this._paramsMap[this._queryParamsArr[i]]] = this[this._queryParamsArr[i]];
+                            } else {
+                                if (this[this._queryParamsArr[i]])
+                                    this._paramsObj[this._queryParamsArr[i]] = this[this._queryParamsArr[i]];
+                            }
+                        }
+                        switch (this.action) {
+                            case "TEST": {
+                                this._testConnection = true;
+                                this._paramsObj["action"] = "test";
+                                break;
+                            }
+                            case "ADD": {
+                                this._paramsObj["action"] = "add";
+                                break;
+                            }
+                        }
+                        this.$.gidConnAPI.apiParams = JSON.stringify(this._paramsObj);
+
+                        if (this.apiToken) {
+                            this._addConnToken = this.apiToken;
+                        }
+
+                        this.$.gidConnAPI.method = this._actionResultMap[this.action]["http"];
+                        this.$.gidConnAPI.apiContentType = this._actionResultMap[this.action]["contentType"];
+
+                        this._addConnTimeout = this._addConnTimeout - 1;
+
+                    }
+                },
+
+                _connResponseReceived: function (newvalue, oldvalue) {
+                    var tempAction = this.action;
+                    this._reset();
+                    if (newvalue != null) {
+                        this.async(function () {
+                            if (tempAction && "LIST" == tempAction)
+                                this.connResponse = newvalue;
+                            else
+                                this.connResponse = newvalue.database;
+                        }, 500);
+                    }
+                },
+
+                _connErrorReceived: function (newvalue, oldvalue) {
+                    this._reset();
+                    if (newvalue !== null) {
+                        this.async(function () {
+                            this.connError = newvalue;
+                        }, 500);
+                    }
+                }
+            });
+        })();
+    </script>
+</dom-module>

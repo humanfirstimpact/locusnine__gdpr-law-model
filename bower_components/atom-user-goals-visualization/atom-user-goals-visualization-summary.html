@@ -1,0 +1,187 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="atom-user-goals-visualization-behavior.html">
+<link rel="import" href="atom-user-goals-visualization-styles.html">
+<script src="../d3/d3.min.js"></script>
+
+<dom-module id="atom-user-goals-visualization-summary">
+    <template>
+        <style include="atom-user-goals-visualization-styles"></style>
+        <style>
+             :host {
+                display: block;
+            }
+        </style>
+        <div id="chart"></div>
+    </template>
+
+    <script>
+        Polymer({
+
+            is: 'atom-user-goals-visualization-summary',
+
+            behaviors: [atom.UserGoalsVisualizationBehavior],
+
+            initializeChild: function (options) {
+                options = options || {};
+
+                this.diameter = options.diameter || 500;
+                this.cluster = d3.layout.cluster().size([this.viewerHeight, this.viewerWidth]);
+
+                this.tree
+                    .size([360, this.diameter / 2])
+                    .separation(function (a, b) {
+                        return (a.parent == b.parent ? 1 : 2) / a.depth;
+                    });
+            },
+
+            render: function () {
+                this.svg = d3.select(this.querySelector('#chart'))
+                    .append("svg")
+                    .attr("width", this.viewerWidth)
+                    .attr("height", this.viewerHeight)
+                    .attr("class", "overlay")
+                    .call(this.zoomListener);
+
+                this.zoomListener.translate([this.viewerWidth / 2, this.viewerHeight / 2]);
+                this.goals.x0 = this.viewerHeight / 2;
+                this.goals.y0 = 0;
+
+                this.container = this.svg.append("g");
+                this._update(this.goals);
+            },
+
+            _update: function (source) {
+                var i = 0;
+                var that = this;
+                this.nodes = this.cluster.nodes(this.goals);
+                this.links = this.cluster.links(this.nodes);
+
+                var node = this.container.selectAll(".node").data(this.nodes, function (d) { return d.id || (d.id = ++i); }),
+                    link = this.container.selectAll(".link").data(this.links, function (d) { return d.target.id; });
+
+                node.enter()
+                    .append("g")
+                    .attr("class", "node")
+                    .attr("transform", function (d) {
+                        return "translate(" + d.y + "," + d.x + ")";
+                    })
+                    .on('click', function () {
+                        that._click.apply(that, arguments);
+                    })
+                    .on("mouseover", function (d) {
+                        var g = d3.select(this); // The node
+                        // The class is used to remove the additional text later
+                        var info = g.append('text')
+                            .attr("class", "hover")
+                            .attr('transform', function (d) {
+                                return "rotate(" + (-d.x + 90) + ")";
+                            })
+                            .text(d.name);
+                    })
+                    .on("mouseout", function () {
+                        // Remove the info text on mouse out.
+                        d3.select(this).select('text.hover').remove();
+                    })
+                    .append("circle")
+                    .attr('class', 'nodeCircle')
+                    .attr("r", function (d) {
+                        var x = 5;
+                        if (d.depth == 0)
+                            return 4 * x;
+                        else if (d.depth == 1)
+                            return 3 * x;
+                        else if (d.depth == 2)
+                            return 2 * x;
+                        else if (d.depth == 3)
+                            return x;
+                        else
+                            return x / 2;
+                    })
+                    .style('fill', function (d) {
+                        return that._fill.apply(that, arguments)
+                    })
+                    .append("circle")
+                    .attr("r", 0)
+                    .style("stroke", function (d) {
+                        return that._fill.apply(that, arguments)
+                    })
+                    .append("text")
+                    .attr("dx", function (d) {
+                        return d.children ? -8 : 8;
+                    })
+                    .attr("dy", 3)
+                    .style("text-anchor", function (d) {
+                        return d.children ? "end" : "start";
+                    })
+                    .text(function (d) { return ''; });
+
+                link.enter()
+                    .append("path")
+                    .attr("class", "link")
+                    .attr("d", this.diagonal);
+
+                node.exit()
+                    .remove();
+
+                link.exit()
+                    .remove();
+
+                this._transitionToRadial();
+            },
+
+            _transitionToRadial: function () {
+                var i = 0;
+                var radialDiagonal = d3.svg.diagonal.radial()
+                    .projection(function (d) {
+                        return [d.y, d.x / 180 * Math.PI];
+                    });
+
+                var nodes = this.tree.nodes(this.goals), //recalculate layout
+                    links = this.tree.links(this.nodes);
+
+                this.container.transition()
+                    .duration(1500)
+                    .attr("transform", "translate(" + (this.viewerWidth / 2) + "," + (this.viewerHeight / 2) + ")");
+
+                //set appropriate translation (origin in middle of svg)
+                this.container.selectAll(".link")
+                    .data(links, function (d) {
+                        return d.source.name + d.source.id + d.target.name + d.target.id;
+                    })
+                    .transition()
+                    .duration(1500)
+                    .attr("d", radialDiagonal); //get the new radial path
+
+                this.container.selectAll(".node")
+                    .data(this.nodes, function (d) {
+                        return d.id;
+                    }).transition()
+                    .duration(1500)
+                    .attr("transform", function (d) {
+                        return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")";
+                    })
+                    .select("circle")
+                    .transition().duration(1500)
+                    .attr("r", function (d) {
+                        var x = 5;
+                        if (d.depth == 0)
+                            return 4 * x;
+                        else if (d.depth == 1)
+                            return 3 * x;
+                        else if (d.depth == 2)
+                            return 2 * x;
+                        else if (d.depth == 3)
+                            return x;
+                        else
+                            return x / 2;
+                    })
+                    .select("text")
+                    .transition().duration(1500)
+                    .attr("dy", ".31em")
+                    .attr("text-anchor", function (d) { return d.x < 180 ? "start" : "end"; })
+                    .attr("transform", function (d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; });
+            }
+
+        });
+    </script>
+</dom-module>

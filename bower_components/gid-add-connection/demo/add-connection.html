@@ -1,0 +1,60 @@
+<link rel="import" href="../gid-add-connection.html">
+
+<dom-module id="add-connection">
+    <template>
+
+        <gid-add-connection add-con=true api-url="https://virtserver.swaggerhub.com/srimanta.maji/DISCOVERY/1"
+                            common-name='CRM@newton' connection-name='CRM' host='192.168.33.10' port='1521'
+                            db-type='Oracle' db-user='globalids' password='globalids123'
+                            application='CRM APP' lob='Enterprise'
+                            db-response='{{response}}' db-error="{{error}}">
+        </gid-add-connection>
+        <!--api-token='MTAxNjUwMzAxMTUwNDUwNTg3NDkwODA5MDFY'-->
+
+        <template is="dom-if" if="[[isConAdded]]">
+            <div class="horizontal-section">
+                <p>The newly added connection is &nbsp;{{response.connectionName}}</p>
+            </div>
+        </template>
+        <template is="dom-if" if="![[isConAdded]]">
+            <div class="horizontal-section">
+                <p>{{error.userMsg}}</p>
+            </div>
+        </template>
+
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            Polymer({
+                is: 'add-connection',
+                properties: {
+                    response: {
+                        type: Object,
+                        value: {},
+                        notify: true,
+                        observer: 'responseReceived'
+                    },
+                    error: {
+                        type: Object,
+                        value: {},
+                        notify: true,
+                        observer: 'errorReceived'
+                    },
+                    isConAdded: {
+                        type: Boolean,
+                        value: false
+                    }
+                },
+                responseReceived: function () {
+                    if (this.response)
+                        this.isConAdded = this.response.errorCode ? false : true;
+                },
+                errorReceived: function () {
+                    if (this.error)
+                        this.isConAdded = false;//this.error.errorCode ? false : true;
+                }
+            });
+        })();
+    </script>
+</dom-module>

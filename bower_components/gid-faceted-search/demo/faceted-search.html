@@ -1,0 +1,677 @@
+<link rel="import" href="../gid-faceted-search.html">
+<link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
+<link rel="import" href="../../paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../paper-toast/paper-toast.html">
+<link rel="import" href="../../paper-button-group/paper-button-group.html">
+<link rel="import" href="../../paper-styles/paper-styles.html">
+<link rel="import" href="../../gid-list-concepts/gid-list-concepts.html">
+<script src="../../jquery/dist/jquery.min.js"></script>
+
+<dom-module id="faceted-search">
+  <template>
+  		<style>
+		  	table, th, td {
+		    border: 1px solid grey;
+		    border-collapse: collapse;
+			}
+			td {
+			    text-align: center;
+			}
+			paper-input {
+			    max-width: 400px;
+/* 			    margin: auto; */
+			}
+			paper-button {
+			    font-family: 'Roboto', 'Noto', sans-serif;
+			    font-weight: normal;
+			    font-size: 14px;
+			    -webkit-font-smoothing: antialiased;
+			}
+			paper-button.indigo {
+			    background-color: var(--paper-indigo-500);
+			    color: white;
+			}
+			paper-button.indigo:hover {
+			    background-color: var(--paper-indigo-400);
+			}
+			paper-button.green {
+			    background-color: var(--paper-green-500);
+			    color: white;
+			}
+			paper-button.disabled {
+			    pointer-events: none;
+			}
+		    paper-button.green[active] {
+		        background-color: var(--paper-green-500);
+		    }
+		    paper-button.blue {
+			    background-color: #5da9dd;
+			    color: white;
+			}
+		    paper-dropdown-menu, paper-listbox {
+			    width: 250px;
+		    }
+		    paper-dropdown-menu {
+			    height: 200px;
+			    display: block;
+		   }
+		   paper-button.assessment[active] {
+		        color: white;
+		        background-color: var(--paper-blue-500);
+		        --paper-button-flat-focus-color: var(--paper-green-50);
+	    	}
+		   .no-display{
+		  	display-none;
+		   }
+		   .display-block{
+		  	display: block;
+		   }
+  		</style>
+  		
+			  		<paper-input label="Api Url" value={{apiUrl}} id="apiUrl"></paper-input>
+			  		<paper-input label="Api Token" value={{apiToken}} id="apiToken"></paper-input>
+  		
+				  		 <template is="dom-if" if="[[_fetchConcepts]]">
+					  		<gid-list-concepts  api-url={{apiUrl}}
+						    api-token={{apiToken}} user='{{user}}'
+					        concepts='{{concepts}}'></gid-list-concepts>
+				        </template>
+        
+                        <p>
+                        	<paper-button raised class="green" id="submitBtn" on-click="_submit">Submit</paper-button>
+                        	<paper-button raised class="blue" id="resetBtn" on-click="_resetVal">Reset</paper-button>
+                        </p>
+                        <paper-toast id="toast" text="{{toastrMsg}}"></paper-toast>
+                        <hr/>
+                        
+                        <p>
+                        <template is="dom-if" if="[[_loadingConcepts]]">
+                          <paper-spinner-lite active class="green"></paper-spinner-lite> <span>Loading concepts</span>
+			         	</template>
+			         	<template is="dom-if" if="[[concepts.length]]">
+							<select style="width: 200px;">
+						   		<template is="dom-repeat" items="[[concepts]]">
+			                  		<option value="{{item.id}}">{{item.label}}</option>
+			                	</template>
+			            	</select>
+			                <paper-button raised class="indigo" id="listConceptBtn" on-click="_fetchDetails">Fetch Details</paper-button>
+				     	</template>
+				     	
+  		
+  		<template is="dom-if" if="[[_fetchConceptDetails]]">
+	        <gid-faceted-search user='1'
+	        api-url={{apiUrl}}
+	        api-token={{apiToken}}
+	        concept={{concept}} conceptdetails={{conceptdetails}} response={{response}}>
+	        </gid-faceted-search>
+        </template>
+        
+        <gid-faceted-search user='1'
+        api-url={{apiUrl}}
+        api-token={{apiToken}}
+        synonyms='{{synonyms}}' patterns='{{patterns}}'
+        related='{{related}}' values='{{values}}' columns='{{columns}}' mode="EXPLORE"
+        trigger-filter={{triggerFilter}} search={{search}} search-value={{searchValue}} search-facet-type={{searchFacetType}}
+        response={{response}}>
+        </gid-faceted-search>
+        
+       
+        <template is="dom-if" if="[[isConceptDetailsReceived]]">
+         	<h2>Concept Details</h2>
+	        <template is="dom-repeat" items="[[conceptdetails]]">
+            <div class="horizontal-section">
+                <table style="width:100%">
+				  <tr>
+				    <th>Concept</th>
+				    <th>Predicted Columns</th>
+				    <th>Confirmed Columns</th>
+				    <th>ETA</th>
+				    <th>Coverage</th>
+				    <th>Classification Accuracy Percentage</th>
+				    <th>Owner</th>
+				    <th>Lobs</th>
+				  </tr>
+				  <tr>
+				    <td valign="top">{{item.label}}</td>
+				    <td valign="top">{{item.predictedColumns}}</td>
+				    <td valign="top">{{item.confirmedColumns}}</td>
+				    <td valign="top">{{item.eta}}</td>
+				    <td valign="top">{{item.coverage}}</td>				    
+				    <td valign="top">{{item.classificationAccuracyPercentage}}</td>
+				    <td valign="top">{{item.owner.label}}</td>		    
+				    <td valign="top">
+				     <template is="dom-repeat" items="[[item.lobs]]">
+				     	<p>{{item.label}}</p>
+				     </template>
+				    </td>
+				  </tr>
+				</table>
+            </div>
+        </template>
+    </template>
+    <template is="dom-if" if="![[isConceptDetailsReceived]]">
+            <p>{{conceptdetails.0.userMessage}}</p>
+    </template>
+    
+    
+    <template is="dom-if" if="[[_facetedSearchPropertiesArr.length]]">
+	    <paper-button-group attr-for-selected="name" on-click="_changeMode" selected="EXPLORE">
+		    <paper-button class="assessment" name="EXPLORE">EXPLORE</paper-button>
+		    <paper-button class="assessment" name="DEFINE">DEFINE</paper-button>
+		</paper-button-group>	
+	    <template is="dom-repeat" items="[[_facetedSearchPropertiesArr]]">
+	            <div class="horizontal-section">
+	                <table style="width:100%">
+					  <tr>
+					    <th>Synonyms</th>
+					    <th>Patterns</th>
+					    <th>Related Concepts</th>
+					    <th>Example Values</th>
+					    <th>Example Columns</th>
+					  </tr>
+					  <tr>
+					    <td valign="top">
+					     <p>
+					      <paper-input label="Search synonyms" id="Synonyms" on-input="_search"></paper-input>
+					     </p>
+					     <template is="dom-repeat" items="[[item.synonyms]]">
+					     	<p><paper-checkbox on-click="_check" name="synonyms" value="{{item.label}}">{{item.label}}</paper-checkbox>
+					     	<span>&nbsp;({{item.relevance}}%)</span>
+					     	<template is="dom-if" if="[[_defineMode]]">
+						     	<paper-button-group attr-for-selected="name" selected="[[_getValueFromItem(item)]]">
+								    <paper-button class="assessment" name="Y">YES</paper-button>
+								    <paper-button class="assessment" name="N">NO</paper-button>
+								    <paper-button class="assessment" name="M">MAYBE</paper-button>
+								</paper-button-group>
+							</template>
+							</p>
+					     </template>
+					    </td>
+					    <td valign="top">
+					    <p>
+					    <paper-input label="Search patterns" id="Patterns"  on-input="_search"></paper-input>
+					    </p>
+					     <template is="dom-repeat" items="[[item.patterns]]">
+					     	<p><paper-checkbox on-click="_check" name="patterns" value="{{item.label}}">{{item.label}}</paper-checkbox>
+					     	<span>&nbsp;({{item.relevance}}%)</span>
+					     	<template is="dom-if" if="[[_defineMode]]">
+						     	<paper-button-group attr-for-selected="name" selected="[[_getValueFromItem(item)]]">
+								    <paper-button class="assessment" name="Y">YES</paper-button>
+								    <paper-button class="assessment" name="N">NO</paper-button>
+								    <paper-button class="assessment" name="M">MAYBE</paper-button>
+								</paper-button-group>
+							</template>
+							</p>
+					     </template>
+					    </td>
+					    <td valign="top">
+					    <p><paper-input label="Search related concepts" id="Related Concepts"  on-input="_search"></paper-input>
+					      <iron-icon icon="icons:search"></iron-icon></p>
+					     <template is="dom-repeat" items="[[item.relatedDomains]]">
+					     	<p><paper-checkbox on-click="_check" name="related" value="{{item.label}}">{{item.label}}</paper-checkbox>
+					     	<span>&nbsp;({{item.relevance}}%)</span>
+					     	<template is="dom-if" if="[[_defineMode]]">
+					     	<paper-button-group attr-for-selected="name" selected="[[_getValueFromItem(item)]]">
+							    <paper-button class="assessment" name="Y">YES</paper-button>
+							    <paper-button class="assessment" name="N">NO</paper-button>
+							    <paper-button class="assessment" name="M">MAYBE</paper-button>
+							</paper-button-group>
+							</template>
+							</p>
+					     </template>
+					    </td>
+					    <td valign="top">
+					     <template is="dom-repeat" items="[[item.exampleValues]]">
+					     	<p><paper-checkbox on-click="_check" name="values" value="{{item.label}}">{{item.label}}</paper-checkbox>
+					     	<span>&nbsp;({{item.relevance}}%)</span>
+					     	<template is="dom-if" if="[[_defineMode]]">
+					     	<paper-button-group attr-for-selected="name" selected="[[_getValueFromItem(item)]]">
+							    <paper-button class="assessment" name="Y">YES</paper-button>
+							    <paper-button class="assessment" name="N">NO</paper-button>
+							    <paper-button class="assessment" name="M">MAYBE</paper-button>
+							</paper-button-group>
+							</template></p>
+					     </template>
+					    </td>
+					    <td valign="top">
+					     <template is="dom-repeat" items="[[item.exampleColumns]]">
+					     	<p><paper-checkbox on-click="_check" name="columns" value="{{item.id}}">{{item.label}}</paper-checkbox>
+					     	<span>&nbsp;({{item.relevance}}%)</span>
+					     	<template is="dom-if" if="[[_defineMode]]">
+					     	<paper-button-group attr-for-selected="name" selected="[[_getValueFromItem(item)]]">
+							    <paper-button class="assessment" name="Y">YES</paper-button>
+							    <paper-button class="assessment" name="N">NO</paper-button>
+							    <paper-button class="assessment" name="M">MAYBE</paper-button>
+							</paper-button-group>
+							</template></p>
+					     </template>
+					    </td>
+					    
+					  </tr>
+					</table>
+	            </div>
+	        </template>
+        </template>
+        
+        <p></p>
+        
+         	<template is="dom-if" if="[[response.length]]">
+         	<h2>Filtering Result</h2>
+	         <template is="dom-repeat" items="[[_facetedFilteringResult]]">
+	            <div class="horizontal-section">
+	                <table style="width:100%">
+					  <tr>
+					    <th>Synonyms</th>
+					    <th>Patterns</th>
+					    <th>Related Concepts</th>
+					    <th>Example Values</th>
+					    <th>Example Columns</th>
+					  </tr>
+					  <tr>
+					    <td valign="top">
+					     <template is="dom-repeat" items="[[item.synonyms]]">
+					     	<p>{{item.label}}
+					     	<span>&nbsp;({{item.relevance}}%)</span>
+					     	<template is="dom-if" if="[[_defineMode]]">
+					     	<paper-button-group attr-for-selected="name" selected="[[_getValueFromItem(item)]]">
+							    <paper-button class="assessment" name="Y">YES</paper-button>
+							    <paper-button class="assessment" name="N">NO</paper-button>
+							    <paper-button class="assessment" name="M">MAYBE</paper-button>
+							</paper-button-group>
+							</template>
+							</p>
+					     </template>
+					    </td>
+					    <td valign="top">
+					     <template is="dom-repeat" items="[[item.patterns]]">
+						    <p>{{item.label}}
+						    <span>&nbsp;({{item.relevance}}%)</span>
+						    <template is="dom-if" if="[[_defineMode]]">
+					     	<paper-button-group attr-for-selected="name" selected="[[_getValueFromItem(item)]]">
+							    <paper-button class="assessment" name="Y">YES</paper-button>
+							    <paper-button class="assessment" name="N">NO</paper-button>
+							    <paper-button class="assessment" name="M">MAYBE</paper-button>
+							</paper-button-group>
+							</template></p>
+					     </template>
+					    </td>
+					    <td valign="top">
+					     <template is="dom-repeat" items="[[item.relatedDomains]]">
+					     	<p>{{item.label}}
+					     	<span>&nbsp;({{item.relevance}}%)</span>
+					     	<template is="dom-if" if="[[_defineMode]]">
+					     	<paper-button-group attr-for-selected="name" selected="[[_getValueFromItem(item)]]">
+							    <paper-button class="assessment" name="Y">YES</paper-button>
+							    <paper-button class="assessment" name="N">NO</paper-button>
+							    <paper-button class="assessment" name="M">MAYBE</paper-button>
+							</paper-button-group>
+							</template></p>
+					     </template>
+					    </td>
+					    <td valign="top">
+					     <template is="dom-repeat" items="[[item.exampleValues]]">
+					     	<p>{{item.label}}
+					     	<span>&nbsp;({{item.relevance}}%)</span>
+					     	<template is="dom-if" if="[[_defineMode]]">
+					     	<paper-button-group attr-for-selected="name" selected="[[_getValueFromItem(item)]]">
+							    <paper-button class="assessment" name="Y">YES</paper-button>
+							    <paper-button class="assessment" name="N">NO</paper-button>
+							    <paper-button class="assessment" name="M">MAYBE</paper-button>
+							</paper-button-group>
+							</template></p>
+					     </template>
+					    </td>
+					    <td valign="top">
+					     <template is="dom-repeat" items="[[item.exampleColumns]]">
+					     	<p>{{item.label}}
+					     	<span>&nbsp;({{item.relevance}}%)</span>
+					     	<template is="dom-if" if="[[_defineMode]]">
+					     	<paper-button-group attr-for-selected="name" selected="[[_getValueFromItem(item)]]">
+							    <paper-button class="assessment" name="Y">YES</paper-button>
+							    <paper-button class="assessment" name="N">NO</paper-button>
+							    <paper-button class="assessment" name="M">MAYBE</paper-button>
+							</paper-button-group>
+							</template></p>
+					     </template>
+					    </td>
+					    
+					  </tr>
+					</table>
+	            </div>
+	        </template>
+        	<template is="dom-if" if="![[_isResponseReceived]]">
+        	  <p>{{response.0.userMessage}}</p>
+        	</template>
+       </template>
+       
+       <template is="dom-if" if="[[response.length]]">
+         <h2>Search Result</h2>
+         <template is="dom-repeat" items="[[_facetedSearchResultArr]]">
+          <table style="width:100%">
+			  <tr>
+			    <th>Synonyms</th>
+			    <th>Patterns</th>
+			    <th>Related Concepts</th>
+			  </tr>
+			  <tr>
+			    <td valign="top">
+			     <template is="dom-repeat" items="[[item.synonyms]]">
+			      <p>{{item.label}}</p>
+			    </template>
+			    </td>
+			     <td valign="top">
+			       <template is="dom-repeat" items="[[item.patterns]]">
+			        <p>{{item.label}}</p>
+			      </template>
+			    </td>
+			    <td valign="top">
+			       <template is="dom-repeat" items="[[item.domains]]">
+			        <p>{{item.label}}</p>
+			      </template>
+			    </td>
+		      </tr>
+	     </table>
+          </template>
+       </template>
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'faceted-search',
+        properties:{
+        	concepts: {
+     	      type: Array,
+  	          value: [],
+   	          notify: true,
+    	      observer: '_conceptsListObserver'
+     	    },
+        	conceptdetails: {
+   	          type: Array,
+   	          value: [],
+   	          notify: true,
+   	          observer: '_conceptDetailsObserver'
+   	        },
+   	        response: {
+   	        	type: Array,
+    	        value: [],
+    	        notify: true,
+    	        observer: '_responseObserver'
+   	        },
+   	        isConceptDetailsReceived: {
+   	        	type: Boolean,
+   	        	value: false
+   	        },
+   	        triggerFilter: {
+	   		  type: Boolean,
+	   		  notify: true,
+	   		  value: false
+   	        },
+   	        apiUrl: {
+   	       	  type: String,
+  	   		  notify: true,
+  	   		  value: 'https://virtserver.swaggerhub.com/srimanta.maji/CCOVA/v1'
+   	        },
+   	     	apiToken: {
+  	       	  type: String,
+ 	   		  notify: true,
+ 	   		  value: ''
+  	        },
+  	        _fetchConceptDetails: {
+  	          type: Boolean,
+  	   		  notify: true,
+  	   		  value: false
+  	        },
+  	        _facetedSearchPropertiesArr: {
+  	          type: Array,
+  	   	      value: [],
+  	   	      notify: true
+  	        },
+  	        _facetedSearchResultArr:{
+  	        	type: Array,
+   	   	      	value: [],
+    	   	    notify: true
+    	    },
+  	        /*String for synonyms parameter*/ 
+  	       synonyms: {
+           	   type: String,
+           	   notify: true,
+           	   value: ''
+           },
+           /*Array for patterns parameter*/
+           patterns: {
+           	   type: Array,
+           	   notify: true,
+           	   value: []
+           },
+           /*Array for related domains parameter*/
+           related: {
+           	   type: Array,
+           	   notify: true,
+           	   value: []
+           },
+           /*Array for example values parameter*/
+           values: {
+           	   type: Array,
+           	   notify: true,
+           	   value: []
+           },
+           /*Array for example columns parameter*/
+           columns: {
+           	   type: Array,
+           	   notify: true,
+           	   value: []
+           },
+           _facetedFilteringResult: {
+        	   type: Array,
+           	   notify: true,
+           	   value: []
+           },
+           
+           _facetedFilteringPerformed: {
+        	  type: Boolean,
+   	   		  notify: true,
+   	   		  value: false
+           },
+           _isConceptsReceived:{
+        	  type: Boolean,
+   	   		  notify: true,
+   	   		  value: false
+           },
+           concept:{
+        	   type: String,
+           	   notify: true,
+           	   value: ''  
+           },
+           _isResponseReceived:{
+         	  type: Boolean,
+   	   		  notify: true,
+   	   		  value: false
+            },
+            _fetchConcepts:{
+         	  type: Boolean,
+   	   		  notify: true,
+   	   		  value: false
+            },
+            _loadingConcepts:{
+           	  type: Boolean,
+   	   		  notify: true,
+   	   		  value: false
+            },
+            user:{
+              type: String,
+              notify: true,
+              value: ''
+            },
+            toastrMsg:{
+                type: String,
+                notify: true,
+                value: ''
+            },
+            _defineMode: {
+            	type: Boolean,
+                notify: true,
+                value: false
+            },
+            searchValue: {
+         	   type: String,
+                notify: true,
+                value: ''
+            },
+            searchFacetType: {
+         	   type: String,
+                notify: true,
+                value: '' 
+            },
+            search: {
+         	   type: Boolean,
+   	           value: false,
+   	           notify: true
+            }
+	           
+        },
+        _conceptsListObserver: function(){
+        	if(this.concepts.length > 0){	
+        		this._loadingConcepts = false;
+				if(this.concepts[0]['errorCode']){
+					this._isConceptsReceived = false;
+				}
+				else{
+					this._isConceptsReceived =  true;
+				}
+        	 }
+        },
+        _conceptDetailsObserver: function () {
+        	 if(this.conceptdetails.length > 0){	
+				if(this.conceptdetails[0]['errorCode']){
+					this.isConceptDetailsReceived = false;
+				}
+				else{
+					this.isConceptDetailsReceived =  true;
+				}
+        	 }
+         },
+         _responseObserver: function () {
+        	 if(this.response.length > 0){	
+ 				if(this.response[0]['errorCode']){
+ 					this._isResponseReceived = false;
+ 				}
+ 				else{
+ 					if(this.search){
+ 						this._facetedSearchResultArr = this._facetedSearchResultArr.concat(this.response);
+ 						this.search = false;
+ 					}
+ 					else{
+ 						if(!this._facetedFilteringPerformed){
+ 	 						this._facetedSearchPropertiesArr = this._facetedSearchPropertiesArr.concat(this.response);
+ 	 					}
+ 	 					else{
+ 	 						this._facetedFilteringResult = this._facetedFilteringResult.concat(this.response);
+ 	 	 	        	    this.triggerFilter =  false;
+ 	 	 	        	    this._facetedFilteringPerformed = false;
+ 	 					}
+ 					}
+ 				}
+         	 }
+         },
+         _fetchDetails: function(){
+        	 this._reset();
+        	 this.concept = $('select option:selected').val();
+        	 this._fetchConceptDetails = true;
+         },
+         _submit: function(event){
+        	 this.apiUrl = $("#apiUrl").val();
+        	 this.apiToken = $("#apiToken").val();
+        	 if(!this.apiUrl){
+        		 this.toastrMsg = "No url provided, hence fetching sample data";
+        		 this.$.toast.open();
+        	 }
+       	     this.concepts = [];
+       	     this._reset();
+       	     this.user = 1;
+       	 	 this._fetchConcepts = true;
+       	 	 this._loadingConcepts = true;
+         },
+         _reset: function(){
+        	 this._facetedSearchPropertiesArr = [];
+        	 this._facetedFilteringResult = [];
+        	 this.synonyms =  '';
+        	 this.patterns = [];
+        	 this.related = [];
+        	 this.values = [];
+        	 this.columns = [];
+        	 this._fetchConcepts = false;
+        	 this._loadingConcepts = false;
+        	 this._fetchConceptDetails = false;
+        	 this.user = '';
+        	 this.isConceptDetailsReceived = false;
+        	 this._isResponseReceived = false;
+        	 this._facetedFilteringPerformed = false;
+        	 this.concept = '';
+        	 this._defineMode = false;
+        	 this.search =  false;
+        	 this.searchValue = '';
+        	 this.searchFacetType = '';
+         },
+         _check: function(event){
+        	 this._facetedFilteringResult = [];
+        	 this._facetedFilteringPerformed = true;
+        	 this.triggerFilter = false;
+        	 if(event.currentTarget.checked){
+        		 if(event.currentTarget.name === 'synonyms'){
+        			 this.synonyms =  event.currentTarget.value;
+        		 }
+        		 else{
+        			 this[event.currentTarget.name] = this[event.currentTarget.name].concat(event.currentTarget.value);
+        		 }
+        	 }
+        	 else{
+        		 if(event.currentTarget.name === 'synonyms'){
+        			 this.synonyms =  '';
+        		 }
+        		 else{
+        			 var index = this[event.currentTarget.name].indexOf(event.currentTarget.value);
+            		 if (index > -1) {
+            			 this[event.currentTarget.name].splice(index, 1);
+            		 }
+        		 }
+        		 
+        	 }
+        	 this.triggerFilter =  true;
+         },
+         _resetVal: function(){
+        	 this.concepts = [];
+        	 $("#apiUrl").val("");
+			 $("#apiToken").val("");
+       	     this._reset();
+         },
+         _getValueFromItem: function(item){
+        	 return item.assessment;
+         },
+         _changeMode: function(){
+        	 if(event.currentTarget.selected === 'DEFINE'){
+        		 this._defineMode = true;
+    		 }
+        	 else{
+        		 this._defineMode = false;
+        	 }
+         },
+         _search: function(event){
+        	 this._facetedSearchResultArr = [];
+        	 if(event.currentTarget.value){
+        		this.searchValue = event.currentTarget.value;
+             	this.searchFacetType = event.currentTarget.id;
+             	this.search = true; 
+        	 }
+        	 else{
+        		 this.search = false; 
+        	 }
+        	
+         }
+      });
+    })();
+  </script>
+</dom-module>

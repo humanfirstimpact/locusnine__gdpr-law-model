@@ -1,0 +1,260 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="bower_components/mdb-heatmap-visualization/mdb-heatmap-visualization.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="page-layout.html">
+<link rel="import" href="mdb-utils.html">
+<dom-module id="legal-compliance-details">
+  <template>
+    <style include="shared-styles">
+      :host {
+        font-size: 11px;
+        --app-secondary-color: black;
+        --app-border-color: #e1e6ed;
+        display: block;
+        --paper-item: {
+          font-size: 14px;
+        }
+        @apply(--paper-font-common-base);
+        --app-menu-item-bg:#fff;
+        --app-menu-color: var(--app-primary-color);
+      }
+
+      .headerTitle {
+        --mdb-help-text-font-size: 0.8rem;
+        --mdb-title: {
+          padding: 0;
+        }
+        --mdb-help-icon: {
+          padding: 0 0 2px 2px;
+        }
+      }
+
+      app-header-layout {
+        /*Added to fix horizontal scrollbar in Edge*/
+        --layout-fit: {
+          overflow-x: hidden;
+        }
+      }
+
+      app-header {
+        color: #fff;
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      /* Side Menu Handling */
+
+      .menu-item {
+
+        --paper-item: {
+          font-size: 14px;
+          margin-bottom: 0!important;
+          border-bottom: 1px solid var(--app-border-color);
+        }
+        --paper-item-min-height: 50px;
+      }
+
+      .menu-header-toolbar {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        @apply(--layout-center-justified);
+        height: var(--app-header-height, 85px);
+        border-bottom: 1px solid var(--app-border-color);
+      }
+
+      :host side-menu {
+        --app-menu-color: var(--mdb-secondary-text-dark);
+        --menu-bg-color: var(--mdb-app-background);
+        --side-menu-selected-item: {
+          background-color: var(--mdb-accent-color-highlight);
+        }
+      }
+
+      /* Side Menu Handling Ends*/
+
+      .main-header-toolbar {
+        height: var(--main-header-height, 60px);
+        border-bottom: 1px solid var(--app-border-color);
+        box-sizing: border-box;
+      }
+
+      app-toolbar,
+      .header-nav-icon {
+        background-color: var(--app-header-bg, #fff);
+        color: var(--app-header-color, --mdb-secondary-text-dark);
+      }
+
+      app-drawer-layout {
+        min-height: 100%;
+        background: var(--app-bg-color, #f0f4f9);
+      }
+
+      .flex {
+        @apply(--layout-flex);
+      }
+
+      #pages {
+        height: 100%;
+      }
+
+      :host atom-feedback {
+        --atom-feedback-icon-color: #aaa;
+        --atom-feedback-hover-icon-color: #5caadb;
+        --atom-feedback-icon: {
+          left: 10px;
+          bottom: 10px;
+        }
+      }
+
+      :hostroot .loader {
+        display: none;
+      }
+
+      :host .loader.visible {
+        display: block;
+      }
+
+      :host .loader.visible .loader-overlay {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        background-color: #fff;
+        opacity: 0.75;
+      }
+
+      :host .loader.visible .loader-spinner {
+        position: fixed;
+        height: 100px;
+        width: 100px;
+        top: 50%;
+        left: 50%;
+        margin: -50px 0 0 -50px;
+        border-radius: 50%;
+        border-left: 16px solid transparent;
+        border-top: 16px solid var(--mdb-accent-color-highlight, #ddd);
+        border-right: 16px solid var(--mdb-accent-color-highlight, #ddd);
+        border-bottom: 16px solid var(--mdb-accent-color-highlight, #ddd);
+        -webkit-animation: spin 1s linear infinite;
+        animation: spin 1s linear infinite;
+      }
+
+      :host::-webkit-scrollbar-track,
+      :host *::-webkit-scrollbar-track,
+      :host ::content *::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: var(--mdb-border-color);
+      }
+
+      :host::-webkit-scrollbar,
+      :host *::-webkit-scrollbar,
+      :host ::content *::-webkit-scrollbar {
+        width: 7px;
+        height: 7px;
+        background-color: var(--mdb-border-color);
+      }
+
+      :host::-webkit-scrollbar-thumb,
+      :host *::-webkit-scrollbar-thumb,
+      :host ::content *::-webkit-scrollbar-thumb {
+        background-color: var(--mdb-scroll-color, #aaa);
+      }
+
+      @-webkit-keyframes spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      :host {
+        height: 100%;
+        --page-layout-content-body: {
+          padding: 0;
+          background-color: transparent;
+        }
+      }
+
+      :host img {
+        width: 100%;
+      }
+
+      .disclaimer {
+        margin-top: 20px;
+      }
+
+      .disclaimer-header {
+        font-weight: 500;
+      }
+    </style>
+    <page-layout>
+      <div slot="body">
+        <mdb-heatmap-visualization key="1htO3x6FJuvh72mfdsYdSM4lIWvEuqor3Uydgo5TRdvI" model-sheet="Model" selected="5" on-dataload-begin="showLoader"
+          on-dataload-end="hideLoader"></mdb-heatmap-visualization>
+
+        <div class='disclaimer'>
+          <div class='disclaimer-header'>Disclaimer</div>
+          <div class='disclaimer-text'>{{disclaimerText}}</div>
+        </div>
+      </div>
+    </page-layout>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'legal-compliance-details',
+
+      properties: {
+        active: {
+          type: Boolean,
+          value: false
+        },
+
+        disclaimerText: {
+          type: String,
+          value: ""
+        },
+
+        titleText: {
+          type: String,
+          value: 'Legal Compliance Details'
+        }
+      },
+
+      behaviors: [
+        Mdb.Utils
+      ],
+
+      showLoader: function () {
+        this._showLoader();
+      },
+
+      hideLoader: function () {
+        this._hideLoader();
+      }
+    });
+  </script>
+</dom-module>

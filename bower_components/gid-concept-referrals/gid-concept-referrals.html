@@ -1,0 +1,447 @@
+<!--
+  Wrapper component for flagging concepts
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+<!--
+## gid-concept-referrals
+
+A data component for concept referrals
+
+This component covers four functionalities. The details are listed below:
+
+## Flag as concept
+
+		<gid-concept-referrals api-url="<your-api-url>" api-token="<your-api-token>"
+		user="<your-user-id>" column-id="<column-id>" lob-id="<lob-id>" action="FLAG"
+		response = {{response}}>
+		</gid-concept-referrals>
+
+Input:
+ - User Id
+ - Column Id*
+ - Lob Id*
+ - Action*
+
+Sample Input: (Query params)
+ - POST /referrals?columnId="column-id"&lobId="lob-id"
+ 
+Output:
+
+	    {
+		  "referral": {
+		    "id": "7758",
+		    "status": "Pending for review",
+		    "timestamp": 1123123133,
+		    "user": {
+		      "id": "6777",
+		      "label": "Angela"
+		    }
+		  }
+		}
+
+ ## Unflag as concept
+
+		<gid-concept-referrals api-url="<your-api-url>" api-token="<your-api-token>"
+		user="<your-user-id>" referral="<referral-id>" action="UNFLAG"
+		response = {{response}}>
+		</gid-concept-referrals>
+
+Input:
+ - User Id
+ - Referral Id*
+ - Action*
+
+Sample Input: (Query params)
+ - DELETE /referrals/"referral-id"
+ 
+Output:
+
+	    {
+		  "referral": {
+		    "id": "7758",
+		    "message": "Successfully unflagged the column \"ACCOUNT_NUMBER\" in LOB \"Enterprise\""
+		  }
+		}
+    
+ 
+## List referrals
+
+Lists all the referrals proposed by all data stewards. It also provides a list of referrals proposed by a given data steward or proposed in a given lob
+
+		<gid-concept-referrals api-url="<your-api-url>" api-token="<your-api-token>"
+		user="<your-user-id>" lob="<lob-id>" 
+		limit=<limit> offset=<offset> action="LIST"
+		response = {{response}}>
+		</gid-concept-referrals>
+
+Input:
+ - User Id
+ - Lob Id
+ - Limit
+ - Offset
+ - Action*
+
+Sample Input: (Query params)
+ - GET /referrals?"lob-id"&limit=limit&offset=offset or POST /referrals/"user-id"
+ 
+Output:
+
+	    {
+		  "referrals": [
+		    {
+		      "id": "12345",
+		      "user": {
+		        "id": "555",
+		        "label": "Data Steward1"
+		      },
+		      "application": {
+		        "id": "5556",
+		        "label": "Advanced Information Services"
+		      },
+		      "database": {
+		        "id": "5557",
+		        "label": "AIS DB"
+		      },
+		      "schema": {
+		        "id": "5558",
+		        "label": "ADV_INFO_SRVS"
+		      },
+		      "table": {
+		        "id": "5559",
+		        "label": "B2B-PRODUCT-ORDER"
+		      },
+		      "column": {
+		        "id": "5568",
+		        "label": "email"
+		      },
+		      "lob": {
+		        "id": "5578",
+		        "label": "Global"
+		      },
+		      "status": "Pending for review"
+		    }
+		  ]
+		}
+
+ ## Review
+
+Used to review the given referral by an information architect
+
+		<gid-concept-referrals api-url="<your-api-url>" api-token="<your-api-token>"
+		user="<your-user-id>" referral="<referral-id>" disposition="<your-disposition>" reason="<your-reason">
+		action="ACCEPT | REJECT"
+		response = {{response}}>
+		</gid-concept-referrals>
+
+Input:
+ - User Id
+ - Referral Id*
+ - Disposition*
+ - Reason*
+ - Action*
+
+Sample Input: (Query params)
+ - PATCH /referrals/"referral-id"??disposition="disposition"&reason="reason"
+ 
+Output:
+
+	    {
+		  "referral": {
+		    "id": "7758",
+		    "disposition": "Accepted as a concept",
+		    "reason": "reason behind the acceptance or rejection",
+		    "timestamp": 1123123133,
+		    "user": {
+		      "id": "6777",
+		      "label": "Olivia"
+		    }
+		  }
+		}
+    
+ 
+
+ - The column id is to be specified in the `column-id` field
+ - The lob id is to be specified in the `lob-id` field
+ - The referral id is to be specified in the `referral` field
+ - The user id needs to be provided in `user` parameter.
+ - The disposition is specified by `disposition` field.
+ - The reason is specified by `reason` field.
+ - The `api-url` needs to be provided to specify the rest end point.
+ - The `limit`  & `offset` parameters are used to paginate records
+ - The `api-token` would contain the access token to access the mentioned rest end point.
+ - The `response` property would return the response.
+ - The `action` parameter triggers the action
+	    
+If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
+
+Note: The inputs marked with '*' are mandatory inputs.
+
+@demo demo/index.html
+-->
+<dom-module id="gid-concept-referrals">
+  <template>
+          
+         <!-- fetch entity path  -->
+        	<gid-api entity = '{{_apiEntity}}' path-key= '{{_pathKey}}' path='{{_path}}'></gid-api>
+         <!--  fetch entity path -->
+        
+         <!-- fetch nearby columns -->	
+			<gid-api auto=false
+			method={{_conceptReferralsMethod}} api-content-type = {{_conceptReferralsApiContentType}} api-url={{_conceptReferralsUrl}} response='{{conceptReferralsResponse}}'
+			error = '{{conceptReferralsError}}' request-body = {{_conceptReferralsRequestBody}}
+			api-params={{_conceptReferralsParams}} api-token={{_conceptReferralsToken}}
+			api-timeout={{_conceptReferralsTimeout}}> </gid-api>			
+	     <!-- fetch nearby columns -->	
+	     
+       
+
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'gid-concept-referrals',
+        properties:{
+	        	/*User Id*/
+	 	       	user: {
+	 	        	type: String,
+	 	        	value : '',
+	 	        	notify :  true
+	 	        },
+	 	        /*Column Id*/
+	 	       	columnId:{
+	 	    	  type: String,
+	   	          value : '',
+	   	          notify :  true
+	 	        },
+	 	        /*Lob Id*/
+	 	       	lobId:{
+	 	    	  type: String,
+	   	          value : '',
+	   	          notify :  true
+	 	        },
+	 	        /*Referral Id*/
+	 	        referral:{
+	 	    	  type: String,
+	   	          value : '',
+	   	          notify :  true
+	 	        },
+	 	        /*Review status of a particular referral*/
+	 	        disposition:{
+	 	    	  type: String,
+	   	          value : '',
+	   	          notify :  true
+	 	        },
+	 	        /*Reason behind the rejection of a particular referral*/
+	 	        reason:{
+	 	    	  type: String,
+	   	          value : '',
+	   	          notify :  true
+	 	        },
+	 	        /*Offset*/
+	 	        offset:{
+	 	          type: String,
+		   	      value : '',
+		   	      notify :  true
+	 	        },
+	 	        /*Limit*/
+	 	        limit:{
+ 	        	  type: String,
+		   	      value : '',
+		   	      notify :  true
+	 	        },
+        	    /*Array listing the parameters*/
+        	    _paramsArr: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: ["columnId", "lobId", "disposition","reason","offset","limit"]
+                },
+	           /*Authorization token for accessing rest api*/
+	        	apiToken: {
+	            	type: String,
+	                notify: true,
+	                value : ''
+	            },
+	            /*Base url*/
+	        	apiUrl:{
+	            	type: String,
+	    	        notify: true,
+	    	        value: ''
+	    	 	},
+	    	   /*Url*/
+        	   _conceptReferralsUrl:{
+                	type: String,
+        	        notify: true
+        	 	},
+        	 	/*Params*/
+     	   	    _conceptReferralsParams : {
+     	   	    	type: String,
+     	   	    	notify: true
+     	   	    },
+     	   		/*Timeout*/
+        	 	_conceptReferralsTimeout : {
+            		type: Number,
+        	        notify: true,
+        	        value : 0
+        	    },
+     	   	    /*Token*/
+     	   	    _conceptReferralsToken : {
+     	   	    	type: String,
+     	   	    	notify: true
+     	   	    },
+     	   	    /*Http method*/
+     	   	    _conceptReferralsMethod : {
+     	   	    	type: String,
+     	   	    	notify: true
+     	   	    },
+     	   		/*Request body*/
+     	   	    _conceptReferralsRequestBody : {
+     	   	    	type: Object,
+     	   	    	notify: true,
+     	   	    	value: {}
+     	   	    },
+     	   	    /* Api content type*/
+     	   		_conceptReferralsApiContentType : {
+	     	   		type: String,
+	 	   	    	notify: true,
+	 	   	    	value: 'application/json'
+     	   		},
+     	   		/*Response sent to gid-api. This is a private property*/
+        	    conceptReferralsResponse : {
+	     	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : '_conceptReferralsResponseReceived'
+        	  	},
+        	  	/*Error sent to gid-api. This is a private property*/
+        	  	conceptReferralsError : {
+	     	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : '_conceptReferralsErrorReceived'
+        	  	},
+     	        /*Response object*/
+     	        response: {
+     	        	type: Object,
+        	        value: {},
+       	          	notify: true
+     	        },
+     	        /*The api path key*/
+	            _pathKey: {
+	            	type: String,
+	                notify: true,
+	                value: ''
+	            },
+	            /*The api path*/
+                _path: {
+               	   type: String,
+                   notify: true,
+                   value: '',
+                   observer: '_pathReceived'
+                },
+                /*Api entity sent to gid-api*/
+                _apiEntity: {
+               	   type: String,
+                   notify: true
+                },
+                /*Trigger to perform a specific action*/
+                action: {
+            	  type: String,
+         		  notify: true,
+         		  value: '',
+         		  observer: '_actionObserver'
+                },
+                /*Action to http method map object*/
+                actionHttpMethodMap: {
+                	type: Object,
+                	notify: true,
+                	value: {
+                		"FLAG": "POST",
+                		"UNFLAG": "DELETE",
+                		"LIST": "GET",
+                		"REJECT": "PATCH",
+                		"ACCEPT": "PATCH"
+                	}
+                }
+        },
+        
+        /* Success response handler */
+        _conceptReferralsResponseReceived : function(newvalue, oldvalue){
+		  this._reset();
+	          if(newvalue != null){
+		             this.async(function() {
+		         		this.response =  newvalue;
+		   		 	          }, 500);
+	          }
+         	
+         },
+         /* Error response handler */
+         _conceptReferralsErrorReceived :  function(newvalue, oldvalue){
+   		  	 this._reset();
+	        	if(newvalue !== null){
+	        		this.async(function() {
+		         		this.response =  newvalue.response;
+		   		 	          }, 500);
+	        	}
+	     },
+	     /* Reset method */
+		 _reset: function(){
+			this.response = {};
+			this._apiEntity = '';
+            this._path = '';
+			this.conceptReferrals = false;
+		 },
+		 /* Observer of 'action' */
+         _actionObserver: function () {
+        	 if (this.action) {
+        	 	if (!this.apiUrl) {
+// 	      			this._conceptReferralsUrl = this.import_path + 'assets/json/concept-referrals.json';
+// 	                this._conceptReferralsTimeout =  this._conceptReferralsTimeout - 1;
+      			}
+        		else {
+        			this._pathKey =  'default';
+         			this._apiEntity = 'REFERRALS' + '.' + this.action;
+         		}
+         	}
+				
+         },
+         /* Observer for api path */
+         _pathReceived: function(){
+         	if(this._path){
+         		var res = this._path.split(/{([^}]+)}/);
+        		for (var i in res) {
+        			if(!res[i].startsWith("/")){
+        					if(this[res[i]]){
+        						res[i] = this[res[i]];
+        					}
+        			}
+        		}
+       			this._conceptReferralsUrl = this.apiUrl + res.join("");
+       			var paramsObj = {};
+       			for (var i in this._paramsArr){
+                	if(this[this._paramsArr[i]]){
+                		paramsObj[this._paramsArr[i]]= this[this._paramsArr[i]];
+                		}
+
+                }
+       			var method = '';
+       			for (var key in this.actionHttpMethodMap) {
+       		      if(key === this.action){
+       		    	method = this.actionHttpMethodMap[key];
+       		      }
+       		   }
+       			this._conceptReferralsMethod = method;
+       			this._conceptReferralsParams = JSON.stringify(paramsObj);
+       			if(this.apiToken){
+       				this._conceptReferralsToken =  this.apiToken;
+       			}
+       			if(this._conceptReferralsMethod === "POST" || this._conceptReferralsMethod === "PATCH" || this._conceptReferralsMethod === "DELETE"){
+       				this._conceptReferralsApiContentType =  "application/x-www-form-urlencoded";
+       			}
+       			this._conceptReferralsTimeout =  this._conceptReferralsTimeout - 1;
+         		
+         	}
+         }
+      });
+    })();
+  </script>
+</dom-module>

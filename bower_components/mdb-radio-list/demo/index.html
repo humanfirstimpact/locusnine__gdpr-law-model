@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>mdb-radio-list demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../mdb-radio-list.html">
+
+  <style is="custom-style" include="demo-pages-shared-styles">
+
+  </style>
+</head>
+
+<body>
+  <div>
+    <demo-snippet>
+      <h3>Large mdb-radio-list demo</h3>
+      <template>
+        <mdb-radio-list selected="female">
+          <paper-radio-button name="male">Male</paper-radio-button>
+          <paper-radio-button name="female">Female</paper-radio-button>
+          <paper-radio-button name="others">Others</paper-radio-button>
+        </mdb-radio-list>
+      </template>
+    </demo-snippet>
+    <h3>Small mdb-radio-list demo</h3>
+    <demo-snippet>
+      <template>
+        <mdb-radio-list selected="extraordinary" size="small">
+          <paper-radio-button name="good">Good</paper-radio-button>
+          <paper-radio-button name="vgood">Very Good</paper-radio-button>
+          <paper-radio-button name="extraordinary">Extraordinary</paper-radio-button>
+        </mdb-radio-list>
+      </template>
+    </demo-snippet>
+  </div>
+</body>
+
+</html>

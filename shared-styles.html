@@ -1,0 +1,298 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- shared styles for all views -->
+<dom-module id="shared-styles">
+  <template>
+    <style>
+      .app-blue {
+        color: var(--app-primary-color);
+      }
+
+      h1 {
+        margin: 16px 0;
+        color: #212121;
+        font-size: 22px;
+      }
+
+      :root {
+        --standard-padding: 20px;
+
+        /*Common checkbox styles*/
+        --paper-checkbox-label-color: var(--mdb-secondary-text-dark);
+        --paper-checkbox-checked-color: var(--mdb-secondary-text-dark);
+        --paper-checkbox-unchecked-color: var(--mdb-secondary-text-dark);
+        --mdb-radio-list-font-color: var(--mdb-secondary-text-dark);
+        --mdb-radio-button-checked-background-color: var(--app-white-color, #fff);
+        --mdb-radio-button-checked-border-color: var(--mdb-accent-color-highlight);
+        --mdb-radio-button-checked-font-color: var(--mdb-accent-color-highlight);
+        --mdb-title-font-color: var(--mdb-secondary-text-dark);
+        --mdb-font-color: var(--mdb-primary-text-dark);
+        /*Can be removed*/
+        --mdb-link-font-color: #5caadb;
+        /*Tab styles*/
+        --paper-tab: {
+          color: var(--mdb-accent-color-highlight, #5da9dd);
+          text-transform: uppercase;
+        }
+        ;
+        --paper-tabs-selection-bar-color: var(--mdb-accent-color-highlight, #5da9dd);
+        --paper-tab-content-unselected: {
+          color: var(--mdb-disabled-text-dark, #000);
+        }
+        ;
+
+        --layout-flex-auto: {
+          -ms-flex: initial;
+          -webkit-flex: initial;
+          flex: initial;
+        }
+        --paper-button-flat-keyboard-focus: {
+          font-weight: normal;
+        }
+        --paper-button-raised-keyboard-focus: {
+          font-weight: normal;
+        }
+        /*shared table styles*/
+        --app-table: {
+          border: 0;
+          color: var(--app-primary-color);
+        }
+
+        --app-table-cell: {
+          min-height: 44px;
+          padding: 14px;
+        }
+        --app-table-body-cell: {
+          border-bottom: 1px solid #dbdbdb;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: flex-start;
+          font-size: 13px;
+          color: var(--mdb-title-font-color, #000);
+        }
+        --app-table-header-cell: {
+          border-top: 1px solid #dbdbdb;
+          font-size: 14px;
+          color: var(--mdb-title-font-color, #000);
+          font-weight: 400;
+          min-height: 50px;
+        }
+        --app-table-odd-row-cell: {
+          background-color: #fff;
+        }
+
+        /*atom table styles*/
+        --atom-table: {
+          @apply(--app-table);
+        }
+        --atom-table-cell: {
+          @apply(--app-table-cell);
+        }
+        --atom-table-header-cell: {
+          @apply(--app-table-header-cell);
+        }
+        --atom-table-body-cell: {
+          @apply(--app-table-body-cell);
+        }
+        --atom-table-odd-row-cell: {
+          @apply(--app-table-odd-row-cell);
+        }
+
+        --atom-table-add-new-item: {
+          color: var(--app-primary-color);
+          font-size: 14px;
+        }
+
+        --atom-table-add-item-color: var(--app-primary-color);
+
+        --atom-modal-dialog-primary-action-buttons: {
+          color: var(--app-primary-color);
+        }
+
+        --atom-modal-dialog-secondary-action-button: {
+          color: red;
+        }
+
+        /*Coverage table styles*/
+        --mdb-coverage-table: {
+          @apply(--app-table);
+        }
+        --mdb-coverage-table-cell: {
+          @apply(--app-table-cell);
+        }
+        --mdb-coverage-table-header-cell: {
+          @apply(--app-table-header-cell);
+        }
+        --mdb-coverage-table-body-cell: {
+          @apply(--app-table-body-cell);
+        }
+        --mdb-coverage-table-odd-row-cell: {
+          @apply(--app-table-odd-row-cell);
+        }
+
+        /*metric display styles*/
+        --stat-value: {
+          font-size: 3em;
+          font-weight: lighter;
+        }
+        --stat-description: {
+          font-size: 1.5em;
+          font-weight: 100;
+          margin: 0;
+        }
+      }
+
+      :host {
+        --mdb-help-text-font-size: 0.8rem;
+        --paper-menu: {
+          padding: 0;
+        }
+      }
+
+      /*Welcome page*/
+
+      :host .welcome-page div[slot="body"] {
+        background-color: #f3f5f9;
+      }
+
+      :host .welcome-page img {
+        width: 100%;
+      }
+
+      :host .features-home {
+        margin: var(--standard-padding, 20px) 0 40px 0;
+        @apply(--layout-horizontal);
+        color: var(--mdb-secondary-text-dark, #eee);
+      }
+
+      :host .features-home atom-feature {
+        flex: 1 1 auto;
+        padding: var(--standard-padding, 20px);
+        --atom-feature-icon: {
+          height: 40px;
+          width: 40px;
+        }
+        --atom-feature-title: {
+          font-weight: normal;
+          font-size: 16px;
+          color: var(--mdb-primary-text-dark, #000);
+        }
+        --atom-feature-description: {
+          line-height: 22px;
+          font-weight: normal;
+          font-size: 14px;
+          margin-bottom: 34px;
+          color: var(--mdb-secondary-text-dark, #000);
+        }
+
+        --atom-feature-button: {
+          padding-left: 16px;
+          padding-right: 16px;
+          height: 36px;
+          font-size: 14px;
+          background-color: var(--mdb-accent-color-highlight, #5da9dd);
+        }
+      }
+
+      /* Dimension finder */
+
+      :host mdb-dimension-finder {
+        font-size: 1em;
+        --mdb-dimension-finder-list-item: {
+          min-height: 25px;
+          height: auto;
+          padding-top: 0;
+          padding-bottom: 0;
+          line-height: initial;
+          padding-left: 20px;
+        }
+        --mdb-dimension-finder-list-item-text: {
+          width: 140px;
+        }
+        --mdb-help-icon: {
+          padding-bottom: 3px;
+        }
+      }
+
+      :host .db-entities {
+        background: var(--mdb-app-background);
+        border: 1px solid var(--mdb-border-color, #000);
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        @apply(--layout-justified);
+
+      }
+
+      :host .db-entities mdb-dimension-finder {
+        font-size: 0.7rem;
+        @apply(--layout-flex);
+        min-width: 150px;
+        border-right: 1px solid var(--mdb-border-color, #000);
+      }
+
+      :host .db-entities mdb-dimension-finder:last-of-type {
+        border-right: 0;
+      }
+
+      :host .db-entities mdb-dimension-finder ::content .dimension-finder {
+        background: #fff;
+        height: 250px;
+      }
+
+
+      /*atom table add new section*/
+
+      :host atom-table .addnew mdb-title {
+        margin-top: var(--standard-padding, 20px);
+      }
+
+      /*
+ *  STYLE 3
+ */
+
+      :host select,
+      :host input {
+        display: block;
+        height: 35px;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        color: var(--mdb-secondary-text-dark);
+        border: 1px solid var(--mdb-border-color);
+      }
+
+      :host ::content paper-dialog>* {
+        padding: 0;
+        margin: 0;
+      }
+
+      :host ::content paper-dialog #header h3 {
+        margin: 0 var(--standard-padding, 20px);
+      }
+
+      :host ::content paper-dialog #footer {
+        margin: 0 !important;
+        border-top: 0!important;
+      }
+
+      :host .modal-sections {
+        padding: var(--standar-padding, 20px);
+        border-bottom: 1px solid var(--mdb-border-color);
+      }
+
+      :host .addnew {
+        padding-top: 0;
+      }
+    </style>
+  </template>
+</dom-module>

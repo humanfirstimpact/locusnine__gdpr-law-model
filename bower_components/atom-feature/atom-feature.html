@@ -1,0 +1,95 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`atom-feature`
+
+The following custom properties and mixins are also available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--atom-feature-icon` | Mixin applied to feature icon | `{}`
+`--atom-feature-title` | Mixin applied to feature title | `{}`
+`--atom-feature-description` | Mixin applied to feature description | `{}`
+`--atom-feature-button` | Mixin applied to feature action button | `{}`
+
+
+@demo demo/index.html 
+-->
+
+<dom-module id="atom-feature">
+  <template>
+    <style>
+       :host {
+        display: block;
+        text-align: center;
+        position: relative;
+        @apply(--paper-font-common-base);
+      }
+
+       :host iron-icon {
+        @apply(--atom-feature-icon);
+      }
+
+       :host h3 {
+        @apply(--atom-feature-title);
+      }
+
+       :host p {
+        @apply(--atom-feature-description);
+      }
+
+       :host paper-button {
+        color: #fff;
+        background-color: #00b7f5;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%);
+        white-space: nowrap;
+        @apply(--atom-feature-button);
+      }
+    </style>
+    <iron-icon icon="{{icon}}"></iron-icon>
+    <h3>{{title}}</h3>
+    <p>{{description}}</p>
+    <paper-button on-tap="_handleClick">{{buttonTitle}}</paper-button>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'atom-feature',
+
+      properties: {
+        icon: {
+          type: String,
+          value: 'icons:info'
+        },
+
+        title: {
+          type: String,
+          value: 'New Feature'
+        },
+
+        description: {
+          type: String,
+          value: 'You feature description'
+        },
+
+        buttonTitle: {
+          type: String,
+          value: 'Perform an action'
+        }
+      },
+
+      _handleClick: function () {
+        this.fire('execute-action')
+      }
+
+    });
+  </script>
+</dom-module>

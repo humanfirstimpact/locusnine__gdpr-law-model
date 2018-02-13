@@ -1,0 +1,70 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="mdb-heatmap-behavior.html">
+
+<dom-module id="mdb-heatmap-faq">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+        </style>
+        <div id="faq">
+            <h3 id="question"></h3>
+            <div id="answer"></div>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'mdb-heatmap-faq',
+
+            properties: {
+                question: {
+                    type: String,
+                    observer: '_questionChanged'
+                },
+
+                answer: {
+                    type: String,
+                    observer: '_answerChanged'
+                }
+            },
+
+            listeners: {
+                'faq.tap': '_tapped'
+            },
+
+            behaviors: [
+                Mdb.heatmap
+            ],
+
+            _tapped: function (e) {
+                if (e.target.classList.contains('anchor')) {
+                    this.fire('go-to-glossary', this._getId(e.target.innerText));
+                }
+            },
+
+            _questionChanged: function (value) {
+                this._stringChanged('question', value);
+            },
+
+            _answerChanged: function (value) {
+                this._stringChanged('answer', value);
+            },
+
+            _stringChanged: function (type, value) {
+                if (value) {
+                    var html = value;
+                    var matches = value.match(/\{{[a-zA-Z0-9\s]+}}/g);
+                    if (matches) {
+                        matches.forEach(function (m) {
+                            html = html.replace(m, '<a href="javascript:void(0);" class="anchor">' + m.match(/[a-zA-Z0-9\s]+/)[0] + '</a>')
+                        });
+                    }
+                    this.$[type].innerHTML = html;
+                }
+            },
+
+        });
+    </script>
+</dom-module>

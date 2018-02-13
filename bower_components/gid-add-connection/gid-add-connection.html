@@ -1,0 +1,292 @@
+<!--
+  Wrapper component for addConnection
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+<!--
+`gid-add-connection`
+
+A data component to add a new connection
+
+    <gid-add-connection api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
+                            common-name='CRM@newton' connection-name='CRM' host='192.168.33.10' port='1521'
+                            db-type='Oracle' db-user='globalids' password='globalids123'
+                            application='CRM APP' lob='Enterprise'
+                            api-token='MTAxNjUwMzAxMTUwNDUwNTg3NDkwODA5MDFY'
+                            add-con=true db-response='{{response}}' db-error="{{error}}>
+        </gid-add-connection>
+    
+The fields 'common-name', 'connection-name', 'host', 'port', 'db-type', 'db-user', 'password', 'application' &
+'lob' are mandatory.
+
+The property 'db-response' returns the response against the rest call.
+The property 'db-error' returns the error response against the rest call.
+
+If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
+
+API endpoint:
+
+   POST /add-connection
+    
+Input:
+ api-url
+ commonName
+ connectionName
+ host
+ port
+ dbType
+ dbUser
+ password
+ application
+ lob
+ apiToken
+ addCon
+ dbResponse
+ dbError
+
+Sample Input: (Query params)
+
+
+
+@demo demo/index.html
+-->
+<dom-module id="gid-add-connection">
+    <template>
+        <!-- fetch entity _path  -->
+        <gid-api entity='{{_apiEntity}}' path-key='{{_pathKey}}' path='{{_path}}'></gid-api>
+        <!--  fetch entity _path -->
+
+        <!-- fetch concept details -->
+        <gid-api auto=false
+                 method="POST" api-content-type="application/x-www-form-urlencoded" api-url={{_addConnUrl}}
+                 response='{{_addConnResponse}}'
+                 error='{{_addConnError}}' request-body={{_addConnRequestBody}}
+                 api-token={{_addConnToken}}
+                 api-timeout={{_addConnTimeout}}></gid-api>
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            Polymer({
+                is: 'gid-add-connection',
+                properties: {
+                    /*This flag needs to be set 'true' to add a connection*/
+                    addCon: {
+                        type: Boolean,
+                        notify: true,
+//                        value: false,
+                        observer: '_fireAddCon'
+                    },
+                    /*Authorization token for accessing rest api*/
+                    apiToken: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Base url*/
+                    apiUrl: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*The api path*/
+                    _path: {
+                        type: String,
+                        notify: true,
+                        value: '',
+                        observer: '_pathReceived'
+                    },
+                    /*The api path key*/
+                    _pathKey: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Api entity sent to gid-api*/
+                    _apiEntity: {
+                        type: String,
+                        notify: true
+                    },
+                    /*User Id*/
+                    user: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    /*User id is stored here. This is a private property*/
+                    owner: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+
+                    /*Array listing the parameters*/
+                    _paramsArr: {
+                        type: Array,
+                        notify: true,
+                        value: ["commonName", "connectionName", "host", "port", "dbType", "dbUser", "password", "application", "lob"]
+                    },
+                    /*Parameter object*/
+                    _paramsObj: {
+                        type: Object,
+                        notify: true,
+                        value: {}
+                    },
+                    /*Request body sent to gid-api*/
+                    _addConnRequestBody: {
+                        type: Object,
+                        notify: true,
+                        value: {}
+                    },
+                    /*Url sent to gid-api*/
+                    _addConnUrl: {
+                        type: String,
+                        notify: true
+                    },
+                    /*Response sent to gid-api.*/
+                    _addConnResponse: {
+                        type: Object,
+                        notify: true,
+                        observer: '_addConnResponseReceived'
+                    },
+                    /*Error sent to gid-api.*/
+                    _addConnError: {
+                        type: String,
+                        notify: true,
+                        observer: '_addConnErrorReceived'
+                    },
+                    /*Object for storing success response*/
+                    dbResponse: {
+                        type: Object,
+                        value: {},
+                        notify: true
+                    },
+                    /*Object for storing error response*/
+                    dbError: {
+                        type: Object,
+                        value: {},
+                        notify: true
+                    },
+                    commonName: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    connectionName: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    host: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    port: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    dbType: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    dbUser: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    password: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    application: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    lob: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    /*Timeout sent to gid-api*/
+                    _addConnTimeout: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    /*Token sent to gid-api*/
+                    _addConnToken: {
+                        type: String,
+                        notify: true
+                    }
+                },
+                /* Reset method */
+                _reset: function () {
+                    this._apiEntity = '';
+                    this._path = '';
+                    this.addCon = false;
+
+                },
+                /* Observer of 'addCon' flag */
+                _fireAddCon: function () {
+                    if (this.addCon) {
+                        this.owner = this.user;
+                        if (this.apiUrl) {
+                            this._pathKey = 'default';
+                            this._apiEntity = 'add-connection';
+                        }
+                    }
+
+                },
+                /* Observer for api path */
+                _pathReceived: function () {
+                    if (this._path && this._path.length > 0) {
+                        var res = this._path.split(/{([^}]+)}/);
+                        for (var i in res) {
+                            if (!res[i].startsWith("/")) {
+                                if (this[res[i]]) {
+                                    res[i] = this[res[i]];
+                                }
+                            }
+                        }
+                        this._addConnUrl = this.apiUrl + res.join("");
+                        for (var i in this._paramsArr) {
+                            if (this[this._paramsArr[i]]) {
+                                this._paramsObj[this._paramsArr[i]] = this[this._paramsArr[i]];
+                            }
+
+                        }
+                        this._addConnRequestBody = JSON.stringify(this._paramsObj);
+                        if (this.apiToken) {
+                            this._addConnToken = this.apiToken;
+                        }
+                        this._addConnTimeout = this._addConnTimeout - 1;
+
+                    }
+                },
+
+                _addConnResponseReceived: function (newvalue, oldvalue) {
+                    this._reset();
+                    if (newvalue != null) {
+                        this.async(function () {
+                            this.dbResponse = newvalue.database;
+                        }, 500);
+                    }
+                },
+
+                _addConnErrorReceived: function (newvalue, oldvalue) {
+                    this._reset();
+                    if (newvalue !== null) {
+                        this.async(function () {
+                            this.dbError = newvalue;
+                        }, 500);
+                    }
+                }
+            });
+        })();
+    </script>
+</dom-module>

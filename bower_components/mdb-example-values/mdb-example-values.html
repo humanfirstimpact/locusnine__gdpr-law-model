@@ -1,0 +1,120 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../mdb-title/mdb-title.html">
+<link rel="import" href="../mdb-simple-list/mdb-simple-list.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="./mdb-example-value-define.html">
+<link rel="import" href="./mdb-example-value-explore.html">
+
+<!--
+`mdb-example-values`
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--mdb-example-values` | Mixin applied to all example values | `{}`
+`--mdb-example-background-color` | Background color of example values | `#eaeff3`
+`--mdb-font-color` | Default font color of application | ``
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-example-values">
+  <template>
+    <style>
+       :host {
+        display: block;
+        padding: var(--standard-padding, 20px);
+        border: 1px solid var(--mdb-border-color, #000);
+        background-color: var(--mdb-primary-color-background, #fcfdff);
+        --mdb-example-background-color: #fff;
+      }
+
+       :host mdb-simple-list {
+        --mdb-simple-list: {
+          background-color: inherit;
+          overflow: auto;
+          max-height: 200px;
+        }
+        --mdb-list-item: {
+          float: left;
+          background-color: var(--mdb-example-background-color);
+          border: 1px solid var(--mdb-border-color, #dee7eb);
+          padding: 10px;
+          margin: 5px 5px 0 0;
+          min-width: 160px;
+          @apply(--mdb-example-values);
+        }
+        --mdb-list-item-focused: {
+          color: var(--mdb-primary-text-dark, #000);
+          background-color: var(--mdb-example-background-color);
+        }
+        --mdb-list-item-selected: {
+          color: var(--mdb-primary-text-dark, #000);
+          background-color: var(--mdb-example-background-color);
+        }
+      }
+    </style>
+    <mdb-title help-text="{{helpText}}" level="3">[[title]]</mdb-title>
+    <template is="dom-if" if="[[!_isExploreMode(mode)]]">
+      <mdb-simple-list items="{{examples}}" empty-message="[[emptyMessage]]">
+        <template>
+          <paper-item class="example">
+            <mdb-example-value-define example="[[item]]"></mdb-example-value-define>
+          </paper-item>
+        </template>
+      </mdb-simple-list>
+    </template>
+    <template is="dom-if" if="[[_isExploreMode(mode)]]">
+      <mdb-simple-list items="{{examples}}" empty-message="[[emptyMessage]]">
+        <template>
+          <paper-item class="example">
+            <mdb-example-value-explore checked="[[item.checked]]" example="[[item]]"></mdb-example-value-explore>
+          </paper-item>
+        </template>
+      </mdb-simple-list>
+    </template>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-example-values',
+
+      properties: {
+        title: {
+          type: String,
+          value: 'Example Values',
+        },
+
+        helpText: {
+          type: String,
+          value: ''
+        },
+
+        examples: {
+          type: Array,
+          value: []
+        },
+
+        mode: {
+          type: String,
+          value: 'explore'
+        },
+
+        emptyMessage: {
+          type: String,
+          value: 'No example values found.'
+        }
+      },
+
+      _isExploreMode: function (mode) {
+        return mode === 'explore'
+      },
+
+    });
+  </script>
+</dom-module>

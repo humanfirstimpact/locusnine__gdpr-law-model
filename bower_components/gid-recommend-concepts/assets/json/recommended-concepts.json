@@ -1,0 +1,27 @@
+{
+   "domains":[
+      {
+         "id":"4920055981064928686",
+         "label":"Last Name",
+         "relevance":"N",
+         "assessment":"1.54"
+      },
+      {
+         "id":"221188726146740308",
+         "label":"Date of Birth",
+         "relevance":"N",
+         "assessment":"5.88"
+      },
+      {
+         "id":"-886082613329644447",
+         "label":"First Name",
+         "relevance":"N",
+         "assessment":"5.88"
+      }
+   ],
+   "_meta":{
+      "total":3,
+      "offset":0,
+      "limit":10
+   }
+}

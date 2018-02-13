@@ -1,0 +1,161 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../mdb-title/mdb-title.html">
+<link rel="import" href="../mdb-radio-list/mdb-radio-list.html">
+<link rel="import" href="../mdb-search-box/mdb-search-box.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`mdb-facet-discovery`
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--mdb-facet-container` | Mixin applied to each facet row | `{}`
+`--mdb-facet-list-container` | Mixin applied to facet list container | `{}`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-facet-discovery">
+  <template>
+    <style>
+       :host {
+        display: block;
+        padding: var(--standard-padding, 20px);
+        --paper-checkbox-label-color: var(--mdb-secondary-text-dark, #000);
+        @apply(--paper-font-common-base);
+      }
+
+       :host .facet {
+        margin-top: calc(var(--standard-padding, 20px)/2);
+        @apply(--layout);
+        @apply(--layout-justified);
+        @apply(--mdb-facet-container);
+        color: var(--mdb-secondary-text-dark, #000);
+      }
+
+       :host .facet-list {
+        overflow: auto;
+        @apply(--mdb-facet-list-container);
+      }
+
+       :host .search-icon {
+        position: relative;
+        right: 10px;
+        color: #aaa;
+      }
+
+       :host mdb-search-box {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        --mdb-search-box-container: {
+          margin: 0;
+        }
+      }
+
+       :host mdb-radio-list iron-icon {
+        --iron-icon-width: 18px;
+        --iron-icon-height: 18px;
+      }
+
+       :host paper-radio-button {
+        display: inline;
+      }
+    </style>
+    <div>
+      <mdb-title help-text="[[helpText]]" level="3">[[facetType]]</mdb-title>
+      <mdb-search-box placeholder="Search [[_getPlaceholder(facetType)]]">
+        <iron-icon class="search-icon" suffix icon="icons:search"></iron-icon>
+      </mdb-search-box>
+      <div class="facet-list">
+        <template is="dom-if" if="[[facets.length]]">
+          <template is="dom-repeat" items="{{facets}}">
+            <div class="facet">
+              <template is="dom-if" if="[[!_isDefineMode(mode)]]">
+                <paper-checkbox checked='{{item.checked}}' on-change='_facetSelectionChanged'>[[item.label]] ([[item.relevance]]%)</paper-checkbox>
+              </template>
+              <template is="dom-if" if="[[_isDefineMode(mode)]]">
+                [[item.label]] ([[item.relevance]]%)
+                <mdb-radio-list size="small" data-facet$="[[item.label]]" selected="{{item.assessment}}" on-paper-radio-group-changed="_facetRecommendationChanged">
+                  <paper-radio-button name="Y" title="YES">
+                    &#x2713;
+                  </paper-radio-button>
+                  <paper-radio-button name="N" title="NO">
+                    &#x2717;
+                  </paper-radio-button>
+                  <paper-radio-button name="M" title="MAYBE">
+                    ?
+                  </paper-radio-button>
+                </mdb-radio-list>
+              </template>
+            </div>
+          </template>
+        </template>
+        <template is="dom-if" if="[[!facets.length]]">
+          <p>No [[_getPlaceholder(facetType)]] found.</p>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-facet-discovery',
+
+      properties: {
+        facetType: {
+          type: String,
+          value: ''
+        },
+
+        helpText: {
+          type: String,
+          value: ''
+        },
+
+        mode: {
+          type: String,
+          value: '',
+          reflectToAttribute: true
+        },
+
+        facets: {
+          type: Array,
+          value: []
+        }
+      },
+
+      _getPlaceholder: function (type) {
+        return (type || '').toLowerCase();
+      },
+
+      _facetRecommendationChanged: function (e) {
+        var facet = e.currentTarget.attributes.getNamedItem('data-facet').value;
+        this.fire('facet-recommendation-changed', {
+          facet: facet,
+          assessment: e.currentTarget.selected
+        });
+      },
+
+      _isDefineMode: function (mode) {
+        return mode === 'define';
+      },
+
+      _facetSelectionChanged: function(e){
+        this.fire('facet-selection-changed', {
+          facet : e.model.get('item'),
+          checked: e.currentTarget.checked,
+          facetType: this.facetType
+        });
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,354 @@
+<link rel="import" href="../gid-concept-referrals.html">
+<link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
+<link rel="import" href="../../paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../paper-toast/paper-toast.html">
+<link rel="import" href="../../gid-api/gid-api.html">
+
+<script src="../../jquery/dist/jquery.min.js"></script>
+<script src="../../lodash/dist/lodash.min.js"></script>
+
+<dom-module id="concept-referrals">
+  <template>
+  		<style>
+		  	table, th, td {
+		    border: 1px solid grey;
+		    border-collapse: collapse;
+			}
+			td {
+			    text-align: center;
+			}
+			paper-input {
+			    max-width: 400px;
+/* 			    margin: auto; */
+			}
+			paper-button {
+			    font-family: 'Roboto', 'Noto', sans-serif;
+			    font-weight: normal;
+			    font-size: 14px;
+			    -webkit-font-smoothing: antialiased;
+			}
+			paper-button.indigo {
+			    background-color: var(--paper-indigo-500);
+			    color: white;
+			}
+			paper-button.indigo:hover {
+			    background-color: var(--paper-indigo-400);
+			}
+			paper-button.green {
+			    background-color: var(--paper-green-500);
+			    color: white;
+			}
+			paper-button.disabled {
+			    pointer-events: none;
+			}
+		    paper-button.green[active] {
+		        background-color: var(--paper-green-500);
+		    }
+		    paper-button.blue {
+			    background-color: #5da9dd;
+			    color: white;
+			}
+		    paper-dropdown-menu, paper-listbox {
+			    width: 250px;
+		    }
+		    paper-dropdown-menu {
+			    height: 200px;
+			    display: block;
+		   }
+		   .no-display{
+		  	display-none;
+		   }
+		   .display-block{
+		  	display: block;
+		   }
+  		</style>
+  		
+  		<paper-input label="Api Url" value={{apiUrl}} id="apiUrl"></paper-input>
+  		<paper-input label="Api Token" value={{apiToken}} id="apiToken"></paper-input>
+	
+     
+         <p>
+         	<paper-button raised class="green" id="submitBtn" on-click="_submit">Submit</paper-button>
+         	<paper-button raised class="blue" id="resetBtn" on-click="_resetVal">Reset</paper-button>
+         </p>
+         <paper-toast id="toast" text="{{toastrMsg}}"></paper-toast>
+         <hr/>
+		 <gid-api auto=false
+		 method={{GET}} api-url='{{actionListUrl}}' response='{{actionListResponse}}'
+		 error = '{{actionListError}}'
+		 api-timeout={{actionListTimeout}}>
+		 </gid-api>			
+         <p>
+         <template is="dom-if" if="[[_loadingActions]]">
+         	<paper-spinner-lite active class="green"></paper-spinner-lite> <span>Loading actions</span>
+       	 </template>
+       	 <template is="dom-if" if="[[_actionList.length]]">
+			<select  on-change="_selectAction" style="width: 200px;">
+		   		<template is="dom-repeat" items="[[_actionList]]">
+                 		<option  value="{{item}}">{{item}}</option>
+               	</template>
+           	</select>
+           	<paper-input label="Column Id" value={{columnId}} id="columnId"></paper-input>
+	  		<paper-input label="Lob Id" value={{lobId}} id="lobId"></paper-input>
+	  		<paper-input label="Referral Id" value={{referralId}} id="referralId"></paper-input>	
+	  		<paper-input label="Disposition" value={{disposition}} id="disposition"></paper-input>	
+	  		<paper-input label="Reason" value={{reason}} id="reason"></paper-input>	
+	  		<paper-button raised class="indigo" id="listConceptBtn" on-click="_performAction">Submit</paper-button>
+     	</template>
+		
+  		
+	        <gid-concept-referrals user='1'
+	        api-url={{apiUrl}}
+	        api-token={{apiToken}}
+	        user={{user}}
+	        column-id={{columnId}}
+	        lob-id={{lobId}}
+	        referral={{referralId}}
+	        response={{response}}
+	        disposition={{disposition}}
+	        reason={{reason}}
+	        action={{action}}>
+	        </gid-concept-referrals>
+        
+         <template is="dom-if" if="[[_isResponseReceived]]">
+           <template is="dom-if" if="![[response.referrals.length]]">
+               <h2>Referral response</h2>
+	           <p>Id: {{response.referral.id}} </p>
+			   <p>Message: {{response.referral.message}} </p>   
+			   <p>Status: {{response.referral.status}} </p>
+			   <p>Disposition: {{response.referral.disposition}} </p>   
+			   <p>Reason: {{response.referral.reason}} </p>
+		    </template>
+		    <template is="dom-if" if="[[response.referrals.length]]">
+		    	<template is="dom-repeat" items="[[response.referrals]]">
+		    	  <h2>Referrals</h2>
+		    	  <p>Id: {{item.id}} </p>
+		    	  <p>User: {{item.user.label}} </p>
+		    	  <p>Application: {{item.application.label}} </p>
+		    	  <p>Database: {{item.database.label}} </p>
+		    	  <p>Schema: {{item.schema.label}} </p>
+		    	  <p>Table: {{item.table.label}} </p>
+		    	  <p>Column: {{item.column.label}} </p>
+		    	  <p>Lob: {{item.lob.label}} </p>
+		    	  <p>Status: {{item.status}} </p>
+		    	</template>
+		    </template>  
+  		</template>     	
+       
+        
+  </template>
+  <script>
+  
+    (function() {
+     'use strict';
+      Polymer({
+        is:'concept-referrals',
+        properties:{
+   	        response: {
+   	        	type: Object,
+    	        value: {},
+    	        notify: true,
+    	        observer: '_responseObserver'
+   	        },
+   	        apiUrl: {
+   	       	  type: String,
+  	   		  notify: true,
+  	   		  value: 'https://virtserver.swaggerhub.com/srimanta.maji/CCOVA/v1'
+   	        },
+   	     	apiToken: {
+  	       	  type: String,
+ 	   		  notify: true,
+ 	   		  value: ''
+  	        },
+            _loadingActions:{
+           	  type: Boolean,
+   	   		  notify: true,
+   	   		  value: false
+            },
+            _actionList:{
+            	type: Array,
+            	notify: true,
+            	value: false
+            },
+            user:{
+              type: String,
+              notify: true,
+              value: '1'
+            },
+            toastrMsg:{
+                type: String,
+                notify: true,
+                value: ''
+            },
+            actionListUrl: {
+            	type: String,
+    	        notify: true
+            },
+            actionListTimeout : {
+        		type: Number,
+    	        notify: true,
+    	        value : 0
+    	    },
+    	    actionListResponse : {
+     	  		type : Object,
+     	  		notify : true,
+     	  		observer : '_actionListResponseReceived'
+    	  	},
+    	  	actionListError : {
+     	  		type : Object,
+     	  		notify : true,
+     	  		observer : '_actionListErrorReceived'
+    	  	},
+    	  	columnId:{
+                type: String,
+                notify: true,
+                value: ''
+            },
+            lobId:{
+                type: String,
+                notify: true,
+                value: ''
+            },
+            disposition:{
+ 	    	  type: String,
+   	          value : '',
+   	          notify :  true
+	 	    },
+	 	    reason:{
+ 	    	  type: String,
+   	          value : '',
+   	          notify :  true
+	 	    },
+            referralId:{
+                type: String,
+                notify: true,
+                value: ''
+            },
+            action: {
+            	type: String,
+            	notify: true,
+            	value: ''
+            },
+            flag: {
+            	type: Boolean,
+            	notify: true,
+            	value: false
+            },
+            unflag: {
+            	type: Boolean,
+            	notify: true,
+            	value: false
+            },
+            list: {
+            	type: Boolean,
+            	notify: true,
+            	value: false
+            },
+            reject: {
+            	type: Boolean,
+            	notify: true,
+            	value: false
+            },
+            accept: {
+            	type: Boolean,
+            	notify: true,
+            	value: false
+            },
+            selectedAction : {
+            	type: String,
+            	notify: true,
+            	value: 'flag'
+            },
+            action : {
+            	type: String,
+            	notify: true,
+            	value: ''
+            },
+            _isResponseReceived : {
+            	type: Boolean,
+            	notify: true,
+            	value: false
+            }
+        },
+         _responseObserver: function () {
+        	 if(!_.isEmpty(this.response)){
+        		 if(this.response.hasOwnProperty("referral") || this.response.hasOwnProperty("referrals")){
+        			 this._isResponseReceived = true; 
+        		 }
+        		 else{
+        			 this._isResponseReceived = false; 
+        		 }
+        	 }
+         },
+         _submit: function(event){
+        	 this.apiUrl = $("#apiUrl").val();
+        	 this.apiToken = $("#apiToken").val();
+        	 if(!this.apiUrl){
+        		 this.toastrMsg = "No url provided, hence fetching sample data";
+        		 this.$.toast.open();
+        	 }
+       	     this._reset();
+       	     this.user = 1;
+       	     this.actionListUrl = "assets/json/actionList.json";
+       	     this.actionListTimeout = this.actionListTimeout - 1;
+       	 	 this._loadingActions = true;
+      	  },
+         _reset: function(){
+        	 this.action = '';
+        	 this._isResponseReceived = false;
+        	 this._loadingActions = false;
+        	 this.user = '';
+        	 this.columnId = '';
+        	 this.lobId = '';
+        	 this.referral = '';
+        	 this.disposition = '';
+        	 this.reason = '';
+        	 this.offset = '';
+        	 this.limit = '';
+        	 this.response = [];
+         },
+         _resetVal: function(){
+        	 $("#apiUrl").val("");
+			 $("#apiToken").val("");
+			 this._actionList = [];
+       	     this._reset();
+         },
+         _actionListResponseReceived : function(newvalue, oldvalue){
+        	 this._actionList = [];
+        	 this._loadingActions = false;
+ 	          if(newvalue != null){
+ 		             this.async(function() {
+ 		            	var arr = [];
+ 		            	for (var key in newvalue) {
+ 		        		    	 arr = arr.concat(newvalue[key]);
+ 		        		   }
+ 		         		this._actionList =  arr;
+ 		   		 	          }, 500);
+ 	          }
+          	
+          },
+          _actionListErrorReceived :  function(newvalue, oldvalue){
+        	    this._actionList = [];
+ 	        	if(newvalue !== null){
+ 	        		this.async(function() {
+ 	        			this._loadingActions = false;
+ 		         		this._actionList =  newvalue;
+ 		   		 	          }, 500);
+ 	        	}
+ 	     },
+ 	    _selectAction:  function(event){
+ 	    	this._reset();
+ 	    	this.selectedAction = event.currentTarget.value.toLowerCase();
+ 	    	this[this.selectedAction] = true;
+ 	    },
+ 	   _performAction: function(){
+ 		   this.action = '';
+ 		   this.action = this.selectedAction.toUpperCase();
+ 	   }
+      });
+    })();
+  </script>
+</dom-module>

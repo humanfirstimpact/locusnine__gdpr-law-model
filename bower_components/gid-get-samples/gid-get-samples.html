@@ -1,0 +1,313 @@
+<!--
+  Wrapper data component for samples
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+
+<!--
+`gid-get-samples`
+
+
+A data component for fetching rows and columns of the specified table.
+
+    <gid-get-samples columns="[col-id1,col-id2..]" get-samples = true sampledata = {{sampledata}}></gid-get-samples>
+    
+The property 'user' , 'columns' and 'get-samples' are  mandatory.
+
+The field 'get-samples' needs to set to true in order to fetch samples.
+
+The 'sampledata' returns the response of the rest call.
+
+If `api-url` is not provided, the component will display sample output for specified entity.
+
+API endpoint:
+
+    GET /samples?columns=id1,id2,id3&limit=50
+
+Input:
+
+- columns : List of Column Ids (mandatory query param)
+- limit : limit by row (optional query Param)
+
+
+
+Output:
+
+- Samples for provided Column IDs
+
+The output of this components will be as follows:
+
+	   {
+		"columns": [{
+			"id": "200010",
+			"label": "shipstate"
+		}, {
+			"id": "200001",
+			"label": "id"
+		}, {
+			"id": "200007",
+			"label": "ship-date"
+		}, {
+			"id": "200006",
+			"label": "amount"
+		}, {
+			"id": "200009",
+			"label": "ship-city"
+		}, {
+			"id": "200008",
+			"label": "ship-address"
+		}, {
+			"id": "200003",
+			"label": "product_code"
+		}, {
+			"id": "200002",
+			"label": "user_name"
+		}, {
+			"id": "200005",
+			"label": "order_date"
+		}, {
+			"id": "200004",
+			"label": "quantity"
+		}],
+		"rows": [
+		[
+			 "Florida",
+			 "83",
+			 "7/3/2016",
+			 "$7.94",
+			"Kansas City",
+			 "10790 Wayridge Park",
+			 "YI-722",
+			"ccostin11",
+			 "4/17/2017",
+			"17"
+		], [
+			 "Texas",
+			"70",
+			 "1/18/2017",
+			 "$35.29",
+			"Washington",
+			"6723 Duke Circle",
+			 "UR-391",
+			"jburgen27",
+			 "5/18/2016",
+			"41"
+		]]
+	}
+
+
+@demo demo/index.html
+-->
+<dom-module id="gid-get-samples">
+    <template>
+        
+        <!-- fetch entity _path  -->
+        	<gid-api entity = '{{_apiEntity}}' path-key= '{{_pathKey}}' path='{{_path}}'></gid-api>
+        <!--  fetch entity _path -->
+        
+        <!-- table samples -->
+        <gid-api auto=false
+                 method="GET" api-url={{_sampleUrl}} response='{{sampleResponse}}' error = '{{sampleError}}'
+                 api-params={{_sampleParams}} api-token = {{_sampleToken}} api-timeout={{_sampleTimeout}}></gid-api>
+        <!-- table samples -->
+
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            Polymer({
+                is: 'gid-get-samples',
+                properties: {
+                	/*Authorization token for accessing rest api*/
+                	apiToken: {
+                    	type: String,
+                        notify: true,
+                        value : ''
+                    },
+                    /*Array listing the parameters*/
+                	_paramsArr: {
+      	           	   type: Array,
+      	           	   notify: true,
+      	           	   value: ["columns", "limit", "offset"]
+                     },
+                    /*Object for storing success/error response*/ 
+                	sampledata: {
+                        type: Array,
+                        notify: true
+                    },
+                    /*Base url*/
+                    apiUrl: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Url sent to gid-api*/
+                    _sampleUrl: {
+                        type: String,
+                        notify: true
+                    },
+                    /*Timeout sent to gid-api*/
+                    _sampleTimeout: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    /*Response sent to gid-api. This is a private property*/
+                    sampleResponse: {
+                        type: Object,
+                        notify: true,
+                        observer: '_sampleResponseReceived'
+                    },
+                    /*Error sent to gid-api. This is a private property*/
+                    sampleError : {
+    	     	  		type : Object,
+    	     	  		notify : true,
+    	     	  		observer : '_sampleErrorReceived'
+            	  	},
+            	  	/*Params sent to gid-api*/
+                    _sampleParams: {
+                        type: String,
+                        notify: true
+                    },
+                    /*Token sent to gid-api*/
+                    _sampleToken: {
+                    	type: String,
+                        notify: true
+                    },
+                    
+                    /*Limit parameter to paginate records*/
+                    limit:{
+                    	type: String,
+                    	notify: true,
+                    	value: ''
+                    },
+                    
+                    /*Offset parameter to paginate records*/
+                    offset:{
+                    	type: String,
+                    	notify: true,
+                    	value: ''
+                    },
+                    /*Array to pass columns parameter*/
+                    columns: {
+                    	type: Array,
+                    	notify: true,
+                    	value: []
+                    },
+                    /*User Id*/
+                    user: {
+                    	type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*The api path key*/
+     	           _pathKey: {
+     	            	type: String,
+     	                notify: true,
+     	                value: ''
+     	           },
+     	           /*The api path*/
+                    _path: {
+                    	   type: String,
+                        notify: true,
+                        value: '',
+                        observer: '_pathReceived'
+                    },
+                    /*Api entity sent to gid-api*/
+                    _apiEntity: {
+                    	   type: String,
+                        notify: true
+                    },
+                    /*Flag for fetching samples. Needs to be set to 'true' to fetch samples*/
+                    getSamples: {
+                    	type: Boolean,
+                    	notify: true,
+                    	value: false,
+                    	observer: '_fetchSamples'
+                    }
+                },
+                /* Observer of 'getSamples' flag */ 
+                _fetchSamples: function () {
+                	if (this.getSamples) {
+	                    if (!this.apiUrl) {
+	                        this._sampleUrl = this.importPath + 'assets/json/get-samples.json';
+	                        this._sampleTimeout =  this._sampleTimeout - 1;
+	                    } else {
+	                    	this._pathKey =  'default';
+	                    	this._apiEntity = 'GET-SAMPLES';
+	                    }
+                	}
+                },
+                /* Observer for api path */
+                _pathReceived: function(){
+                 	 if(this._path){
+                 		var res = this._path.split(/{([^}]+)}/);
+                 		for (var i in res) {
+                 			if(!res[i].startsWith("/")){
+                 					if(this[res[i]]){
+                 						res[i] = this[res[i]];
+                 					}
+                 			}
+                 		}
+               			this._sampleUrl = this.apiUrl + res.join("");
+               			var paramVal = '';
+               			var paramsObj = {};
+               			for (var i in this._paramsArr){
+                        	paramVal = '';
+	                        	if(typeof(this[this._paramsArr[i]]) === "string"){
+	                        		paramVal = this[this._paramsArr[i]];
+	                        	}
+	                        	else{
+	                        		if(this[this._paramsArr[i]].length){
+	                            		for (var j in this[this._paramsArr[i]]) {
+	                    		    		paramVal = paramVal + this[this._paramsArr[i]][j];
+	                    		    		if(j != (this[this._paramsArr[i]].length - 1)){
+	                    		    			paramVal = paramVal + ',';
+	                    		    		}
+	                             		}
+	                            	}
+	                        	}
+	                        	if(this[this._paramsArr[i]]){
+	                        		paramsObj[this._paramsArr[i]]= paramVal;
+	                        	}
+                        }
+               			this._sampleParams = JSON.stringify(paramsObj);
+               			if(this.apiToken){
+               				this._sampleToken =  this.apiToken;
+               			}
+               			this._sampleTimeout =  this._sampleTimeout - 1;
+                   }
+              },
+              /* Success response handler */
+              _sampleResponseReceived: function (newvalue, oldvalue) {
+            	  this._reset();
+                  if (newvalue != null) {
+                      this.async(function () {
+                      	  this.sampledata =  this.sampledata.concat(newvalue);
+                      }, 500);
+                  }
+
+              },
+              /* Error response handler */
+              _sampleErrorReceived : function(newvalue, oldvalue){
+              	 this._reset();
+        	          if(newvalue != null){
+        		             this.async(function() {
+        		         		this.sampledata =   this.sampledata.concat(newvalue.response);
+        		   		 	          }, 500);
+        	          }
+                 	
+              },
+              /* Reset method */
+              _reset: function(){
+            	  this.sampledata = [];
+				  this._apiEntity = '';
+				  this._path = '';
+				  this.getSamples = false;
+              }
+            });
+        })();
+
+
+    </script>
+</dom-module>

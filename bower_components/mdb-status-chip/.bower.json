@@ -1,0 +1,24 @@
+{
+  "name": "mdb-status-chip",
+  "main": "mdb-status-chip.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/makedatabetter-dev/mdb-status-chip",
+  "version": "0.0.2",
+  "_release": "0.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.2",
+    "commit": "f1c7e992a5d4e64c98e58a41bfef8764cec4eef5"
+  },
+  "_source": "git://github.com/makedatabetter-dev/mdb-status-chip.git",
+  "_target": "*",
+  "_originalSource": "git://github.com/makedatabetter-dev/mdb-status-chip.git"
+}

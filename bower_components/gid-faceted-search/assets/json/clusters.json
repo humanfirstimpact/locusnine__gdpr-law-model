@@ -1,0 +1,1524 @@
+{
+    "clusters": [{
+        "columns": [
+            {
+                "exampleValues": [
+                    {
+                        "id": "6840fd588770005e530e52aa4beedad5",
+                        "label": "NEWPORT",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "a489674eab6f939d7eb52a755eb3e9e3",
+                        "label": "Gaithersburg",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "e2af7e561591024528dd1f78699c6f4b",
+                        "label": "DURHAM",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "5c5bed6504e2fbf9108d21f2e94ab736",
+                        "label": "Gundagai",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "958ec9604983b22b617befd7c135d98b",
+                        "label": "Titusville",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "efa93cabd5de7d42d6a31d41c33043ab",
+                        "label": "Cambridge",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "e873b06270308ce15cad7213e218194b",
+                        "label": "Goteborg",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "e372975392eaa1960a993c2bf7bffd52",
+                        "label": "Wilmington",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "8cfbfaefa552757984d395a1eafc8d37",
+                        "label": "Oslo",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "79cca97018f48e834a46f1b634e9a427",
+                        "label": "Toronto",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "4a982954198d9f88c312a7df019d033a",
+                        "label": "San Diego",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "04cad678d3a636b4b3442eec95d18fc0",
+                        "label": "El Paso",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "506f20226c3ef5f949b8ecd13c35cfda",
+                        "label": "New Delhi",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "b038f92b40c27bb02eb86360c4430cac",
+                        "label": "Parramatta",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "e8f8a17f3162a523098c20eb946e5376",
+                        "label": "St. Petersburg",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "606d946ab9a4e1eec6ad62c6f51c49cf",
+                        "label": "LATHROP",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "462be7fc3a10e0a7e7e62a556e6a1cd7",
+                        "label": "Fort Lee",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "38f94c38f067669a62db370e679281b3",
+                        "label": "Swillington",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "278390393592b61866dc738624625a24",
+                        "label": "Birkerod",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "c6c1e541dcba4fd8409d4e94893d30ac",
+                        "label": "Laval",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "711e9a01a9018c01eddd8e5a151de6b5",
+                        "label": "NEW BRUNSWICK",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "be22976dd23de9d00765ec31fd17a1d1",
+                        "label": "SAN ANTONIO",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "6af52f641ead01c7e658c633c0937ba5",
+                        "label": "Granville",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "580a3346473c901ae9a78e452c0a032f",
+                        "label": "WORTHINGTON",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "8e1b36468c5fe61b36529d329ea7332f",
+                        "label": "ST. JOSEPH",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "0c18e7a4c9d44f8f3b540ba318b35762",
+                        "label": "Diamond Bar",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "0c1cc962b449944be128417c576e92ec",
+                        "label": "Fort Wayne",
+                        "relevance": 3.7
+                    }
+                ],
+                "id": "5743789206057269084",
+                "label": "CUSTMR_CITY",
+                "patterns": [
+                    {
+                        "id": "77791190138567198",
+                        "label": "Zzzzzzzzz",
+                        "relevance": 10
+                    },
+                    {
+                        "id": "5227833493624732403",
+                        "label": "Zzzz Zzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "7424530798159016373",
+                        "label": "ZZZZZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "2240099554095742487",
+                        "label": "ZZZ ZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-5554388098404892892",
+                        "label": "Zz. Zzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-6809367295754682993",
+                        "label": "ZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "7403263024716788875",
+                        "label": "Zzzzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "6498495470483422233",
+                        "label": "Zzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "8174186128319395272",
+                        "label": "Zzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-8253401453934068256",
+                        "label": "Zzzz Zzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "9065706593409448129",
+                        "label": "Zz Zzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-8230633733134468865",
+                        "label": "Zzz Zzzzz",
+                        "relevance": 10
+                    },
+                    {
+                        "id": "9107953539512415503",
+                        "label": "ZZZ ZZZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-348872103376768140",
+                        "label": "ZZ. ZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-4882268586167748962",
+                        "label": "Zzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-4392364904329693207",
+                        "label": "Zzzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "3489288055803033456",
+                        "label": "Zzzzzzzz",
+                        "relevance": 15
+                    },
+                    {
+                        "id": "-2749382217588850909",
+                        "label": "ZZZZZZZ",
+                        "relevance": 10
+                    },
+                    {
+                        "id": "2520387248406935324",
+                        "label": "Zzzzzzz Zzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "8768531530027382048",
+                        "label": "Zzzzzzzzzz",
+                        "relevance": 15
+                    }
+                ],
+                "relatedDomains": [{
+                    "id": "-5225426117569662438",
+                    "label": "Postal Code",
+                    "relevance": 99
+                }],
+                "relevance": 28.28
+            },
+            {
+                "exampleValues": [
+                    {
+                        "id": "4a4af18f0b6c2c2dc18ce4fd695aaa61",
+                        "label": "Salt Lake City",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "6840fd588770005e530e52aa4beedad5",
+                        "label": "NEWPORT",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "a489674eab6f939d7eb52a755eb3e9e3",
+                        "label": "Gaithersburg",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "e2af7e561591024528dd1f78699c6f4b",
+                        "label": "DURHAM",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "5c5bed6504e2fbf9108d21f2e94ab736",
+                        "label": "Gundagai",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "958ec9604983b22b617befd7c135d98b",
+                        "label": "Titusville",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "efa93cabd5de7d42d6a31d41c33043ab",
+                        "label": "Cambridge",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "89a4b5bd7d02ad1e342c960e6a98365c",
+                        "label": "Anu",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "e372975392eaa1960a993c2bf7bffd52",
+                        "label": "Wilmington",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "79cca97018f48e834a46f1b634e9a427",
+                        "label": "Toronto",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "4a982954198d9f88c312a7df019d033a",
+                        "label": "San Diego",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "04cad678d3a636b4b3442eec95d18fc0",
+                        "label": "El Paso",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "b038f92b40c27bb02eb86360c4430cac",
+                        "label": "Parramatta",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "e8f8a17f3162a523098c20eb946e5376",
+                        "label": "St. Petersburg",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "606d946ab9a4e1eec6ad62c6f51c49cf",
+                        "label": "LATHROP",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "462be7fc3a10e0a7e7e62a556e6a1cd7",
+                        "label": "Fort Lee",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "c6c1e541dcba4fd8409d4e94893d30ac",
+                        "label": "Laval",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "711e9a01a9018c01eddd8e5a151de6b5",
+                        "label": "NEW BRUNSWICK",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "be22976dd23de9d00765ec31fd17a1d1",
+                        "label": "SAN ANTONIO",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "6af52f641ead01c7e658c633c0937ba5",
+                        "label": "Granville",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "580a3346473c901ae9a78e452c0a032f",
+                        "label": "WORTHINGTON",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "8e1b36468c5fe61b36529d329ea7332f",
+                        "label": "ST. JOSEPH",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "0c18e7a4c9d44f8f3b540ba318b35762",
+                        "label": "Diamond Bar",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "4691b235a00069b90590ca7d6a45f9f4",
+                        "label": "Hauppauge",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "0c1cc962b449944be128417c576e92ec",
+                        "label": "Fort Wayne",
+                        "relevance": 4
+                    }
+                ],
+                "id": "-4973396269399130882",
+                "label": "City",
+                "patterns": [
+                    {
+                        "id": "77791190138567198",
+                        "label": "Zzzzzzzzz",
+                        "relevance": 15
+                    },
+                    {
+                        "id": "5227833493624732403",
+                        "label": "Zzzz Zzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "7424530798159016373",
+                        "label": "ZZZZZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "2240099554095742487",
+                        "label": "ZZZ ZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-5554388098404892892",
+                        "label": "Zz. Zzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "9153641015323997956",
+                        "label": "Zzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-6809367295754682993",
+                        "label": "ZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "7403263024716788875",
+                        "label": "Zzzzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "6498495470483422233",
+                        "label": "Zzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-8253401453934068256",
+                        "label": "Zzzz Zzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "9065706593409448129",
+                        "label": "Zz Zzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "9107953539512415503",
+                        "label": "ZZZ ZZZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-8230633733134468865",
+                        "label": "Zzz Zzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-348872103376768140",
+                        "label": "ZZ. ZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-4882268586167748962",
+                        "label": "Zzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "5256212078377907071",
+                        "label": "Zzzz Zzzz Zzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "3489288055803033456",
+                        "label": "Zzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-2749382217588850909",
+                        "label": "ZZZZZZZ",
+                        "relevance": 10
+                    },
+                    {
+                        "id": "2520387248406935324",
+                        "label": "Zzzzzzz Zzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "8768531530027382048",
+                        "label": "Zzzzzzzzzz",
+                        "relevance": 15
+                    }
+                ],
+                "relatedDomains": [{
+                    "id": "-5225426117569662438",
+                    "label": "Postal Code",
+                    "relevance": 99
+                }],
+                "relevance": 28.31
+            },
+            {
+                "exampleValues": [],
+                "id": "8460501004354140072",
+                "label": "RISK_RATING",
+                "patterns": [],
+                "relatedDomains": [],
+                "relevance": 0
+            },
+            {
+                "exampleValues": [
+                    {
+                        "id": "6840fd588770005e530e52aa4beedad5",
+                        "label": "NEWPORT",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "a489674eab6f939d7eb52a755eb3e9e3",
+                        "label": "Gaithersburg",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "e2af7e561591024528dd1f78699c6f4b",
+                        "label": "DURHAM",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "5c5bed6504e2fbf9108d21f2e94ab736",
+                        "label": "Gundagai",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "958ec9604983b22b617befd7c135d98b",
+                        "label": "Titusville",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "efa93cabd5de7d42d6a31d41c33043ab",
+                        "label": "Cambridge",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "e873b06270308ce15cad7213e218194b",
+                        "label": "Goteborg",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "e372975392eaa1960a993c2bf7bffd52",
+                        "label": "Wilmington",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "8cfbfaefa552757984d395a1eafc8d37",
+                        "label": "Oslo",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "79cca97018f48e834a46f1b634e9a427",
+                        "label": "Toronto",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "4a982954198d9f88c312a7df019d033a",
+                        "label": "San Diego",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "04cad678d3a636b4b3442eec95d18fc0",
+                        "label": "El Paso",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "506f20226c3ef5f949b8ecd13c35cfda",
+                        "label": "New Delhi",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "b038f92b40c27bb02eb86360c4430cac",
+                        "label": "Parramatta",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "e8f8a17f3162a523098c20eb946e5376",
+                        "label": "St. Petersburg",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "606d946ab9a4e1eec6ad62c6f51c49cf",
+                        "label": "LATHROP",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "462be7fc3a10e0a7e7e62a556e6a1cd7",
+                        "label": "Fort Lee",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "38f94c38f067669a62db370e679281b3",
+                        "label": "Swillington",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "278390393592b61866dc738624625a24",
+                        "label": "Birkerod",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "c6c1e541dcba4fd8409d4e94893d30ac",
+                        "label": "Laval",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "711e9a01a9018c01eddd8e5a151de6b5",
+                        "label": "NEW BRUNSWICK",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "be22976dd23de9d00765ec31fd17a1d1",
+                        "label": "SAN ANTONIO",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "6af52f641ead01c7e658c633c0937ba5",
+                        "label": "Granville",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "580a3346473c901ae9a78e452c0a032f",
+                        "label": "WORTHINGTON",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "8e1b36468c5fe61b36529d329ea7332f",
+                        "label": "ST. JOSEPH",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "0c18e7a4c9d44f8f3b540ba318b35762",
+                        "label": "Diamond Bar",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "0c1cc962b449944be128417c576e92ec",
+                        "label": "Fort Wayne",
+                        "relevance": 3.7
+                    }
+                ],
+                "id": "8796851494110313924",
+                "label": "CITY",
+                "patterns": [
+                    {
+                        "id": "77791190138567198",
+                        "label": "Zzzzzzzzz",
+                        "relevance": 10
+                    },
+                    {
+                        "id": "5227833493624732403",
+                        "label": "Zzzz Zzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "7424530798159016373",
+                        "label": "ZZZZZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "2240099554095742487",
+                        "label": "ZZZ ZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-5554388098404892892",
+                        "label": "Zz. Zzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-6809367295754682993",
+                        "label": "ZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "7403263024716788875",
+                        "label": "Zzzzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "6498495470483422233",
+                        "label": "Zzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "8174186128319395272",
+                        "label": "Zzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-8253401453934068256",
+                        "label": "Zzzz Zzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "9065706593409448129",
+                        "label": "Zz Zzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-8230633733134468865",
+                        "label": "Zzz Zzzzz",
+                        "relevance": 10
+                    },
+                    {
+                        "id": "9107953539512415503",
+                        "label": "ZZZ ZZZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-348872103376768140",
+                        "label": "ZZ. ZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-4882268586167748962",
+                        "label": "Zzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-4392364904329693207",
+                        "label": "Zzzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "3489288055803033456",
+                        "label": "Zzzzzzzz",
+                        "relevance": 15
+                    },
+                    {
+                        "id": "-2749382217588850909",
+                        "label": "ZZZZZZZ",
+                        "relevance": 10
+                    },
+                    {
+                        "id": "2520387248406935324",
+                        "label": "Zzzzzzz Zzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "8768531530027382048",
+                        "label": "Zzzzzzzzzz",
+                        "relevance": 15
+                    }
+                ],
+                "relatedDomains": [
+                    {
+                        "id": "-7724414644652002467",
+                        "label": "State",
+                        "relevance": 99
+                    },
+                    {
+                        "id": "-1205678123138336033",
+                        "label": "COUNTRY",
+                        "relevance": 99
+                    },
+                    {
+                        "id": "-5225426117569662438",
+                        "label": "Postal Code",
+                        "relevance": 99
+                    }
+                ],
+                "relevance": 28.28
+            },
+            {
+                "exampleValues": [
+                    {
+                        "id": "6840fd588770005e530e52aa4beedad5",
+                        "label": "NEWPORT",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "a489674eab6f939d7eb52a755eb3e9e3",
+                        "label": "Gaithersburg",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "e2af7e561591024528dd1f78699c6f4b",
+                        "label": "DURHAM",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "5c5bed6504e2fbf9108d21f2e94ab736",
+                        "label": "Gundagai",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "958ec9604983b22b617befd7c135d98b",
+                        "label": "Titusville",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "efa93cabd5de7d42d6a31d41c33043ab",
+                        "label": "Cambridge",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "e873b06270308ce15cad7213e218194b",
+                        "label": "Goteborg",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "e372975392eaa1960a993c2bf7bffd52",
+                        "label": "Wilmington",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "8cfbfaefa552757984d395a1eafc8d37",
+                        "label": "Oslo",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "79cca97018f48e834a46f1b634e9a427",
+                        "label": "Toronto",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "4a982954198d9f88c312a7df019d033a",
+                        "label": "San Diego",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "04cad678d3a636b4b3442eec95d18fc0",
+                        "label": "El Paso",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "506f20226c3ef5f949b8ecd13c35cfda",
+                        "label": "New Delhi",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "b038f92b40c27bb02eb86360c4430cac",
+                        "label": "Parramatta",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "e8f8a17f3162a523098c20eb946e5376",
+                        "label": "St. Petersburg",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "606d946ab9a4e1eec6ad62c6f51c49cf",
+                        "label": "LATHROP",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "462be7fc3a10e0a7e7e62a556e6a1cd7",
+                        "label": "Fort Lee",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "38f94c38f067669a62db370e679281b3",
+                        "label": "Swillington",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "278390393592b61866dc738624625a24",
+                        "label": "Birkerod",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "c6c1e541dcba4fd8409d4e94893d30ac",
+                        "label": "Laval",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "711e9a01a9018c01eddd8e5a151de6b5",
+                        "label": "NEW BRUNSWICK",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "be22976dd23de9d00765ec31fd17a1d1",
+                        "label": "SAN ANTONIO",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "6af52f641ead01c7e658c633c0937ba5",
+                        "label": "Granville",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "580a3346473c901ae9a78e452c0a032f",
+                        "label": "WORTHINGTON",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "8e1b36468c5fe61b36529d329ea7332f",
+                        "label": "ST. JOSEPH",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "0c18e7a4c9d44f8f3b540ba318b35762",
+                        "label": "Diamond Bar",
+                        "relevance": 3.7
+                    },
+                    {
+                        "id": "0c1cc962b449944be128417c576e92ec",
+                        "label": "Fort Wayne",
+                        "relevance": 3.7
+                    }
+                ],
+                "id": "-4680938746639664946",
+                "label": "CityName",
+                "patterns": [
+                    {
+                        "id": "77791190138567198",
+                        "label": "Zzzzzzzzz",
+                        "relevance": 10
+                    },
+                    {
+                        "id": "5227833493624732403",
+                        "label": "Zzzz Zzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "7424530798159016373",
+                        "label": "ZZZZZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "2240099554095742487",
+                        "label": "ZZZ ZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-5554388098404892892",
+                        "label": "Zz. Zzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-6809367295754682993",
+                        "label": "ZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "7403263024716788875",
+                        "label": "Zzzzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "6498495470483422233",
+                        "label": "Zzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "8174186128319395272",
+                        "label": "Zzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-8253401453934068256",
+                        "label": "Zzzz Zzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "9065706593409448129",
+                        "label": "Zz Zzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-8230633733134468865",
+                        "label": "Zzz Zzzzz",
+                        "relevance": 10
+                    },
+                    {
+                        "id": "9107953539512415503",
+                        "label": "ZZZ ZZZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-348872103376768140",
+                        "label": "ZZ. ZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-4882268586167748962",
+                        "label": "Zzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-4392364904329693207",
+                        "label": "Zzzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "3489288055803033456",
+                        "label": "Zzzzzzzz",
+                        "relevance": 15
+                    },
+                    {
+                        "id": "-2749382217588850909",
+                        "label": "ZZZZZZZ",
+                        "relevance": 10
+                    },
+                    {
+                        "id": "2520387248406935324",
+                        "label": "Zzzzzzz Zzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "8768531530027382048",
+                        "label": "Zzzzzzzzzz",
+                        "relevance": 15
+                    }
+                ],
+                "relatedDomains": [
+                    {
+                        "id": "-7724414644652002467",
+                        "label": "State",
+                        "relevance": 99
+                    },
+                    {
+                        "id": "-5225426117569662438",
+                        "label": "Postal Code",
+                        "relevance": 99
+                    }
+                ],
+                "relevance": 28.28
+            },
+            {
+                "exampleValues": [
+                    {
+                        "id": "846bff692e624bf3903fc80869de115e",
+                        "label": "Suite 324",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "384738f833eae4d9bda53b07fdb8a0e5",
+                        "label": "1111 Franklin Street",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "9551c336aaa4ff8e10c9c029af09c93b",
+                        "label": "1209 Orange Street",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "f0635f84e9f5bb319d1db0e11493cf12",
+                        "label": "C/O Aberdeen Asset Managers Limited",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "0ec434a2ad5a21c4742fd488ee7750bc",
+                        "label": "20 Old Stage Coach Road",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "6c5b8ca16e741af4b22929797c0df90f",
+                        "label": "Bressenden Place",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "a2044224cda377f3d284a237c0ed8334",
+                        "label": "Suite 101",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "70910278714ebe64e21dbeaca5cdcfb7",
+                        "label": "1301 Second Avenue",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "f0802b548851f73729f56bdc268e9643",
+                        "label": "Suite 700",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "76dd541bc0ff02518274585054420366",
+                        "label": "Cricket Square",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "da80b0c2854fd932c44c86a4c6212a37",
+                        "label": "Rue De La Corraterie 11",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "86a2a266b16df3aa096dfaf02e572348",
+                        "label": "101 East Kennedy Boulevard",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "80ac615329d40e0855fc9d2983157110",
+                        "label": "152 Madison Avenue",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "ccd6eb14533411f1b56205b89f89782b",
+                        "label": "2-4 Rue Eugène Ruppert",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "28062df4f336a5c706ed67a55d96fe5b",
+                        "label": "Rue de la Poste",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "be6b26bc48a2e51928fbb0a8053a9476",
+                        "label": "Suite 400",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "1a658a7ddae38548134c07a5dc1dd863",
+                        "label": "Bayan Bay",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "d5a18d1ea9508aa44af5751df1643764",
+                        "label": "Suite 115",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "84daca75be699e2b9c2013838bee5cbc",
+                        "label": "New Street",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "ac9f4520b17d80cc669b986c5be09724",
+                        "label": "Suite C",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "701d85e9743185551a89d438daa33f8f",
+                        "label": "18 Esplanade",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "bfcaf2f6f3e876a197a0c5c89f8c0ba8",
+                        "label": "Suite 200",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "22018bd952207a391341f7ba32e35c87",
+                        "label": "5 Nelson Street",
+                        "relevance": 4.16
+                    },
+                    {
+                        "id": "20e0c0b78c7b48823a250f40abfb7782",
+                        "label": "Suite 1700",
+                        "relevance": 4.16
+                    }
+                ],
+                "id": "-1519159756247976514",
+                "label": "ADDRESS_LINE_2",
+                "patterns": [
+                    {
+                        "id": "1151606784258159673",
+                        "label": "Zzzzzzz Zzzzzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "-7241005087021516983",
+                        "label": "999 Zzzz Zzzzzzz Zzzzzzzzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "-3787379006200726835",
+                        "label": "99 Zzz Zzzzz Zzzzz Zzzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "7673655003900492032",
+                        "label": "Zzzzzzzzzz Zzzzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "-6187537909586578446",
+                        "label": "Zzz Zz Zz Zzzzzzzzzz 99",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "-2287200624897215264",
+                        "label": "999 Zzzzzzz Zzzzzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "-3470139158777872599",
+                        "label": "9-9 Zzz Zzz.zz Zzzzzzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "7315673520797462981",
+                        "label": "Zzz Zzzzzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "-2129732978266328403",
+                        "label": "9999 Zzzzzz Zzzzzz",
+                        "relevance": 11.11
+                    },
+                    {
+                        "id": "-2838065706746629757",
+                        "label": "9999 Zzzzzzzz Zzzzzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "2503618216252355041",
+                        "label": "Zzzzz 999",
+                        "relevance": 33.33
+                    },
+                    {
+                        "id": "-5957353249204127043",
+                        "label": "Zzzzz Z",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "-8657387142399117765",
+                        "label": "Zzz zz zz Zzzzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "-8555226440980679900",
+                        "label": "99 Zzzzzzzzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "7052779541133802728",
+                        "label": "9 Zzzzzz Zzzzzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "1348951835879879244",
+                        "label": "Z/Z Zzzzzzzz Zzzzz Zzzzzzzz Zzzzzzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "-7432160751600518980",
+                        "label": "Zzzzz Zzz",
+                        "relevance": 5.55
+                    },
+                    {
+                        "id": "-3262385858041331984",
+                        "label": "Zzzzz 9999",
+                        "relevance": 5.55
+                    }
+                ],
+                "relatedDomains": [],
+                "relevance": 5.78
+            },
+            {
+                "exampleValues": [
+                    {
+                        "id": "4a4af18f0b6c2c2dc18ce4fd695aaa61",
+                        "label": "Salt Lake City",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "6840fd588770005e530e52aa4beedad5",
+                        "label": "NEWPORT",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "a489674eab6f939d7eb52a755eb3e9e3",
+                        "label": "Gaithersburg",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "e2af7e561591024528dd1f78699c6f4b",
+                        "label": "DURHAM",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "5c5bed6504e2fbf9108d21f2e94ab736",
+                        "label": "Gundagai",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "958ec9604983b22b617befd7c135d98b",
+                        "label": "Titusville",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "efa93cabd5de7d42d6a31d41c33043ab",
+                        "label": "Cambridge",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "89a4b5bd7d02ad1e342c960e6a98365c",
+                        "label": "Anu",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "e372975392eaa1960a993c2bf7bffd52",
+                        "label": "Wilmington",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "79cca97018f48e834a46f1b634e9a427",
+                        "label": "Toronto",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "4a982954198d9f88c312a7df019d033a",
+                        "label": "San Diego",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "04cad678d3a636b4b3442eec95d18fc0",
+                        "label": "El Paso",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "b038f92b40c27bb02eb86360c4430cac",
+                        "label": "Parramatta",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "e8f8a17f3162a523098c20eb946e5376",
+                        "label": "St. Petersburg",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "606d946ab9a4e1eec6ad62c6f51c49cf",
+                        "label": "LATHROP",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "462be7fc3a10e0a7e7e62a556e6a1cd7",
+                        "label": "Fort Lee",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "c6c1e541dcba4fd8409d4e94893d30ac",
+                        "label": "Laval",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "711e9a01a9018c01eddd8e5a151de6b5",
+                        "label": "NEW BRUNSWICK",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "be22976dd23de9d00765ec31fd17a1d1",
+                        "label": "SAN ANTONIO",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "6af52f641ead01c7e658c633c0937ba5",
+                        "label": "Granville",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "580a3346473c901ae9a78e452c0a032f",
+                        "label": "WORTHINGTON",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "8e1b36468c5fe61b36529d329ea7332f",
+                        "label": "ST. JOSEPH",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "0c18e7a4c9d44f8f3b540ba318b35762",
+                        "label": "Diamond Bar",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "4691b235a00069b90590ca7d6a45f9f4",
+                        "label": "Hauppauge",
+                        "relevance": 4
+                    },
+                    {
+                        "id": "0c1cc962b449944be128417c576e92ec",
+                        "label": "Fort Wayne",
+                        "relevance": 4
+                    }
+                ],
+                "id": "-2435803991749413941",
+                "label": "City Name",
+                "patterns": [
+                    {
+                        "id": "77791190138567198",
+                        "label": "Zzzzzzzzz",
+                        "relevance": 15
+                    },
+                    {
+                        "id": "5227833493624732403",
+                        "label": "Zzzz Zzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "7424530798159016373",
+                        "label": "ZZZZZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "2240099554095742487",
+                        "label": "ZZZ ZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-5554388098404892892",
+                        "label": "Zz. Zzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "9153641015323997956",
+                        "label": "Zzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-6809367295754682993",
+                        "label": "ZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "7403263024716788875",
+                        "label": "Zzzzzzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "6498495470483422233",
+                        "label": "Zzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-8253401453934068256",
+                        "label": "Zzzz Zzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "9065706593409448129",
+                        "label": "Zz Zzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "9107953539512415503",
+                        "label": "ZZZ ZZZZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-8230633733134468865",
+                        "label": "Zzz Zzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-348872103376768140",
+                        "label": "ZZ. ZZZZZZ",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-4882268586167748962",
+                        "label": "Zzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "5256212078377907071",
+                        "label": "Zzzz Zzzz Zzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "3489288055803033456",
+                        "label": "Zzzzzzzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "-2749382217588850909",
+                        "label": "ZZZZZZZ",
+                        "relevance": 10
+                    },
+                    {
+                        "id": "2520387248406935324",
+                        "label": "Zzzzzzz Zzz",
+                        "relevance": 5
+                    },
+                    {
+                        "id": "8768531530027382048",
+                        "label": "Zzzzzzzzzz",
+                        "relevance": 15
+                    }
+                ],
+                "relatedDomains": [
+                    {
+                        "id": "-7724414644652002467",
+                        "label": "State",
+                        "relevance": 99
+                    },
+                    {
+                        "id": "-5225426117569662438",
+                        "label": "Postal Code",
+                        "relevance": 99
+                    }
+                ],
+                "relevance": 28.31
+            }
+        ],
+        "distance": 0,
+        "id": "GEN_1"
+    }],
+    "synonyms": [
+        {
+            "id": "8085475021926249846",
+            "label": "CITY",
+            "relevance": 28.2875
+        },
+        {
+            "id": "1166835310044790210",
+            "label": "CUSTMR_CITY",
+            "relevance": 28.2875
+        },
+        {
+            "id": "4554071666637353489",
+            "label": "ADDRESS_LINE_2",
+            "relevance": 5.781111111111109
+        },
+        {
+            "id": "6146287595761317904",
+            "label": "City Name",
+            "relevance": 28.3125
+        },
+        {
+            "id": "-538334593557122068",
+            "label": "City",
+            "relevance": 28.3125
+        },
+        {
+            "id": "4189203514844264990",
+            "label": "CityName",
+            "relevance": 28.2875
+        },
+        {
+            "id": "2921815087083040967",
+            "label": "RISK_RATING",
+            "relevance": 0
+        }
+    ]
+}

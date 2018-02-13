@@ -1,0 +1,33 @@
+{
+  "name": "gid-get-samples",
+  "main": "gid-get-samples.html",
+  "authors": [
+    "Shreya Bharadwaj"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.6.0",
+    "iron-ajax": "PolymerElements/iron-ajax#^1.4.4",
+    "polymer-global-variables": "1.1.0",
+    "lodash": "4.17.4"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
+    "gid-api": "makedatabetter-dev/gid-api"
+  },
+  "resolutions": {
+    "lodash": "4.17.4"
+  },
+  "homepage": "https://github.com/makedatabetter-dev/gid-get-samples",
+  "_release": "cde9dde3c0",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "cde9dde3c0cae9f497a02d180ffc4afe8fbeaef8"
+  },
+  "_source": "https://github.com/makedatabetter-dev/gid-get-samples.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/makedatabetter-dev/gid-get-samples.git"
+}

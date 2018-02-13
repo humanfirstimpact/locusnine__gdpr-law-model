@@ -1,0 +1,178 @@
+<!--
+  Wrapper component to handle rest calls
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<script src="../lodash/dist/lodash.min.js"></script>
+<script src="assets/js/gidRestApi.js"></script>
+<!--
+`gid-api`
+
+The `gid-api` element is a wrapper on iron ajax used for handling rest calls.
+
+    <gid-api auto=false
+			method="get" api-url="../assets/json/test.json" response={{ajaxResponse}}
+			api-timeout= 0>
+    </gid-api>
+
+With `auto` set to `true`, the element performs a request whenever
+its `url`, `params` or `body` properties are changed. Automatically generated
+requests will be debounced in the case that multiple attributes are changed
+sequentially.
+
+Note: The `params` attribute must be double quoted JSON.
+
+You can trigger a request explicitly by calling `generateRequest` on the
+element.
+
+@demo demo/index.html
+-->
+<dom-module id="gid-api">
+  <template>
+         <iron-ajax
+            auto = {{auto}}
+		    url = '{{apiUrl}}'
+		    body = "{{requestBody}}"
+		    params ='{{_processParams(apiParams)}}'
+		    content-type="{{apiContentType}}"
+            method="{{method}}"
+		    handle-as="json"
+		    headers = '{{apiHeader}}'
+		    last-response="{{response}}"
+		    last-error="{{error}}"
+		    debounce-duration="300"
+		    timeout = {{apiTimeout}}>
+		 </iron-ajax> 
+
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'gid-api',
+        properties:{
+        	/* Base url received from data components */
+        	apiUrl:  {
+       			type:String,
+       			notify:true
+        	},
+        	/* Parameters received from data components */
+        	apiParams: {
+       			type:String,
+       			notify:true
+        	},
+        	/* Content type for rest call, default value is 'application/json' */
+        	apiContentType: {
+       			type: String,
+       			notify: true,
+       			value: 'application/json'
+       		},
+        	/* Header for a rest call */
+        	apiHeader:  {
+       			type:Object,
+       			notify:true,
+       			value: {}
+        	},
+        	/* Timeout for a particular rest call */
+        	apiTimeout:{
+        		type: Number,
+    	        notify: true,
+    	        value: 0
+        	},
+        	/* The response object */
+   	     	response: {
+	   	        type: Object,
+	   	        notify: true
+           },
+           /* Flag to trigger rest call. Default value is 'true' */
+           auto:{
+	       		 type:Boolean,
+	       	     notify: true,
+	       	     value:true
+       		},
+       		/* Method for a rest call. Default is 'GET'. Other probable
+       		   values can be 'POST', 'PUT', 'DELETE' */
+       		method:{
+       			type:String,
+       			notify:true,
+       			value:"GET"
+       		},
+       		/* The error object */
+       		error:{
+       			type:String,
+       			notify:true,
+       			observer: 'errorReceived'
+       		},
+       		/* The request body for a particular rest call */
+       		requestBody: {
+       			type: Object,
+	   	        notify: true
+       		},
+       		/* Entity received from data components */
+       		entity: {
+       			type:String,
+       			notify:true,
+       			observer: 'entityReceived'
+       		},
+       		/* Path key received from data components */
+       		pathKey: {
+       			type:String,
+       			notify:true,
+       			value: ''
+       		},
+       		/* Api path sent to data components */
+       		path: {
+       			type:String,
+       			notify:true,
+       			value: ''
+       		},
+       		/* Api token received from data components */
+       		apiToken: {
+       			type:String,
+       			notify:true,
+       			value: '',
+       			observer: 'apiTokenReceived'
+       		}
+       		
+       		
+        },
+        /* Processing api parameters */
+        _processParams: function(apiParams){
+        	return JSON.parse(apiParams);
+        },
+        /*  Observer for 'entity' property */
+        entityReceived: function(){
+        	var that = this;
+        	var apiList = {};
+        	if(localStorage.hasOwnProperty('api-path')){
+        		apiList = JSON.parse(localStorage.getItem('api-path'));
+        	}
+        	else{
+        		apiList =  apiPath;
+        	}
+        	if(that.entity){
+        				var temp = that.entity.toLowerCase() + '.' + that.pathKey;
+	                    that.path = _.get(apiList, temp);
+        	}
+        	 
+        },
+        /* Observer for 'apiToken' property */
+        apiTokenReceived: function(){
+        	if(this.apiToken){
+        		this.apiHeader["Authorization"] = 'Bearer ' + this.apiToken;
+        	}
+        },
+        /* Observer of 'error' property */
+        errorReceived: function(newvalue, oldvalue){
+        	if(newvalue !== null && newvalue.response !== null){
+        		if(newvalue.response.errorCode === "40101"){
+					var event = new CustomEvent("logout", {"detail": "LOGOUT"});
+					document.dispatchEvent(event);
+        		}
+        	}
+        }
+      });
+    })();
+  </script>
+</dom-module>

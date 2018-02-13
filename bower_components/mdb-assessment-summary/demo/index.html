@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>mdb-assessment-summary demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../mdb-assessment-summary.html">
+
+  <style is="custom-style" include="demo-pages-shared-styles">
+     :root .centered {
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="vertical-section-container centered">
+    <h3>Basic mdb-assessment-summary normal mode demo</h3>
+    <demo-snippet>
+      <template>
+        <mdb-assessment-summary assessment-stat="45%"></mdb-assessment-summary>
+      </template>
+    </demo-snippet>
+
+    <h3>Basic mdb-assessment-summary message mode demo</h3>
+    <demo-snippet>
+      <template>
+        <mdb-assessment-summary assessment-stat="45%" show-message message="Average Accuracy"></mdb-assessment-summary>
+      </template>
+    </demo-snippet>
+  </div>
+</body>
+
+</html>

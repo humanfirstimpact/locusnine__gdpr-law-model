@@ -1,0 +1,454 @@
+<link rel="import" href="../gid-connections.html">
+<link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
+<link rel="import" href="../../paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../paper-toast/paper-toast.html">
+<link rel="import" href="../../gid-api/gid-api.html">
+
+<script src="../../jquery/dist/jquery.min.js"></script>
+<script src="../../lodash/dist/lodash.min.js"></script>
+
+<dom-module id="add-connection">
+    <template>
+        <style>
+            table, th, td {
+                border: 1px solid grey;
+                border-collapse: collapse;
+            }
+
+            td {
+                text-align: center;
+            }
+
+            paper-input {
+                max-width: 400px;
+                /* 			    margin: auto; */
+            }
+
+            paper-button {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                font-weight: normal;
+                font-size: 14px;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            paper-button.indigo {
+                background-color: var(--paper-indigo-500);
+                color: white;
+            }
+
+            paper-button.indigo:hover {
+                background-color: var(--paper-indigo-400);
+            }
+
+            paper-button.green {
+                background-color: var(--paper-green-500);
+                color: white;
+            }
+
+            paper-button.disabled {
+                pointer-events: none;
+            }
+
+            paper-button.green[active] {
+                background-color: var(--paper-green-500);
+            }
+
+            paper-button.blue {
+                background-color: #5da9dd;
+                color: white;
+            }
+
+            paper-dropdown-menu, paper-listbox {
+                width: 250px;
+            }
+
+            paper-dropdown-menu {
+                height: 200px;
+                display: block;
+            }
+
+            .no-display {
+                display: none;
+            }
+
+            .display-block {
+                display: block;
+            }
+        </style>
+
+        <paper-input label="Api Url" value={{apiUrl}} id="apiUrl"></paper-input>
+        <paper-input label="Api Token" value={{apiToken}} id="apiToken"></paper-input>
+
+
+        <p>
+            <paper-button raised class="green" id="submitBtn" on-click="_submit">Submit</paper-button>
+            <paper-button raised class="blue" id="resetBtn" on-click="_resetVal">Reset</paper-button>
+        </p>
+        <paper-toast id="toast" text="{{toastrMsg}}"></paper-toast>
+        <hr/>
+
+        <template is="dom-if" if="[[_loadingActions]]">
+            <paper-spinner-lite active class="green"></paper-spinner-lite>
+            <span>Loading actions</span>
+        </template>
+        <template is="dom-if" if="[[takeUserInput]]">
+            Select Action:  <select on-change="_selectAction" style="width: 200px;">
+                <template is="dom-repeat" items="[[_actionList]]">
+                    <option value="{{item}}">{{item}}</option>
+                </template>
+            </select>
+            <template is="dom-if" if="[[!_isList]]">
+                <paper-input label="Connection Name" value={{connNm}} id="connNmId"></paper-input>
+                <paper-input label="DB Name" value={{dbNm}} id="dbNmId"></paper-input>
+                <paper-input label="Host" value={{host}} id="hostId"></paper-input>
+                <paper-input label="Port" value={{port}} id="portId"></paper-input>
+                <paper-input label="DB Type" value={{dbType}} id="dbTypeId"></paper-input>
+                <paper-input label="DB User" value={{dbUser}} id="dbUserId"></paper-input>
+                <paper-input label="Password" type="password" value={{password}} id="passwordId"></paper-input>
+                <!--<paper-toggle-button checked="{{_isAdd}}">Test Connection</paper-toggle-button>-->
+                <template is="dom-if" if="[[_isAdd]]">
+                    <paper-input label="Application" value={{application}} id="applicationId"></paper-input>
+                    <paper-input label="LOB" value={{lob}} id="lobId"></paper-input>
+                </template>
+            </template>
+            <template is="dom-if" if="[[_isList]]">
+                <paper-input label="Filter: label contains ?" value={{filter}} id="filterId"></paper-input>
+                <paper-input label="#Offset { EX: 0,1,2, ... LastPage }" value={{offset}} id="offsetId"></paper-input>
+                <paper-input label="#Limit" value={{limit}} id="limitId"></paper-input>
+                </br>
+            </template>
+
+            </br>
+            <paper-button raised class="indigo" id="listConceptBtn" on-click="_performAction">Submit</paper-button>
+
+            <template is="dom-if" if="[[action.length]]">
+                <gid-connections action=[[action]] api-url="[[apiUrl]]" api-token=[[apiToken]]
+                                 connection-name="[[connNm]]" db-name="[[dbNm]]" host="[[host]]" port="[[port]]"
+                                 db-type="[[dbType]]" db-user="[[dbUser]]" password="[[password]]"
+                                 application="[[application]]" lob="[[lob]]" limit='[[limit]]' offset='[[offset]]'
+                                 filter="[[_getFilter(filter)]]"
+                                 conn-response='{{response}}' conn-error="{{error}}">
+                </gid-connections>
+            </template>
+        </template>
+
+        <!--api-token='MTAxNjUwMzAxMTUwNDUwNTg3NDkwODA5MDFY'-->
+
+        </br>
+        </br>
+        <template is="dom-if" if="[[isConAdded]]">
+            <div class="horizontal-section">
+                <p>{{response.message}}</p>
+            </div>
+        </template>
+        <template is="dom-if" if="[[isConnList]]">
+            <div class="horizontal-section">
+                <table style="width:100%">
+                    <tr>
+                        <th>ID</th>
+                        <th>Label</th>
+                        <th>Connection Name</th>
+                        <th>Host</th>
+                        <th>Port</th>
+                        <th>DB Type</th>
+                        <th>Application</th>
+                        <th>LOB</th>
+                        <th>Added By</th>
+                    </tr>
+                    <template is="dom-repeat" items="[[response.databases]]">
+                        <tr>
+                            <td>{{item.id}}</td>
+                            <td>{{item.label}}</td>
+                            <td>{{item.connectionName}}</td>
+                            <td>{{item.host}}</td>
+                            <td>{{item.port}}</td>
+                            <td>{{item.dbType}}</td>
+                            <td>{{item.application.label}}</td>
+                            <td>{{item.lob.label}}</td>
+                            <td>{{item.addedBy.label}}</td>
+                        </tr>
+                    </template>
+                </table>
+            </div>
+        </template>
+        <template is="dom-if" if="[[isError]]">
+            <div class="horizontal-section">
+                <p>{{error.response.userMessage}}</p>
+            </div>
+        </template>
+
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            Polymer({
+                is: 'add-connection',
+                properties: {
+                    response: {
+                        type: Object,
+                        value: {},
+                        notify: true,
+                        observer: 'responseReceived'
+                    },
+                    error: {
+                        type: Object,
+                        value: {},
+                        notify: true,
+                        observer: 'errorReceived'
+                    },
+
+                    takeUserInput: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    isConAdded: {
+                        type: Boolean,
+                        value: false
+                    },
+                    isConnList: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    isError: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+
+                    apiUrl: {
+                        type: String,
+                        notify: true,
+                        value: 'https://virtserver.swaggerhub.com/srimanta.maji/DISCOVERY/1'
+                    },
+                    apiToken: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    _loadingActions: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    _actionList: {
+                        type: Array,
+                        notify: true,
+                        value: ["TEST", "ADD", "LIST"]
+                    },
+                    user: {
+                        type: String,
+                        notify: true,
+                        value: '1'
+                    },
+                    toastrMsg: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    actionListUrl: {
+                        type: String,
+                        notify: true
+                    },
+                    actionListTimeout: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    actionListResponse: {
+                        type: Object,
+                        notify: true,
+                        observer: '_actionListResponseReceived'
+                    },
+                    actionListError: {
+                        type: Object,
+                        notify: true,
+                        observer: '_actionListErrorReceived'
+                    },
+                    action: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    selectedAction: {
+                        type: String,
+                        notify: true,
+                        value: 'TEST'
+                    },
+                    _isAdd: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    connNm: {
+                        type: String,
+                        notify: true,
+                        value: 'CRM@newton'
+                    },
+                    dbNm: {
+                        type: String,
+                        notify: true,
+                        value: 'CRM'
+                    },
+                    host: {
+                        type: String,
+                        notify: true,
+                        value: '192.168.33.10'
+                    },
+                    port: {
+                        type: String,
+                        notify: true,
+                        value: '1521'
+                    },
+                    dbType: {
+                        type: String,
+                        notify: true,
+                        value: 'Oracle'
+                    },
+                    dbUser: {
+                        type: String,
+                        notify: true,
+                        value: 'globalids'
+                    },
+                    password: {
+                        type: String,
+                        notify: true,
+                        value: 'globalids123'
+                    },
+                    application: {
+                        type: String,
+                        notify: true,
+                        value: 'CRM APP'
+                    },
+                    lob: {
+                        type: String,
+                        notify: true,
+                        value: 'Enterprise'
+                    },
+                    limit: {
+                        type: Number,
+                        notify: true
+//                        value: 10
+                    },
+                    offset: {
+                        type: Number,
+                        notify: true
+//                        value: 1
+                    },
+                    _isList: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    _sampleData: {
+                        type: Object,
+                        value: {
+                            "apiUrl": "https://virtserver.swaggerhub.com/srimanta.maji/DISCOVERY/1",
+                            "connNm": "CRM@newton",
+                            "dbNm": "CRM",
+                            "host": "192.168.33.10",
+                            "port": "1521",
+                            "dbType": "Oracle",
+                            "dbUser": "globalids",
+                            "password": "globalids123",
+                            "application": "CRM APP",
+                            "lob": "Enterprise"
+//                            "limit": 0,
+//                            "offset": 10
+                        }
+                    },
+
+                    _actionListResponseReceived: function (newvalue, oldvalue) {
+                        this._actionList = [];
+                        this._loadingActions = false;
+                        if (newvalue != null) {
+                            this.async(function () {
+                                var arr = [];
+                                for (var key in newvalue) {
+                                    arr = arr.concat(newvalue[key]);
+                                }
+                                this._actionList = arr;
+                            }, 500);
+                        }
+
+                    },
+                    _actionListErrorReceived: function (newvalue, oldvalue) {
+                        this._actionList = [];
+                        if (newvalue !== null) {
+                            this.async(function () {
+                                this._loadingActions = false;
+                                this._actionList = newvalue;
+                            }, 500);
+                        }
+                    },
+                },
+                _selectAction: function (event) {
+                    this._reset();
+                    this.selectedAction = event.currentTarget.value.toLowerCase();
+                    this._isList = "LIST" == event.currentTarget.value;
+                    this._isAdd = "ADD" == event.currentTarget.value;
+                    this.notifyPath("selectedAction");
+//                    this[this.selectedAction] = true;
+                    this.isError = false;
+                    this.isConAdded = false;
+                    this.isConnList = false;
+                },
+                _performAction: function () {
+                    this._hideOutput();
+                    this.set("action", this.selectedAction.toUpperCase());
+                },
+                responseReceived: function () {
+                    if (this.response) {
+                        var isError = this.response.errorCode ? true : false;
+                        this.isConnList = !isError && this.response.hasOwnProperty("databases");
+                        this.isConAdded = !isError && !this.isConnList;
+                        this.isError = false;
+                    }
+
+                },
+                errorReceived: function () {
+                    this.isError = true;
+                    this.isConAdded = false;
+                    this.isConnList = false;
+                },
+                _submit: function (event) {
+                    this.apiUrl = $("#apiUrl").val();
+                    this.apiToken = $("#apiToken").val();
+                    if (!this.apiUrl) {
+                        this.toastrMsg = "No url provided, hence fetching sample data";
+                        this.$.toast.open();
+                        for (var key in this._sampleData) {
+                            this[key] = this._sampleData[key];
+                        }
+                    }
+                    this._reset();
+                    this.set("takeUserInput", true);
+                    this.user = 1;
+                },
+                _resetVal: function () {
+                    $("#apiUrl").val("");
+                    $("#apiToken").val("");
+                    this._reset();
+                    this.set("takeUserInput", false);
+                },
+                _reset: function () {
+                    this.action = '';
+                    this._loadingActions = false;
+                    this.user = '';
+                },
+                _hideOutput: function () {
+                    this.isError = false;
+                    this.isConAdded = false;
+                    this.isConnList = false;
+                },
+                _getFilter: function (tempFilter) {
+                    return tempFilter && tempFilter.length ? ("label co " + "'" + tempFilter + "'") : "";
+                }
+            });
+        })();
+    </script>
+</dom-module>

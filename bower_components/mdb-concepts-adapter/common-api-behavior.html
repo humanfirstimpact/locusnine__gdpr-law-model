@@ -1,0 +1,46 @@
+<script>
+    var ApiConfigurationBehavior = {
+        properties:{
+            apiToken: {
+                type: String
+            },
+            
+            apiUrlBase: {
+                type: String
+            }
+        },
+
+        _ensureValidApiConfiguration: function(){
+            var configurationStatus = this._getApiConfigurationStatus();
+            if(!configurationStatus.isValid)
+                return Promise.reject(configurationStatus.errorMessage);
+
+            return Promise.resolve();
+        },
+
+        _getApiConfigurationStatus : function(){
+            if(this.apiToken && this.apiUrlBase)
+                return {
+                    isValid: true
+                };
+
+            var missingPieces = [];
+            if(!this.apiUrlBase)
+                missingPieces.push('apiUrlBase');
+            if(!this.apiToken)
+                missingPieces.push('apiToken');
+            
+            var errorMessage = ["Missing configuration(s)", missingPieces.join(',')].join(': ');
+            return {
+                isValid: false,
+                errorMessage: errorMessage
+            };
+        },
+
+        _getAuthorizationHeader: function(){
+            return {
+                "Authorization": ['Bearer', this.apiToken].join(' ')
+            };
+        }
+    }
+</script>

@@ -1,0 +1,25 @@
+{
+  "name": "atom-particle-banner",
+  "main": "atom-particle-banner.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "particles.js": "^2.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/makedatabetter-dev/atom-particle-banner",
+  "version": "0.0.7",
+  "_release": "0.0.7",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.0.7",
+    "commit": "954d240d9cfcb9a7493fc6b279c02d7f3913eb6f"
+  },
+  "_source": "git://github.com/makedatabetter-dev/atom-particle-banner.git",
+  "_target": "*",
+  "_originalSource": "git://github.com/makedatabetter-dev/atom-particle-banner.git"
+}

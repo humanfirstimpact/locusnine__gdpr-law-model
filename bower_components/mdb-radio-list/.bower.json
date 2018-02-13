@@ -1,0 +1,26 @@
+{
+  "name": "mdb-radio-list",
+  "description": "pill box selection component",
+  "main": "mdb-radio-list.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "paper-radio-group": "PolymerElements/paper-radio-group#^1.2.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/makedatabetter-dev/mdb-radio-list",
+  "version": "0.2.0",
+  "_release": "0.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.2.0",
+    "commit": "977e16305a63fb15e3393c3c872246f8bc5dd889"
+  },
+  "_source": "git://github.com/makedatabetter-dev/mdb-radio-list.git",
+  "_target": "*",
+  "_originalSource": "git://github.com/makedatabetter-dev/mdb-radio-list.git"
+}

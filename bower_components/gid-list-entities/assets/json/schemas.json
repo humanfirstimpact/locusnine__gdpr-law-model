@@ -1,0 +1,69 @@
+{
+  "schemas": [
+	{
+	  "id": "28379089",
+	  "label": "Sample DWH_77",
+	  "database": "28379032",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28379090",
+	  "label": "Sample DWH_77_1",
+	  "database": "28379032",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28379091",
+	  "label": "DWH_ATNT_28",
+	  "database": "28379032",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28379092",
+	  "label": "Sample DWH_GEM_230",
+	  "database": "28379032",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28379093",
+	  "label": "Sample DWH_LINUX_83",
+	  "database": "28379032",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28379094",
+	  "label": "Sample DWH_PARENT_64_8",
+	  "database": "28379032",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28379095",
+	  "label": "Sample DWH_PT_83",
+	  "database": "28379032",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28379096",
+	  "label": "Sample DWH_RULE_77",
+	  "database": "28379032",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28379097",
+	  "label": "Sample DWH_TESTV9_UPGRADE",
+	  "database": "28379032",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28379098",
+	  "label": "Sample DWH_TEST_210",
+	  "database": "28379032",
+	  "catalog": "10000001"
+	}
+  ],
+  "_meta": {
+	"total": 2938,
+	"limit": 10,
+	"offset": 0
+  }
+}

@@ -1,0 +1,17 @@
+{
+      "domains": [
+        {
+          "id": "100462",
+          "label": "SAMPLE CASE-NUMBER",
+          "owner": {
+            "id": "111001",
+            "label": "Angela"
+          },
+          "predictedColumns": 0,
+          "confirmedColumns": 0,
+          "eta": 0,
+          "coverage": 0,
+          "classificationAccuracyPercentage": 5
+        }    
+      ]
+    }

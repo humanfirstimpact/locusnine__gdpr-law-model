@@ -1,0 +1,109 @@
+<link rel="import" href="../gid-concept-details.html">
+
+<dom-module id="concept-details">
+  <template>
+  		<style>
+	  	table, th, td {
+	    border: 1px solid grey;
+	    border-collapse: collapse;
+		}
+		td {
+		    text-align: center;
+		}
+  		</style>
+  		<h1>Concept Details</h1>
+        <gid-concept-details user='1' api-url='https://srv-34-197-77-167.globalids.com:8443/api/v1'
+        concept='-886082613329644447' synonyms = '["-2089114832254977960", "-3150438270889413497"]'	patterns= '["-7047601890608006487"]' 
+        related-domains = '[]' example-values = '[]' api-token = 'MTAxNjUwMzAxMTUwNDYwMjEzMjIwOTA5MDFY'
+        conceptdetails='{{conceptdetails}}'>
+        </gid-concept-details>
+        <template is="dom-if" if="[[isConceptDetailsReceived]]">
+	        <template is="dom-repeat" items="[[conceptdetails]]">
+            <div class="horizontal-section">
+                <table style="width:100%">
+				  <tr>
+				    <th>Concept</th>
+				    <th>Predicted Columns</th>
+				    <th>Confirmed Columns</th>
+				    <th>ETA</th>
+				    <th>Coverage</th>
+				    <th>Classification Accuracy Percentage</th>
+				    <th>Samples</th>
+				    <th>Patterns</th>
+				    <th>Synonyms</th>
+				    <th>Example Columns</th>
+				    <th>Related Concepts</th>
+				  </tr>
+				  <tr>
+				    <td valign="top">{{item.label}}</td>
+				    <td valign="top">{{item.predictedColumns}}</td>
+				    <td valign="top">{{item.confirmedColumns}}</td>
+				    <td valign="top">{{item.eta}}</td>
+				    <td valign="top">{{item.coverage}}</td>				    
+				    <td valign="top">{{item.classificationAccuracyPercentage}}</td>	    
+				    <td valign="top">
+				     <template is="dom-repeat" items="[[item.samples]]">
+				     	<p>{{item.label}}</p>
+				     </template>
+				    </td>
+				    <td valign="top">
+				     <template is="dom-repeat" items="[[item.patterns]]">
+				     	<p>{{item.label}}</p>
+				     </template>
+				    </td>
+				    <td valign="top">
+				     <template is="dom-repeat" items="[[item.synonyms]]">
+				     	<p>{{item.label}}</p>
+				     </template>
+				    </td>
+				    <td valign="top">
+				     <template is="dom-repeat" items="[[item.exampleColumns]]">
+				     	<p>{{item.label}}</p>
+				     </template>
+				    </td>
+				    <td valign="top">
+				     <template is="dom-repeat" items="[[item.relatedDomains]]">
+				     	<p>{{item.label}}</p>
+				     </template>
+				    </td>
+				  </tr>
+				</table>
+            </div>
+        </template>
+    </template>
+    <template is="dom-if" if="![[isConceptDetailsReceived]]">
+            <p>{{conceptdetails.0.userMessage}}</p>
+    </template>
+
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'concept-details',
+        properties:{
+        		conceptdetails: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true,
+     	          observer: 'conceptDetailsObserver'
+     	        },
+     	        isConceptDetailsReceived: {
+     	        	type: Boolean,
+     	        	value: false
+     	        }
+        },
+        conceptDetailsObserver: function () {
+        	 if(this.conceptdetails.length > 0){	
+				if(this.conceptdetails[0]['errorCode']){
+					this.isConceptDetailsReceived = false;
+				}
+				else{
+					this.isConceptDetailsReceived =  true;
+				}
+        	 }
+         }
+      });
+    })();
+  </script>
+</dom-module>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>stats-component-v1 demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../mdb-metric-display.html">
+
+  <style is="custom-style" include="demo-pages-shared-styles">
+
+  </style>
+</head>
+
+<body>
+  <h3>Basic mdb-metric-display demo</h3>
+  <demo-snippet>
+    <template>
+      <mdb-metric-display-container>
+        <mdb-metric-display stat-value="0.2%" stat-description="Coverage across 1 application"></mdb-metric-display>
+        <mdb-metric-display stat-value="279 days" stat-description="ETA(based on yesterday)"></mdb-metric-display>
+        <mdb-metric-display stat-value="25" stat-description="Concepts significantly impacted"></mdb-metric-display>
+      </mdb-metric-display-container>
+    </template>
+  </demo-snippet>
+</body>
+
+</html>

@@ -1,0 +1,502 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../atom-google-sheet-adapter/atom-google-sheet-adapter.html">
+<link rel="import" href="../paper-tabs/paper-tabs.html">
+<link rel="import" href="../paper-tabs/paper-tab.html">
+<link rel="import" href="../paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../mdb-radio-list/mdb-radio-list.html">
+<link rel="import" href="../iron-pages/iron-pages.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-styles/typography.html">
+<link rel="import" href="mdb-heatmap-behavior.html">
+<link rel="import" href="mdb-heatmap.html">
+<link rel="import" href="mdb-heatmap-faq.html">
+
+<!--
+`mdb-heatmap-visualization`
+
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-heatmap-visualization">
+  <template>
+    <style>
+      :host {
+        display: block;
+        color: var( --mdb-secondary-text-dark, #000);
+        background-color: var(--app-white-color, #fff);
+        font-size: var(--mdb-medium-font, 14px);
+
+        --mdb-radio-list-container: {
+          @apply(--layout-horizontal);
+        }
+      }
+
+      :host h2 {
+        margin-top: 0;
+        line-height: initial;
+        font-size: 21px;
+        font-weight: 400;
+        color: var( --mdb-primary-text-dark, #000);
+      }
+
+      :host paper-tabs {
+        border-bottom: 1px solid var(--mdb-border-color, #444444);
+      }
+
+      :host .legal-compliance-container {
+        @apply(--layout-horizontal);
+        max-height: 700px;
+      }
+
+      :host .column {
+        -ms-flex: 1 1 33%;
+        -webkit-flex: 1 1 33%;
+        flex: 1 1 33%;
+        overflow: auto;
+        padding: var(--standard-spacing, 20px);
+      }
+
+      .legal-compliance-container>.chart {
+        padding: var(--standard-spacing, 20px) 0 var(--standard-spacing, 20px) var(--standard-spacing, 20px);
+      }
+
+      :host .article-column {
+        background-color: #fff9c3;
+      }
+
+      :host .column.faq-column {
+        padding-top: 0;
+      }
+
+      :host .article {
+        color: var(--mdb-primary-text-dark, #000);
+      }
+
+      :host .article h3.title {
+        font-size: 18px;
+      }
+
+      :host .article h3.article-description {
+        font-weight: 400;
+        margin-top: 0;
+      }
+
+      :host .article ol {
+        padding-left: 0;
+      }
+
+      :host .article-term {
+        margin-bottom: var(--standard-padding, 20px);
+      }
+
+      :host iron-pages {
+        padding: var(--standar-padding, 20px) 0 0;
+      }
+
+      :host .faq h3,
+      :host .glossary h3 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
+
+      :host .faq h3:nth-child(1),
+      :host .glossary h3:nth-child(1) {
+        margin-top: 0;
+      }
+
+      :host pre {
+        white-space: pre-wrap;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        margin-top: 0;
+        margin-bottom: 5px;
+      }
+
+      :host .gdpr-metrics {
+        @apply(--layout);
+        border: 1px solid var(--mdb-border-color, #333);
+        margin-top: var(--standard-padding, 20px);
+      }
+
+      :host .gdpr-metrics>div {
+        @apply(--layout-flex);
+        text-align: center;
+      }
+
+      :host .gdpr-metrics h2 {
+        margin: 0;
+        font-size: 40px;
+        color: var(--mdb-accent-color-highlight, #5DA9DD);
+        font-weight: 400;
+        margin-top: 15px;
+      }
+
+      :host .gdpr-metrics p {
+        font-size: 15px;
+        font-weight: lighter;
+        margin-top: 0;
+      }
+
+      :host mdb-radio-list {
+        margin-top: var(--standard-padding, 20px);
+      }
+
+      :host paper-radio-button {
+        font-size: 14px;
+        @apply(--layout-flex);
+        text-align: center;
+        padding: 15px 10px;
+      }
+
+      :host iron-icon {
+        color: var(--app-icon-color, #99a1b3);
+        padding-right: 7px;
+        height: 16px;
+        width: 16px;
+        margin-top: 3px;
+      }
+
+      .checklist-item {
+        @apply(--layout-horizontal);
+        @apply(--layout-start);
+      }
+
+      .checklist-item pre {
+        @apply(--layout-flex);
+      }
+
+      :host .checklist-item.completed iron-icon {
+        color: #5bca52;
+      }
+    </style>
+    <atom-google-sheet-adapter key="{{key}}"></atom-google-sheet-adapter>
+    <div class="legal-compliance-container">
+      <div class=" chart">
+        <h2>Your GDPR Story</h2>
+        <mdb-heatmap data="[[data]]"></mdb-heatmap>
+        <div class="gdpr-metrics">
+          <div>
+            <h2>[[_countChecklistItemsDone(data)]]/[[_countChecklistItemsTotal(data)]]</h2>
+            <p>Checklist items done</p>
+          </div>
+          <div>
+            <h2>[[_countCompiledArticles(data)]]/[[data.length]]</h2>
+            <p>Articles complied to</p>
+          </div>
+        </div>
+        <mdb-radio-list selected="{{selectedDuration}}" size="small">
+          <paper-radio-button name="feb">FEB</paper-radio-button>
+          <paper-radio-button name="mar">MAR</paper-radio-button>
+          <paper-radio-button name="apr">APR</paper-radio-button>
+          <paper-radio-button name="may">MAY</paper-radio-button>
+          <paper-radio-button name="jun">JUN</paper-radio-button>
+          <paper-radio-button name="jul">JUL</paper-radio-button>
+        </mdb-radio-list>
+      </div>
+      <div class="column faq-column">
+        <paper-tabs selected="{{selectedTab}}">
+          <paper-tab>TO BE COMPLIANT</paper-tab>
+          <paper-tab>FAQS</paper-tab>
+          <paper-tab>GLOSSARY</paper-tab>
+        </paper-tabs>
+        <iron-pages selected="{{selectedTab}}">
+          <div class="toBeCompliant">
+            <template id="complianceRepeater" is="dom-repeat" items="[[selectedArticle.toBeCompliant]]">
+              <template is="dom-if" if="[[item.content]]">
+                <div class$="checklist-item [[_checkCompleted(item.status)]]">
+                  <iron-icon icon="icons:check-circle"></iron-icon>
+                  <pre>[[item.content]]</pre>
+                </div>
+              </template>
+            </template>
+          </div>
+          <div class="faq">
+            <template id="faqRepeater" is="dom-repeat" items="[[selectedArticle.faqs]]" restamp>
+              <mdb-heatmap-faq question="[[item.title]]" answer="[[item.description]]"></mdb-heatmap-faq>
+            </template>
+          </div>
+          <div class="glossary">
+            <template is="dom-repeat" items="[[glossary]]">
+              <h3 id="[[_getId(item.term)]]">[[item.term]]</h3>
+              <div>[[item.definition]]</div>
+            </template>
+          </div>
+        </iron-pages>
+      </div>
+      <div class="column article-column">
+        <template is="dom-if" if="[[selectedArticle]]">
+          <div class="article">
+            <h3 class="article-description">[[selectedArticle.description]]</h3>
+            <h3 class="title">[[selectedArticle.name]]</h3>
+            <pre>[[selectedArticle.articleContent]]</pre>
+          </div>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-heatmap-visualization',
+
+      properties: {
+        key: {
+          type: String,
+          observer: '_keyChanged',
+        },
+
+        modelSheet: {
+          type: String,
+          value: 'heat-map'
+        },
+
+        glossarySheet: {
+          type: String,
+          value: 'Glossary'
+        },
+
+        data: {
+          type: Array,
+          value: [],
+          observer: '_dataChanged'
+        },
+
+        _data: {
+          type: Array,
+          value: [],
+          observer: '_rawDataChanged'
+        },
+
+        glossary: {
+          type: Array,
+          value: []
+        },
+
+        selected: {
+          type: Number,
+          value: 1
+        },
+
+        selectedArticle: {
+          type: Object,
+          value: {},
+          observer: '_selectedArticleChanged'
+        },
+
+        selectedDuration: {
+          type: String,
+          value: 'feb',
+          observer: '_selectedDurationChanged'
+        },
+
+        selectedTab: {
+          type: Number,
+          value: 0
+        }
+      },
+
+      behaviors: [
+        Mdb.heatmap
+      ],
+
+      listeners: {
+        'article-changed': '_articleChanged'
+      },
+
+      attached: function () {
+        this.addEventListener('go-to-glossary', function (e) {
+          this._gotoGlossary();
+          this.querySelector('#' + e.detail).scrollIntoView();
+        });
+      },
+
+      _gotoGlossary: function () {
+        this.selectedTab = 2;
+      },
+
+      _articleChanged: function (e) {
+        this.selectedArticle = e.detail;
+      },
+
+      _selectedArticleChanged: function () {
+        if (this.selectedArticle && this.selectedArticle.name) {
+          var that = this;
+          var heatMap = this.querySelector('mdb-heatmap');
+          var index = this.data.findIndex(function (e) {
+            return e.name === that.selectedArticle.name;
+          });
+          this.selected = index + 1;
+          if (this.data && this.data.length && heatMap) {
+            heatMap._highlight(this.selectedArticle);
+          }
+        }
+      },
+
+      _checkCompleted: function (status) {
+        return ['na', 'n.a.'].indexOf(status.toLowerCase()) !== -1 || parseInt(status) == 100 ? 'completed' : '';
+      },
+
+      _keyChanged: function () {
+        if (this.key) {
+          var that = this;
+          this.fire('dataload-begin');
+          this._fetchData()
+            .then(function (data) {
+              that.dataLoaded = true;
+              setTimeout(function () {
+                var model = data[0],
+                  glossary = data[1];
+                that.set('_data', that._transform(model));
+                that.set('glossary', glossary);
+              }, 0);
+            })
+            .then(function () {
+              that.fire('dataload-end');
+            });
+        }
+      },
+
+      _rawDataChanged: function () {
+        this.set('data', this._getDurationData(this.selectedDuration));
+      },
+
+      _getDurationData: function (duration) {
+        var map = {
+          feb: 1,
+          mar: 2,
+          apr: 3,
+          may: 4,
+          jun: 5,
+          jul: 6
+        };
+        return this._data
+          .map(function (e) {
+            e.toBeCompliant
+              .map(function (c) {
+                c.status = c['status' + map[duration]];
+                return c;
+              });
+            return e;
+          });
+      },
+
+      _selectedDurationChanged: function () {
+        if (this.selectedArticle.name) {
+          this.set('data', this._getDurationData(this.selectedDuration));
+          this.set('selectedArticle', JSON.parse(JSON.stringify(this.data[this.selected - 1])));
+        }
+      },
+
+      _fetchData: function () {
+        var that = this,
+          adapter = this.querySelector('atom-google-sheet-adapter');
+
+        return new Promise(function (resolve, reject) {
+          adapter.read(that.modelSheet)
+            .then(function (model) {
+              adapter.read(that.glossarySheet)
+                .then(function (glossary) {
+                  resolve([model, glossary]);
+                }).catch(function (error) {
+                  reject(error);
+                });
+            }).catch(function (error) {
+              reject(error);
+            });
+        });
+      },
+
+      _dataChanged: function () {
+        if (this.data && this.data.length) {
+          var heatMap = this.querySelector('mdb-heatmap');
+          if (heatMap) {
+            heatMap.render();
+          }
+          this.set('selectedArticle', this.data[this.selected - 1]);
+        }
+      },
+
+      _transform: function (model) {
+        var articles = [];
+
+        model.forEach(function (row, index) {
+          var content = (row.articlecontent || '').match(/^(.*)$/mg);
+          var name = 'Article ' + row.article;
+          var article = articles.find(function (e) { return e.name === name; }) || articles.push({
+            name: name,
+            description: row.oversimplifieddescriptionarticlesandrecitals,
+            articleContent: row.articlecontent.trim(),
+            faqs: [],
+            toBeCompliant: []
+          }) && articles[articles.length - 1];
+
+          if (row.faqs) {
+            article.faqs.push({
+              title: row.faqs.match(/^(.*)$/m)[0],
+              description: row.faqs.replace(row.faqs.match(/^(.*)$/m)[0], '').trim()
+            });
+          }
+
+          if (row.whatitmeansoutcomestobecompliantmodeltobecompliantmycompanycontrollermust) {
+            article.toBeCompliant.push({
+              content: row.whatitmeansoutcomestobecompliantmodeltobecompliantmycompanycontrollermust,
+              status1: row.status,
+              status2: row.status2,
+              status3: row.status3,
+              status4: row.status4,
+              status5: row.status5,
+              status6: row.status6
+            });
+          }
+        });
+
+        return articles;
+      },
+
+      _countCompiledArticles: function (data) {
+        var count = 0;
+        data.forEach(function (article) {
+          var completed = (article.toBeCompliant || [])
+            .filter(function (e) {
+              return ['na', 'n.a.'].indexOf(e.status.toLowerCase()) !== -1 || parseInt(e.status) === 100
+            }).length;
+          var total = article.toBeCompliant.length;
+
+          if (total !== 0 && completed === total) count++;
+
+        });
+
+        return count;
+      },
+
+      _countChecklistItemsTotal: function () {
+        return this._countChecklistItems(this.data).total;
+      },
+
+      _countChecklistItemsDone: function () {
+        return this._countChecklistItems(this.data).done;
+      },
+
+      _countChecklistItems: function (data) {
+        var total = 0;
+        var done = 0;
+
+        data.forEach(function (article) {
+          var items = article.toBeCompliant;
+          items.forEach(function (item) {
+            if (['na', 'n.a.'].indexOf(item.status) === -1) total++;
+            if (parseInt(item.status) === 100) done++;
+          })
+        });
+
+        return {
+          done: done,
+          total: total
+        };
+      }
+
+    });
+  </script>
+</dom-module>

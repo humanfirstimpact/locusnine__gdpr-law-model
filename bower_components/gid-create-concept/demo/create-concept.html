@@ -1,0 +1,54 @@
+<link rel="import" href="../gid-create-concept.html">
+
+<dom-module id="create-concept">
+  <template>
+        <gid-create-concept  api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
+        label='Account' user = '1' applications = '["100283"]' lobs = '["100001"]' api-token = 'MTAxNjUwMzAxMTUwNDUwNTg3NDkwODA5MDFY' 
+        create = true response='{{response}}'>
+        </gid-create-concept>
+        
+        <template is="dom-if" if="[[isConceptCreated]]">
+            <div class="horizontal-section">
+                <p>The newly created concept's id is &nbsp;{{response.id}}</p>
+            </div>
+        </template>
+        <template is="dom-if" if="![[isConceptCreated]]">
+            <div class="horizontal-section">
+                <p>{{response.developerMessage}}</p>
+            </div>
+        </template>
+
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'create-concept',
+        properties:{
+	 	   	    response: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true,
+     	          observer: 'responseReceived'
+     	        },
+     	        isConceptCreated: {
+     	        	type: Boolean,
+     	        	value: false
+     	        }
+        },
+         responseReceived: function () {
+        	 if(this.response){
+        		 if(this.response.length > 0){	
+      				if(this.response[0]['errorCode']){
+      					this.isConceptCreated = false;
+      				}
+              	 }
+             	 else if(this.response.hasOwnProperty("id")){
+             		 this.isConceptCreated =  true;
+             	 }
+        	 }
+         }
+      });
+    })();
+  </script>
+</dom-module>

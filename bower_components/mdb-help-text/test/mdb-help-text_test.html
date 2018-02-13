@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>mdb-help-text test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../mdb-help-text.html">
+  </head>
+  <body>
+    <test-fixture id="basic">
+      <template>
+        <mdb-help-text></mdb-help-text>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('mdb-help-text', function() {
+        test('instantiating the element works', function() {
+          var element = fixture('basic');
+          assert.equal(element.is, 'mdb-help-text');
+        });
+      });
+    </script>
+  </body>
+</html>

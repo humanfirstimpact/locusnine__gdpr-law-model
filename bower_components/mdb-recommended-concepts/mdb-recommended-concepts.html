@@ -1,0 +1,181 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../mdb-radio-list/mdb-radio-list.html">
+<link rel="import" href="../paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../mdb-title/mdb-title.html">
+<link rel="import" href="../mdb-search-box/mdb-search-box.html">
+<link rel="import" href="./mdb-concept-recommendation.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`mdb-recommended-concepts`
+
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--mdb-recommended-concepts-title` | Mixin applied to recommended concepts title | `{}`
+`--mdb-recommeded-concepts-list-container` | Mixin applied to recommended concepts list container | `{}`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-recommended-concepts">
+  <template>
+    <style>
+       :host {
+        display: block;
+        @apply(--paper-font-common-base);
+      }
+
+       :host mdb-title {
+        padding-top: 15px;
+        border-bottom: 1px solid var(--mdb-border-color, #000);
+        background-color: var(--mdb-primary-color-background, #fcfdff);
+        @apply(--mdb-recommended-concepts-title);
+      }
+
+       :host mdb-concept-recommendation {
+        border-top: 0;
+      }
+
+       :host .recommendation-list {
+        background-color: #fcfdff;
+        @apply(--mdb-recommeded-concepts-list-container);
+      }
+
+       :host #search-box {
+        margin-top: var(--standard-padding, 20px);
+      }
+
+       :host .no-recommended-concepts {
+        background-color: #fcfdff;
+        border: 1px solid var(--mdb-border-color, #000);
+        border-top: 0;
+        position: relative;
+      }
+
+       :host .no-recommended-concepts p {
+        font-size: 1em;
+        font-weight: 400;
+        margin: 0;
+        text-align: center;
+        padding: var(--standard-padding, 20px)
+      }
+
+       :host #search-box .no-recommended-concepts {
+        border-top: 1px solid var(--mdb-border-color, #000);
+        margin-top: var(--standard-padding, 20px)
+      }
+
+       :host #search-box .recommendation-list {
+        margin-top: var(--standard-padding, 20px);
+      }
+
+       :host #search-box mdb-concept-recommendation:first-child {
+        border-top: 1px solid var(--mdb-border-color, #000);
+      }
+    </style>
+
+
+    <mdb-title help-text="[[helpText]]" level="2">Recommended Concepts for [[column.label]] </mdb-title>
+    <template is="dom-if" if="[[recommendations.length]]">
+      <div class="recommendation-list">
+        <template is="dom-repeat" items="[[recommendations]]">
+          <mdb-concept-recommendation concept="[[item]]" column="[[column]]"></mdb-concept-recommendation>
+        </template>
+      </div>
+    </template>
+    <template is="dom-if" if="[[!recommendations.length]]">
+      <div class="no-recommended-concepts">
+        <p>Sorry, we couldn't find any other recommended concepts for [[column.label]]. If you're looking for something particular, please
+          try searching below.
+        </p>
+      </div>
+    </template>
+
+
+    <div id="search-box">
+      <mdb-search-box placeholder="Search for more concepts" filter="{{searchQuery}}" source="{{searchSource}}" search-results="{{_searchResults}}"
+        search-path="label"></mdb-search-box>
+      <template is="dom-if" if="{{searchQuery}}">
+        <template is="dom-if" if="[[_searchResults.length]]">
+          <div class="recommendation-list">
+            <template is="dom-repeat" items="[[_searchResults]]">
+              <mdb-concept-recommendation concept="[[item]]" column="[[column]]"></mdb-concept-recommendation>
+            </template>
+          </div>
+        </template>
+        <template is="dom-if" if="[[!_searchResults.length]]">
+          <div class="no-recommended-concepts">
+            <p>Sorry, we couldn't find any recommended concepts matching "{{searchQuery}}".</p>
+          </div>
+        </template>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-recommended-concepts',
+
+      properties: {
+        column: {
+          type: String,
+          value: ''
+        },
+
+        recommendations: {
+          type: Array,
+          value: [],
+          observer: '_recommendationsChanged'
+        },
+
+        searchQuery: {
+          type: String,
+          value: '',
+          observer: '_searchQueryChanged'
+        },
+
+        searchSource: {
+          type: Object,
+          value: {}
+        },
+
+        helpText: {
+          type: String,
+          value: ''
+        },
+
+        _searchResults: {
+          type: Array,
+          value: []
+        }
+      },
+
+      _recommendationsChanged: function () {
+        var that = this;
+        var listItems = this.querySelectorAll('mdb-concept-recommendation');
+        var recommendations = this.recommendations;
+
+        if (listItems && listItems.length && recommendations && recommendations.length) {
+          Array.prototype.forEach.call(listItems, function (e) {
+            var recommendation = recommendations.find(function (i) { return i.property === e.property; });
+            if (recommendation) {
+              e.relevance = recommendation.relevance;
+              e.verified = recommendation.verified;
+            }
+          });
+        }
+      },
+
+      _searchQueryChanged: function () {
+        this.set('_searchResults', JSON.parse(JSON.stringify(this.recommendations)))
+      }
+
+    });
+  </script>
+</dom-module>

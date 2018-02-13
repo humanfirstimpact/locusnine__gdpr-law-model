@@ -1,0 +1,129 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../mdb-help-text/mdb-help-text.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`mdb-title`
+Title component
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--mdb-title` | Mixin applied to the heading | `{}`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-title">
+  <template>
+    <style>
+       :host {
+        display: table;
+        @apply(--paper-font-common-base);
+      }
+
+       :host h1,
+       :host h2,
+       :host h3,
+       :host h4,
+       :host h5,
+       :host h6 {
+        display: table-cell;
+        vertical-align: middle;
+        font-weight: 400;
+        padding-bottom: 5px;
+        color: var(--mdb-primary-text-dark, #000);
+        @apply(--mdb-title);
+      }
+
+       :host mdb-help-text {
+        display: table-cell;
+        vertical-align: middle;
+        position: relative;
+        font-size: var(--mdb-help-text-font-size, 1em);
+        padding-left: 5px;
+      }
+
+       :host[level="1"] mdb-help-text {
+        top: 2px;
+      }
+    </style>
+    <template is="dom-if" if="{{_isLevel(level,1)}}">
+      <h1>
+        <content></content>
+      </h1>
+    </template>
+    <template is="dom-if" if="{{_isLevel(level,2)}}">
+      <h2>
+        <content></content>
+      </h2>
+    </template>
+    <template is="dom-if" if="{{_isLevel(level,3)}}">
+      <h3>
+        <content></content>
+      </h3>
+    </template>
+    <template is="dom-if" if="{{_isLevel(level,4)}}">
+      <h4>
+        <content></content>
+      </h4>
+    </template>
+    <template is="dom-if" if="{{_isLevel(level,5)}}">
+      <h5>
+        <content></content>
+      </h5>
+    </template>
+    <template is="dom-if" if="{{_isLevel(level,6)}}">
+      <h6>
+        <content></content>
+      </h6>
+    </template>
+    <template is="dom-if" if="{{helpText}}">
+      <mdb-help-text help-text="{{helpText}}" position="{{helpTextPosition}}"></mdb-help-text>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-title',
+
+      properties: {
+        name: {
+          type: String,
+          value: 'mdb-title',
+          readOnly: true
+        },
+
+        level: {
+          type: Number,
+          value: 1,
+          reflectToAttribute: true,
+          observer: '_validateLevel'
+        },
+
+        helpText: {
+          type: String,
+          value: ''
+        },
+
+        helpTextPosition: {
+          type: String,
+          value: 'right'
+        }
+      },
+
+      _isLevel: function (prop, compare) {
+        return prop === compare;
+      },
+
+      _validateLevel: function (newValue, oldValue) {
+        //This is done since there are only six levels of heading in html
+        if (newValue <= 6 && newValue >= 1) {
+          this.level = newValue;
+        } else {
+          this.level = oldValue;
+        }
+      }
+    });
+  </script>
+</dom-module>

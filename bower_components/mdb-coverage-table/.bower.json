@@ -1,0 +1,32 @@
+{
+  "name": "mdb-coverage-table",
+  "main": "mdb-coverage-table.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "mdb-radio-list": "git://github.com/makedatabetter-dev/mdb-radio-list.git",
+    "mdb-title": "git://github.com/makedatabetter-dev/mdb-title.git",
+    "mdb-help-text": "git://github.com/makedatabetter-dev/mdb-help-text.git",
+    "atom-table": "git://github.com/makedatabetter-dev/atom-table.git",
+    "paper-dialog": "PolymerElements/paper-dialog#^2.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "resolutions": {
+    "paper-icon-button": "^1.0.0"
+  },
+  "homepage": "https://github.com/makedatabetter-dev/mdb-coverage-table",
+  "version": "0.5.3",
+  "_release": "0.5.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.5.3",
+    "commit": "91ec55aec2fe8b48288eec3d4c563cdacef80717"
+  },
+  "_source": "git://github.com/makedatabetter-dev/mdb-coverage-table.git",
+  "_target": "*",
+  "_originalSource": "git://github.com/makedatabetter-dev/mdb-coverage-table.git"
+}

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>atom-table demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../atom-table.html">
+
+  <style is="custom-style" include="demo-pages-shared-styles">
+
+  </style>
+
+</head>
+
+<body>
+  <div class="vertical-section-container">
+    <h3>Basic atom-table demo</h3>
+    <demo-snippet>
+      <template>
+        <atom-table allow-global-search allow-add-new allow-paging
+          items='[{"concept":"FICO-Score","mappingCount":"5","health":"50%","coverage":".001%","owner":"Angela","impactArea":["GDPR","Credit Risk"],"applications":["Credit Risk Assessment","Sales Account Management","Sales Campaign Management","Enterprise Data Warehouse"]}]'>
+          <vaadin-grid-column>
+            <template class="header">
+              Concept Name
+            </template>
+            <template>
+              {{item.concept}}
+            </template>
+          </vaadin-grid-column>
+          <vaadin-grid-column>
+            <template class="header">
+              # Mapping
+            </template>
+            <template>
+              {{item.mappingCount}}
+            </template>
+          </vaadin-grid-column>
+          <vaadin-grid-column>
+            <template class="header">
+              Health
+            </template>
+            <template>
+              {{item.health}}
+            </template>
+          </vaadin-grid-column>
+          <vaadin-grid-column>
+            <template class="header">
+              Coverage
+            </template>
+            <template>
+              {{item.coverage}}
+            </template>
+          </vaadin-grid-column>
+          <vaadin-grid-column>
+            <template class="header">
+              Owner
+            </template>
+            <template>
+              {{item.owner}}
+            </template>
+          </vaadin-grid-column>
+          <vaadin-grid-column>
+            <template class="header">
+              Impact Area
+            </template>
+            <template>
+              {{item.impactArea}}
+            </template>
+          </vaadin-grid-column>
+          <vaadin-grid-column>
+            <template class="header">
+              Applications
+            </template>
+            <template>
+              <template is="dom-repeat" items="{{item.applications}}">
+                <span style="background-color:#eaeff3;margin-top:3px;margin-right:3px;">{{item}}</span>
+              </template>
+            </template>
+          </vaadin-grid-column>
+        </atom-table>
+      </template>
+    </demo-snippet>
+  </div>
+
+<script>
+
+  window.addEventListener('WebComponentsReady', function(){
+    var table = document.querySelector('atom-table');
+    table.allowColumnPaging = true;
+    var items = [];
+    for(var i=0; i<15; i++){
+      var item = {
+        concept : "Concept " + (i + 1),
+        mappingCount : "MappingCount " + (i + 1),
+        health : "Health Count " + (i + 1),
+        coverage : "Coverage " + (i + 1),
+        owner : 'Owner ' + (i + 1),
+        impactArea : 'ImpactArea ' + (i + 1),
+        applications : ["Application " + (i + 1)]
+      }
+      items.push(item);
+    }
+
+    table.allowEdit = true;
+    table.items = items;
+  });
+
+</script>
+
+</body>
+
+</html>

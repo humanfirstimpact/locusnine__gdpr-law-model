@@ -1,0 +1,29 @@
+{
+  "name": "atom-modal-dialog",
+  "main": "atom-modal-dialog.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "paper-dialog": "PolymerElements/paper-dialog#^2.0.0",
+    "paper-icon-button": "PolymerElements/paper-icon-button#^2.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "resolutions": {
+    "paper-icon-button": "^1.0.0"
+  },
+  "homepage": "https://github.com/makedatabetter-dev/atom-modal-dialog",
+  "version": "0.1.0",
+  "_release": "0.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.0",
+    "commit": "f4390faf5c6ceab01d6151d05aa594baad1e40d6"
+  },
+  "_source": "git://github.com/makedatabetter-dev/atom-modal-dialog.git",
+  "_target": "*",
+  "_originalSource": "git://github.com/makedatabetter-dev/atom-modal-dialog.git"
+}

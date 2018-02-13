@@ -1,0 +1,50 @@
+<link rel="import" href="../gid-remove-concept.html">
+
+<dom-module id="remove-concept">
+  <template>
+  		<h1>Remove Concept</h1>
+        <gid-remove-concept api-url='https://srv-34-197-77-167.globalids.com:8443/api/v1'
+        user='1' concept='-7702396505347769359' api-token = 'MTAxNjUwMzAxMTUwNDUwNTg3NDkwODA5MDFY'
+        remove=true response={{response}}>
+		</gid-remove-concept>
+        
+        <template is="dom-if" if="[[isConceptRemoved]]">
+            <p>{{response.id}} &nbsp; {{response.message}}</p>
+        </template>
+        <template is="dom-if" if="![[isConceptRemoved]]">
+                <p>{{response.userMessage}}</p>
+        </template>
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'remove-concept',
+        properties:{
+	 	   	    response: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true,
+     	          observer: 'responseReceived'
+     	        },
+     	        isConceptRemoved: {
+     	        	type: Boolean,
+     	        	value: false
+     	        }
+        },
+         responseReceived: function () {
+        	 if(this.response){	
+        		 if(this.response.length > 0){	
+     				if(this.response[0]['errorCode']){
+     					this.isConceptRemoved = false;
+     				}
+             	 }
+        		 else if(this.response.hasOwnProperty("id")){
+  					this.isConceptRemoved =  true;
+  				}
+        	 }
+         }
+      });
+    })();
+  </script>
+</dom-module>

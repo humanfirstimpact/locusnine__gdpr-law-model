@@ -1,0 +1,522 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../atom-table/atom-table.html">
+<link rel="import" href="../mdb-title/mdb-title.html">
+<link rel="import" href="../mdb-radio-list/mdb-radio-list.html">
+<link rel="import" href="mdb-vaadin-grid-column-selector.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`mdb-coverage-table`
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--mdb-coverage-table-title` | Mixin applied to coverage table title | `{}`
+`--mdb-coverage-table-radio-list` | Mixin applied to both the radio lists in coverage table | `{}`
+`--mdb-coverage-table-options-padding` | Top and bottom padding applied to coverage table options sections | `10px`
+`--mdb-coverage-table-options` | Mixin applied to coverage table options section | `{}`
+`--mdb-coverage-table-cell` | Mixin applied to coverage table cells | `{}`
+`--mdb-coverage-table-header-cell` | Mixin applied to coverage table header cells | `{}`
+`--mdb-coverage-table-body-cell` | Mixin applied to coverage table cells | `{}`
+`--mdb-coverage-table-odd-row-cell` | Mixin applied to coverage table odd row cells | `{}`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-coverage-table">
+  <template>
+    <style>
+      :host {
+        display: block;
+        color: var(--mdb-secondary-text-dark);
+        --atom-table-cell: {
+          padding: 0;
+        }
+        --atom-table-header-cell: {
+          @apply(--mdb-coverage-table-header-cell);
+        }
+        --atom-table-body-cell: {
+          color: var(--mdb-primary-text-dark, #000);
+          @apply(--mdb-coverage-table-body-cell);
+        }
+        --atom-table-body-row-odd-cell: {
+          @apply(--mdb-coverage-table-odd-row-cell);
+        }
+        --mdb-search-box-container: {
+          margin: 0;
+        }
+      }
+
+      :host .header-search-box {
+        flex: 0 1 40%;
+      }
+
+      :host #modal .modal-search-box {
+        margin-top: 0;
+      }
+
+      #modal paper-radio-button {
+        opacity: 0.6;
+      }
+
+      #modal paper-radio-button[aria-checked="true"] {
+        opacity: 1;
+      }
+
+      :host mdb-search-box paper-icon-button {
+        color: var(--coverage-table-button-color, #464646);
+      }
+
+      :host mdb-title {
+        @apply(--mdb-coverage-table-title);
+      }
+
+      :host mdb-radio-list {
+        display: inline-block;
+      }
+
+      :host atom-table {
+        @apply(--paper-font-common-base);
+        --atom-table: {
+          @apply(--mdb-coverage-table);
+        }
+      }
+
+      :host .table-options {
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        justify-content: space-between;
+        border-top: 1px solid var(--mdb-border-color, #000);
+        border-bottom: 1px solid var(--mdb-border-color, #000);
+        padding-top: var(--mdb-coverage-table-options-padding, 10px);
+        padding-bottom: var(--mdb-coverage-table-options-padding, 10px);
+        @apply(--mdb-coverage-table-options);
+
+        --paper-radio-button: {
+          color: inherit;
+        }
+      }
+
+      :host mdb-radio-list {
+        @apply(--mdb-coverage-table-radio-list);
+      }
+
+      :host mdb-vaadin-grid-column-selector {
+        padding: 8px;
+        box-sizing: border-box;
+      }
+
+      :host .mdb-cell {
+        padding: 8px;
+        width: 100%;
+        @apply(--mdb-coverage-table-cell);
+        min-height: 100%;
+      }
+
+      :host .selected {
+        background-color: var(--mdb-accent-color-background, #f3f6fb);
+      }
+
+      :host .title-row {
+        @apply(--layout-horizontal);
+        @apply(--layout-end);
+        @apply(--layout-justified);
+
+        padding: 0 0 10px 0;
+      }
+
+      :host .indicator-icon {
+        display: inline-block;
+        background-color: #aaa;
+        height: 13px;
+        width: 13px;
+        vertical-align: middle;
+        margin-right: 5px;
+        border-radius: 50%;
+      }
+
+      :host .indicator-icon.orange {
+        background-color: orange;
+      }
+
+      :host iron-icon {
+        color: #aaa;
+        width: 16px;
+        height: 16px;
+      }
+
+      :host iron-icon.column-accepted {
+        color: #5bca52;
+      }
+
+      :host iron-icon.column-rejected {
+        color: red;
+      }
+
+      :host .column-status {
+        padding: 5px;
+        @apply(--layout-horizontal);
+      }
+
+      :host .column-status>* {
+        flex: 0 0 20%
+      }
+
+      :host .column-status .flag {
+        cursor: pointer;
+      }
+
+      :host .column-status .flagged {
+        color: orange;
+      }
+
+      :host .modalContainer>* {
+        margin: 12px;
+        --mdb-title: {
+          color: inherit;
+        }
+      }
+
+      :host .modalContainer {
+        padding: 12px;
+      }
+
+      :host .modalContainer,
+      :host #modal #radio-list {
+        margin: 0;
+        color: var(--mdb-disabled-text-dark);
+        min-width: 300px;
+      }
+
+      :host .modalContainer .special-text {
+        color: var(--mdb-primary-text-dark);
+      }
+
+      :host #modal .flex {
+        @apply(--layout-flex);
+      }
+
+      :host #modal .help-title {
+        margin-bottom: 0;
+      }
+
+      :host #modal paper-radio-button {
+        display: block;
+      }
+
+      :host #modal #buttons {
+        @apply(--layout-horizontal);
+        border-top: 1px solid var(--mdb-border-color);
+        padding: 8px 0;
+        margin: 0;
+      }
+
+      :host #modal paper-button {
+        --paper-button: {
+          color: var(--mdb-link-color);
+          font-weight: 600;
+        }
+      }
+
+      :host #overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: #444;
+        opacity: 0.5;
+        z-index: 100;
+      }
+
+      :host .title-row-icons iron-icon {
+        color: #5caadb;
+      }
+
+      :host .title-row-icons mdb-help-text {
+        --mdb-help-icon: {
+          color: #5caadb;
+          height: 24px;
+          width: 24px;
+        }
+      }
+    </style>
+    <div class="title-row">
+      <mdb-title help-text="{{helpText}}" level="3">{{titleText}}</mdb-title>
+      <template is="dom-if" if="[[showScrambledDataIcons]]">
+        <div class="title-row-icons">
+          <div class="indicator-icon"></div>
+          <div class="indicator-icon orange"></div>
+          <iron-icon icon="icons:lock-open"></iron-icon>
+        </div>
+      </template>
+      <mdb-search-box label=" " class="header-search-box">
+        <paper-icon-button icon="search" name="search" suffix>ALL</paper-icon-button>
+      </mdb-search-box>
+    </div>
+    <div class="table-options">
+      <div class="column-options">
+        Columns shown
+        <mdb-radio-list size="small" selected="{{columnsShown}}">
+          <paper-radio-button name="all">ALL</paper-radio-button>
+          <paper-radio-button name="recommended">RECOMMENDED</paper-radio-button>
+        </mdb-radio-list>
+      </div>
+      <div class="sorting-options">
+        Sorted by
+        <mdb-radio-list size="small" selected="{{columnsSortBy}}">
+          <paper-radio-button name="relevance">RELEVANCE</paper-radio-button>
+          <paper-radio-button name="recency">RECENCY</paper-radio-button>
+          <paper-radio-button name="alphabetically">ALPHABETICALLY</paper-radio-button>
+          <paper-radio-button name="none">NONE</paper-radio-button>
+        </mdb-radio-list>
+      </div>
+    </div>
+    <atom-table items="{{items}}" allow-column-paging column-page-size="{{columnPageSize}}" column-page-num="{{columnPageNum}}"
+      total-columns="[[totalColumns]]">
+      <template is="dom-repeat" items="{{columns}}" as="column" index-as="colIndex">
+        <vaadin-grid-column>
+          <template class="header">
+            <mdb-vaadin-grid-column-selector class$="[[_isSelected(selectedColumn, column.id)]] mdb-cell" path="[[column.id]]">
+              <div class="column-status">
+
+                <template is="dom-if" if="[[_isColumnAccepted(column)]]">
+                  <iron-icon class="column-accepted" icon="icons:check-circle"></iron-icon>
+                </template>
+
+
+                <template is="dom-if" if="[[_isColumnRejected(column)]]">
+                  <iron-icon class="column-rejected" icon="icons:cancel"></iron-icon>
+                </template>
+
+
+                <template is="dom-if" if="[[!column.flagged]]">
+                  <iron-icon icon="icons:flag" class="flag" on-tap="_openModal" column$="[[column.id]]" title="Flag [[column.label]]"></iron-icon>
+                </template>
+
+                <template is="dom-if" if="[[column.flagged]]">
+                  <iron-icon icon="icons:flag" class="flag flagged" on-tap="_openModal" column$="[[column.id]]" title="[[column.label]] flagged in [[column.flaggedIn]]"></iron-icon>
+                </template>
+
+              </div>
+              <div>
+                [[column.label]]
+              </div>
+            </mdb-vaadin-grid-column-selector>
+          </template>
+          <template>
+            <mdb-vaadin-grid-column-selector class$="[[_isSelected(selectedColumn, column.id)]] mdb-cell" path="[[column.id]]">
+              [[_getColValue(item, colIndex)]]
+            </mdb-vaadin-grid-column-selector>
+          </template>
+        </vaadin-grid-column>
+      </template>
+    </atom-table>
+    <template is="dom-if" if="[[_isModalOpen(_modalOpen)]]">
+      <div id="overlay" on-tap="_closeModal">
+      </div>
+    </template>
+    <paper-dialog id="modal">
+      <div class="modalContainer">
+        <mdb-title level="2">Flag column
+          <span class="special-text">[[selectedColumn.label]]</span> as</mdb-title>
+        <mdb-title class="help-title" level="4" help-text="this is proposed concept">Proposed Concept</mdb-title>
+        <mdb-search-box class="modal-search-box" label=" " filter="{{selectedColumn.label}}" placeholder="Enter Concept"></mdb-search-box>
+        <mdb-title class="help-title" level="3">LOB</mdb-title>
+        <div id="radio-list">
+          <paper-radio-group>
+            <template is="dom-repeat" items="[[lobs]]">
+              <paper-radio-button name="[[item.id]]">[[item.label]]</paper-radio-button>
+            </template>
+          </paper-radio-group>
+        </div>
+      </div>
+
+      <div id="buttons">
+        <paper-button id="unflag" on-tap="_unflag">Unflag</paper-button>
+        <span class="flex"></span>
+        <paper-button id="cancel" on-tap="_closeModal">Cancel</paper-button>
+        <paper-button id="flag" on-tap="_flag">Flag</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-coverage-table',
+
+      properties: {
+        name: {
+          type: String,
+          value: 'mdb-coverage-table',
+        },
+
+        titleText: String,
+
+        helpText: String,
+
+        columns: {
+          type: Array,
+          value: []
+        },
+
+        columnPageSize: {
+          type: Number,
+          value: 3,
+          notify: true
+        },
+
+        columnPageNum: {
+          type: Number,
+          value: 1,
+          notify: true
+        },
+
+        totalColumns: {
+          type: Number,
+          value: 0
+        },
+
+        columnsShown: {
+          type: String,
+          value: 'recommended',
+          reflectToAttribute: true,
+          observer: '_columnsShownRecAll'
+        },
+
+        columnsSortBy: {
+          type: String,
+          value: 'relevance',
+          reflectToAttribute: true,
+        },
+
+        items: {
+          type: Array,
+          value: []
+        },
+
+        selectedColumn: {
+          type: String,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        lobs: {
+          type: Array,
+          value: []
+        },
+
+        showScrambledDataIcons: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+
+        _modalOpen: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      observers: [
+        '_refreshColumns(columnPageSize, columnPageNum)'
+      ],
+
+      listeners: {
+        'select-column': '_selectedChanged'
+      },
+
+      _columnsShownRecAll: function () {
+        this.fire('show-columns', { "type": this.columnsShown });
+      },
+
+      _selectedChanged: function (e, args) {
+        this.set('selectedColumn', this.columns.find(function (e) {
+          return e.id === args.path;
+        }));
+      },
+
+      _isSelected: function (selected, current) {
+        return (selected.id === current ? 'selected' : '');
+      },
+
+      _isColumnAccepted: function (column) {
+        return (column.assessment || 'n').toLowerCase() == 'y';
+      },
+
+      _isColumnRejected: function (column) {
+        return (column.assessment || 'n').toLowerCase() == 'n';
+      },
+
+      _openModal: function (e) {
+        var id = e.currentTarget.attributes.getNamedItem('column').value,
+          column = this.columns.find(function (e) { return id === e.id; });
+
+        if (column) {
+          this._modalOpen = true;
+          this.$.modal.open();
+
+          var radioGroup = this.querySelector('#modal paper-radio-group');
+          if (radioGroup) {
+            radioGroup.selected = column.flaggedIn;
+          }
+        }
+      },
+
+      _flag: function () {
+        var that = this,
+          lob = this.querySelector('#modal paper-radio-group').selected,
+          column = this.columns.find(function (e) { return that.selectedColumn.id === e.id; }),
+          index = this.columns.indexOf(column);
+
+        this.set('columns.' + index + '.flagged', true);
+        this.set('columns.' + index + '.flaggedIn', lob);
+        this.fire('flag-column', column);
+        this._closeModal();
+      },
+
+      _unflag: function () {
+        var that = this,
+          column = this.columns.find(function (e) { return that.selectedColumn.id === e.id; }),
+          index = this.columns.indexOf(column);
+
+        this.set('columns.' + index + '.flagged', false);
+        this.set('columns.' + index + '.flaggedIn', undefined);
+        this.fire('unflag-column', column);
+        this._closeModal();
+      },
+
+      _closeModal: function () {
+        this.querySelectorAll('#modal paper-radio-group').selected = undefined;
+        this._modalOpen = false;
+        this.$.modal.close();
+      },
+
+      _isModalOpen: function (open) {
+        return open;
+      },
+
+      _getColValue: function (arr, index) {
+        return (arr || [])[index] || '';
+      },
+
+      _refreshColumns: function (psize, pnum) {
+        this.fire('refresh-columns', {
+          psize: psize,
+          pnum: pnum
+        });
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,25 @@
+{
+  "name": "mdb-metric-display",
+  "description": "Stats component",
+  "main": "mdb-metric-display.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/makedatabetter-dev/mdb-metric-display",
+  "version": "0.0.6",
+  "_release": "0.0.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.0.6",
+    "commit": "16579810971992c600732c8322a3dafda0a8b974"
+  },
+  "_source": "git://github.com/makedatabetter-dev/mdb-metric-display.git",
+  "_target": "*",
+  "_originalSource": "git://github.com/makedatabetter-dev/mdb-metric-display.git"
+}

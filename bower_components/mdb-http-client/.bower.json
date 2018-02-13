@@ -1,0 +1,13 @@
+{
+  "name": "mdb-http-client",
+  "homepage": "https://github.com/makedatabetter/mdb-http-client",
+  "_release": "df4aafc516",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "df4aafc516045c48deffec4de68ae8386a685cdd"
+  },
+  "_source": "git@github.com:makedatabetter/mdb-http-client.git",
+  "_target": "*",
+  "_originalSource": "git@github.com:makedatabetter/mdb-http-client.git"
+}

@@ -1,0 +1,84 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`mdb-status-chip`
+
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--mdb-status-chip-icon` | Mixin applied to list status icon | `{}`
+`--mdb-status-chip-container` | Mixin applied to list status container | `{}`
+`--mdb-status-chip-label` | Mixin applied to list status label | `{}`
+`--mdb-status-chip-value` | Mixin applied to list status value | `{}`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-status-chip">
+  <template>
+    <style>
+       :host {
+        display: block;
+        @apply(--paper-font-common-base);
+      }
+
+       :host iron-icon {
+        @apply(--mdb-status-chip-icon);
+      }
+
+       :host .status-label {
+        @apply(--mdb-status-chip-label);
+      }
+
+       :host .status-value {
+        font-style: italic;
+        @apply(--mdb-status-chip-value);
+      }
+
+       :host .status-container {
+        background-color: #e7f0f7;
+        display: inline-block;
+        padding: 0.5em 1em 0.5em 1em;
+        border-radius: 2em;
+        color: #a1a8ba;
+        @apply(--mdb-status-chip-container);
+      }
+    </style>
+    <div class="status-container">
+      <iron-icon icon="[[icon]]"></iron-icon>
+      <span class="status-label">[[statusLabel]]</span> : <span class="status-value">[[statusValue]]</span>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-status-chip',
+
+      properties: {
+        icon: {
+          type: String,
+          value: '',
+        },
+
+        statusLabel: {
+          type: String,
+          value: '',
+        },
+
+        statusValue: {
+          type: String,
+          value: '',
+        },
+      },
+
+    });
+  </script>
+</dom-module>

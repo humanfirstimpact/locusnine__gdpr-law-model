@@ -1,0 +1,388 @@
+<link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
+<link rel="import" href="../../paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../../paper-toast/paper-toast.html">
+<link rel="import" href="../../paper-listbox/paper-listbox.html">
+<link rel="import" href="../../paper-item/paper-item.html">
+<link rel="import" href="../gid-list-entities.html">
+
+<script src="../../jquery/dist/jquery.min.js"></script>
+<script src="../../lodash/dist/lodash.min.js"></script>
+
+<dom-module id="list-entities">
+<template>
+	 <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+		  	table, th, td {
+		    border: 1px solid grey;
+		    border-collapse: collapse;
+			}
+			td {
+			    text-align: center;
+			}
+			paper-input {
+			    max-width: 400px;
+/* 			    margin: auto; */
+			}
+			paper-button {
+			    font-family: 'Roboto', 'Noto', sans-serif;
+			    font-weight: normal;
+			    font-size: 14px;
+			    -webkit-font-smoothing: antialiased;
+			}
+			paper-button.indigo {
+			    background-color: var(--paper-indigo-500);
+			    color: white;
+			}
+			paper-button.indigo:hover {
+			    background-color: var(--paper-indigo-400);
+			}
+			paper-button.green {
+			    background-color: var(--paper-green-500);
+			    color: white;
+			}
+			paper-button.disabled {
+			    pointer-events: none;
+			}
+		    paper-button.green[active] {
+		        background-color: var(--paper-green-500);
+		    }
+		    paper-button.blue {
+			    background-color: #5da9dd;
+			    color: white;
+			}
+		    paper-dropdown-menu {
+			    height: 200px;
+			    display: block;
+		   }
+		   .no-display{
+		  	display-none;
+		   }
+		   .display-block{
+		  	display: block;
+		   }
+  		</style>
+  </custom-style>
+    
+    	<paper-input label="Api Url" value={{apiUrl}} id="apiUrl"></paper-input>
+  		<paper-input label="Api Token" value={{apiToken}} id="apiToken"></paper-input>
+	
+     
+         <p>
+         	<paper-button raised class="green" id="submitBtn" on-click="_submit">Submit</paper-button>
+         	<paper-button raised class="blue" id="resetBtn" on-click="_resetVal">Reset</paper-button>
+         </p>
+         <paper-toast id="toast" text="{{toastrMsg}}"></paper-toast>
+         <hr/>
+        <template is="dom-if" if="{{showEntities}}">
+        
+         <gid-list-entities
+         api-url={{apiUrl}}
+         api-token={{apiToken}}
+         entity="LOBS"
+         entities={{lobs}}>
+         </gid-list-entities>
+         <template is="dom-if" if="[[lobs.length]]">
+            <paper-listbox>
+	             <h2>Lobs</h2>
+		         <template is="dom-repeat" items="[[lobs]]">
+		                <p>{{item.label}}</p>
+		        </template>
+		        <textarea readonly style="width:80%; height:100px;">
+				<gid-list-entities api-url="<your-api-url>" api-token="<your-api-token>" 
+				entity="LOBS" entities="<your-response-array">
+				</gid-list-entities>
+				</textarea>
+			</paper-listbox>
+        </template>
+        
+        <p></p>
+        <gid-list-entities
+        api-url={{apiUrl}}
+        api-token={{apiToken}}
+        lob="1235"
+        entity="CONCEPTS"
+        entities={{concepts}}>
+        </gid-list-entities>
+        <template is="dom-if" if="[[concepts.length]]">
+            <paper-listbox>
+	             <h2>Concepts</h2>
+		         <template is="dom-repeat" items="[[concepts]]">
+		                <p>{{item.label}}</p>
+		        </template>
+		        <textarea readonly style="width:80%; height:100px;">
+				<gid-list-entities api-url="<your-api-url>" api-token="<your-api-token>"
+			    lob="<lob-id>" entity="CONCEPTS" entities="<your-response-array">
+			    </gid-list-entities>
+				</textarea>
+			</paper-listbox>
+        </template>
+        
+        <p></p>
+        <gid-list-entities
+         api-url={{apiUrl}}
+         api-token={{apiToken}}
+         entity="APPLICATIONS"
+         lob="1235"
+         concept="1234"
+         entities={{applications}}>
+         </gid-list-entities>
+         <template is="dom-if" if="[[applications.length]]">
+            <paper-listbox>
+	             <h2>Applications</h2>
+	              <table style="width:100%">
+					  <tr>
+					    <th>Label</th>
+					    <th>Predicted Columns</th>
+					    <th>Confirmed Columns</th>
+					  </tr>
+					  <template is="dom-repeat" items="[[applications]]">
+					  <tr>
+					    <td valign="top">
+		                	{{item.label}}
+						</td>
+						<td valign="top">
+		                	{{item.predictedColumns}}
+						</td>
+						<td valign="top">
+		                	{{item.confirmedColumns}}
+						</td>
+					  </tr>
+		        	 </template>
+		          </table>
+		         <p></p>
+		        <textarea readonly style="width:80%; height:100px;">
+				<gid-list-entities api-url="<your-api-url>" api-token="<your-api-token>" 
+				all=true lob="<lob-id>" concept="<concept-id>" 
+			    entity="APPLICATIONS" entities="<your-response-array"></gid-list-entities>
+				</textarea>
+			</paper-listbox>
+        </template>
+        
+        <p></p>
+        <gid-list-entities
+         api-url={{apiUrl}}
+         api-token={{apiToken}}
+         entity="DATABASES"
+         lob="1235"
+         concept="1234"
+         application="1234"
+         entities={{databases}}>
+         </gid-list-entities>
+         <template is="dom-if" if="[[databases.length]]">
+            <paper-listbox>
+	             <h2>Databases</h2>
+		         <table style="width:100%">
+					  <tr>
+					    <th>Label</th>
+					    <th>Predicted Columns</th>
+					    <th>Confirmed Columns</th>
+					  </tr>
+					  <template is="dom-repeat" items="[[databases]]">
+					  <tr>
+					    <td valign="top">
+		                	{{item.label}}
+						</td>
+						<td valign="top">
+		                	{{item.predictedColumns}}
+						</td>
+						<td valign="top">
+		                	{{item.confirmedColumns}}
+						</td>
+					  </tr>
+		        	 </template>
+		          </table>
+		         <p></p>
+		        <textarea readonly style="width:80%; height:100px;">
+				<gid-list-entities api-url="<your-api-url>" api-token="<your-api-token>" 
+				lob="<lob-id>" concept="<concept-id>" application="<application-id>"
+				entity="DATABASES" entities="<your-response-array"></gid-list-entities>
+				</textarea>
+			</paper-listbox>
+        </template>
+        
+        <p></p>
+        <gid-list-entities
+         api-url={{apiUrl}}
+         api-token={{apiToken}}
+         entity="SCHEMAS"
+         lob="1235"
+         concept="1234"
+         application="1234"
+         databases="1234"
+         entities={{schemas}}>
+         </gid-list-entities>
+         <template is="dom-if" if="[[schemas.length]]">
+            <paper-listbox>
+	             <h2>Schemas</h2>
+		         <table style="width:100%">
+					  <tr>
+					    <th>Label</th>
+					    <th>Predicted Columns</th>
+					    <th>Confirmed Columns</th>
+					  </tr>
+					  <template is="dom-repeat" items="[[schemas]]">
+					  <tr>
+					    <td valign="top">
+		                	{{item.label}}
+						</td>
+						<td valign="top">
+		                	{{item.predictedColumns}}
+						</td>
+						<td valign="top">
+		                	{{item.confirmedColumns}}
+						</td>
+					  </tr>
+		        	 </template>
+		          </table>
+		         <p></p>
+		        <textarea readonly style="width:80%; height:100px;">
+				<gid-list-entities api-url="<your-api-url>" api-token="<your-api-token>" 
+				lob="<lob-id>" concept="<concept-id>" application="<application-id>" database="<database-id>"
+				entity="SCHEMAS" entities="<your-response-array"></gid-list-entities>
+				</textarea>
+			</paper-listbox>
+        </template>
+        
+        <p></p>
+        <gid-list-entities
+         api-url={{apiUrl}}
+         api-token={{apiToken}}
+         entity="TABLES"
+         lob="1235"
+         concept="1234"
+         application="1234"
+         database="1234"
+         schema="1234"
+         entities={{tables}}>
+         </gid-list-entities>
+         <template is="dom-if" if="[[tables.length]]">
+            <paper-listbox>
+	             <h2>Tables</h2>
+		         <table style="width:100%">
+					  <tr>
+					    <th>Label</th>
+					    <th>Predicted Columns</th>
+					    <th>Confirmed Columns</th>
+					  </tr>
+					  <template is="dom-repeat" items="[[tables]]">
+					  <tr>
+					    <td valign="top">
+		                	{{item.label}}
+						</td>
+						<td valign="top">
+		                	{{item.predictedColumns}}
+						</td>
+						<td valign="top">
+		                	{{item.confirmedColumns}}
+						</td>
+					  </tr>
+		        	 </template>
+		          </table>
+		         <p></p>
+		        <textarea readonly style="width:80%; height:100px;">
+				<gid-list-entities api-url="<your-api-url>" api-token="<your-api-token>" 
+				lob="<lob-id>" concept="<concept-id>" application="<application-id>" database="<database-id>" schema="<schema-id>"
+				entity="TABLES" entities="<your-response-array"></gid-list-entities>
+				</textarea>
+			</paper-listbox>
+        </template>
+        
+        <p></p>
+        <gid-list-entities
+         api-url={{apiUrl}}
+         api-token={{apiToken}}
+         entity="COLUMNS"
+         lob="1235"
+         concept="1234"
+         application="1234"
+         database="1234"
+         schema="1234"
+         table="1234"
+         entities={{columns}}>
+         </gid-list-entities>
+         <template is="dom-if" if="[[columns.length]]">
+            <paper-listbox>
+	             <h2>Columns</h2>
+		         <template is="dom-repeat" items="[[columns]]">
+		                <p>{{item.label}}</p>
+		        </template>
+		        <textarea readonly style="width:80%; height:100px;">
+				<gid-list-entities api-url="<your-api-url>" api-token="<your-api-token>" 
+				lob="<lob-id>" concept="<concept-id>" application="<application-id>" database="<database-id>" schema="<schema-id>"
+				table="<table-id>" entity="COLUMNS" entities="<your-response-array"></gid-list-entities>
+				</textarea>
+			</paper-listbox>
+        </template>
+        
+        </template>
+       
+       </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'list-entities',
+        properties:{
+     	        lobs: {
+      	          type: Array,
+      	          value: [],
+      	          notify: true
+      	        },
+      	        concepts: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true,
+     	        },
+     	        applications: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true,
+     	        },
+     	        databases: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true,
+     	        },
+     	        schemas: {
+      	          type: Array,
+      	          value: [],
+      	          notify: true,
+      	        },
+      	        tables: {
+       	          type: Array,
+       	          value: [],
+       	          notify: true,
+       	        },
+     	        apiUrl: {
+        	      type: String,
+       	   		  notify: true,
+       	   		  value: 'https://virtserver.swaggerhub.com/srimanta.maji/CCOVA/v1'
+        	    },
+        	    apiToken: {
+       	       	  type: String,
+      	   		  notify: true,
+      	   		  value: ''
+       	        },
+       	        showEntities: {
+      	       	  type: Boolean,
+       	   		  notify: true,
+       	   		  value: false
+       	        }
+        },
+ 
+         _submit: function(event){
+        	 this.apiUrl = $("#apiUrl").val();
+        	 this.apiToken = $("#apiToken").val();
+        	 if(!this.apiUrl){
+        		 this.toastrMsg = "No url provided, hence fetching sample data";
+        		 this.$.toast.open();
+        	 }
+       	     this.user = 1;
+       	     this.showEntities = true;
+         }
+      });
+    })();
+  </script>
+</dom-module>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>atom-modal-dialog demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../atom-modal-dialog.html">
+  <link rel="import" href="../../paper-button/paper-button.html">
+
+  <style is="custom-style" include="demo-pages-shared-styles">
+
+  </style>
+</head>
+
+<body>
+  <dom-module id="atom-modal-dialog-demo">
+    <template>
+      <style>
+
+      </style>
+      <atom-modal-dialog id="modal" buttons='[{"title":"Cancel","action":"cancel"},{"name":"Save","action":"save"}]'>
+        <paper-button on-tap="_click">Hello</paper-button>
+      </atom-modal-dialog>
+      <paper-button on-tap="_showModal">Show Modal</paper-button>
+    </template>
+
+    <script>
+      Polymer({
+        is: 'atom-modal-dialog-demo',
+
+        _showModal: function () {
+          this.$.modal.open();
+        }
+      });
+    </script>
+  </dom-module>
+  <div class="vertical-section-container centered">
+    <h3>Basic atom-modal-dialog demo</h3>
+    <demo-snippet>
+      <template>
+        <atom-modal-dialog-demo>
+        </atom-modal-dialog-demo>
+      </template>
+    </demo-snippet>
+  </div>
+</body>
+
+</html>

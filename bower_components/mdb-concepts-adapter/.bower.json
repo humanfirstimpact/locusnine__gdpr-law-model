@@ -1,0 +1,13 @@
+{
+  "name": "mdb-concepts-adapter",
+  "homepage": "https://github.com/makedatabetter/mdb-concepts-adapter",
+  "_release": "f785b14020",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "f785b140202db6d4c1438f77379f98d9ddd5eb1e"
+  },
+  "_source": "git@github.com:makedatabetter/mdb-concepts-adapter.git",
+  "_target": "*",
+  "_originalSource": "git@github.com:makedatabetter/mdb-concepts-adapter.git"
+}

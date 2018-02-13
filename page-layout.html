@@ -1,0 +1,53 @@
+<link rel="import" href="../mdb-title/mdb-title.html">
+<!--
+A comment describing this element
+
+Example:
+
+    <my-elem></my-elem>
+
+Example:
+
+    <my-elem>
+      <h2>Hello my-elem</h2>
+    </my-elem>
+
+@demo demo/index.html
+-->
+<dom-module id="page-layout">
+    <template>
+        <style>
+             :host {
+                display: block;
+                height: 100%;
+                padding: var(--standard-padding, 20px);
+                padding-bottom: 50px;
+                background-color: var(--mdb-app-background, #f0f4f9);
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+                --mdb-title: {
+                    margin: 0;
+                    padding: 0;
+                    font-weight: var(--font-normal, normal);
+                    font-size: 2em;
+                }
+            }
+
+            .content-body {
+                padding: var(--standard-padding, 20px);
+                background: var(--content-bg, #fff);
+                @apply(--layout-flex);
+                @apply(--page-layout-content-body);
+            }
+        </style>
+        <div class="content-body">
+            <slot name="body"></slot>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'page-layout'
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,93 @@
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-menu-behavior/iron-menu-behavior.html">
+<link rel="import" href="../paper-styles/default-theme.html">
+<link rel="import" href="side-menu-shared-styles.html">
+
+<!--
+Material design: [Menus](https://www.google.com/design/spec/components/menus.html)
+
+`<side-menu>` implements an accessible menu control with Material Design styling. The focused item
+is highlighted, and the selected item has bolded text.
+
+    <side-menu>
+      <paper-item>Item 1</paper-item>
+      <paper-item>Item 2</paper-item>
+    </side-menu>
+
+An initial selection can be specified with the `selected` attribute.
+
+    <side-menu selected="0">
+      <paper-item>Item 1</paper-item>
+      <paper-item>Item 2</paper-item>
+    </side-menu>
+
+Make a multi-select menu with the `multi` attribute. Items in a multi-select menu can be deselected,
+and multiple items can be selected.
+
+    <side-menu multi>
+      <paper-item>Item 1</paper-item>
+      <paper-item>Item 2</paper-item>
+    </side-menu>
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--side-menu-background-color`   | Menu background color                                            | `--primary-background-color`
+`--side-menu-color`              | Menu foreground color                                            | `--primary-text-color`
+`--side-menu-disabled-color`     | Foreground color for a disabled item                             | `--disabled-text-color`
+`--side-menu`                    | Mixin applied to the menu                                        | `{}`
+`--side-menu-selected-item`      | Mixin applied to the selected item                               | `{}`
+`--side-menu-focused-item`       | Mixin applied to the focused item                                | `{}`
+`--side-menu-focused-item-after` | Mixin applied to the ::after pseudo-element for the focused item | `{}`
+
+### Accessibility
+
+`<side-menu>` has `role="menu"` by default. A multi-select menu will also have
+`aria-multiselectable` set. It implements key bindings to navigate through the menu with the up and
+down arrow keys, esc to exit the menu, and enter to activate a menu item. Typing the first letter
+of a menu item will also focus it.
+
+@group Paper Elements
+@element side-menu
+@hero hero.svg
+@demo demo/index.html
+-->
+
+<dom-module id="side-menu">
+  <template>
+    <style include="side-menu-shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+
+        background: var(--side-menu-background-color, transparent);
+        color: var(--side-menu-color, --primary-text-color);
+        margin: 0;
+        padding: 0;
+        outline: 0;
+        @apply(--side-menu);
+      }
+      
+    </style>
+
+    <div class="selectable-content">
+      <content></content>
+    </div>
+  </template>
+
+  <script>
+    (function() {
+      Polymer({
+        is: 'side-menu',
+
+        behaviors: [
+          Polymer.IronMenuBehavior
+        ]
+      });
+    })();
+  </script>
+</dom-module>

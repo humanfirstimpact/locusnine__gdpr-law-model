@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>mdb-facet-curator demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../mdb-facet-curator.html">
+
+  <style is="custom-style" include="demo-pages-shared-styles">
+  </style>
+</head>
+
+<body>
+    <mdb-facet-curator facet-type="Patterns" help-text="Use patterns to find examples of columns having matching data values."
+      facets='[{"label":"DD/MM/YY","relevance":"37","verified":"F", "assessment": "M"},{"label":"MM/DD/YY","relevance":"54","verified":"N"},{"label":"MM/DD/YYYY","relevance":"59","verified":"Y"}]'></mdb-facet-curator>
+</body>
+
+</html>

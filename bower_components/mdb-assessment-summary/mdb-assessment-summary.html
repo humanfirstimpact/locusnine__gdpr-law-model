@@ -1,0 +1,227 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../mdb-metric-display/mdb-metric-display.html">
+<link rel="import" href="../mdb-radio-list/mdb-radio-list.html">
+<link rel="import" href="../paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../mdb-search-box/mdb-search-box.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`mdb-assessment-summary`
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--mdb-border-color` | Color of assessment summary component border | `#000`
+`--mdb-primary-text-dark` | Color of assessment summary font | `#000`
+-->
+
+<dom-module id="mdb-assessment-summary">
+  <template>
+    <style>
+       :host {
+        display: inline-block;
+        padding: var(--standard-padding, 20px);
+        border: 1px solid var(--mdb-border-color, #000);
+        width: 25em;
+        vertical-align: top;
+        height: 31em;
+        color: var(--mdb-primary-text-dark, #000);
+        --mdb-radio-list-container: {
+          width: 23.6em;
+        }
+        --stat-value: {
+          font-size: 6em;
+        }
+        @apply(--paper-font-common-base);
+      }
+
+       :host mdb-metric-display {
+        border: 0;
+      }
+
+       :host paper-radio-button {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+       :host mdb-radio-list.mode-selection paper-radio-button,
+       :host .modifier .radio-list paper-radio-button,
+       :host mdb-radio-list.lob-process-search-selection paper-radio-button {
+        text-align: center;
+        width: 33.33%;
+      }
+
+       :host .physical-entity paper-radio-button {
+        text-align: center;
+        width: 25%;
+      }
+
+       :host .lob-process-selection paper-radio-button {
+        text-align: center;
+        width: 50%;
+      }
+
+       :host paper-radio-button:nth-child(1) {
+        left: 0;
+      }
+
+       :host mdb-radio-list.mode-selection paper-radio-button:nth-child(2),
+       :host .modifier .radio-list paper-radio-button:nth-child(2),
+       :host mdb-radio-list.lob-process-search-selection paper-radio-button:nth-child(2) {
+        left: 33.33%;
+      }
+
+       :host mdb-radio-list.mode-selection paper-radio-button:nth-child(3),
+       :host .modifier .radio-list paper-radio-button:nth-child(3),
+       :host mdb-radio-list.lob-process-search-selection paper-radio-button:nth-child(3) {
+        left: 66.66%;
+      }
+
+       :host .physical-entity mdb-radio-list paper-radio-button:nth-child(2) {
+        left: 25%;
+      }
+
+       :host .physical-entity mdb-radio-list paper-radio-button:nth-child(3) {
+        left: 50%;
+      }
+
+       :host .physical-entity mdb-radio-list paper-radio-button:nth-child(4) {
+        left: 75%;
+      }
+
+       :host .lob-process-selection paper-radio-button:nth-child(2) {
+        left: 50%;
+      }
+
+       :host mdb-radio-list {
+        margin-top: 1em;
+      }
+
+       :host mdb-search-box {
+        margin-top: 1em;
+        position: relative;
+        top: -0.7em;
+        --mdb-search-box-container: {
+          margin-left: 0;
+          margin-right: 0;
+        }
+      }
+
+       :host .modifier .message {
+        text-align: center;
+        font-size: 2em;
+        font-weight: 400;
+      }
+
+       :host:not([mode="landscape"]) .modifier {
+        position: relative;
+        top: -1em;
+      }
+    </style>
+    <div class="assessment-summary">
+      <mdb-metric-display-container>
+        <mdb-metric-display stat-value="[[assessmentStat]]"></mdb-metric-display>
+      </mdb-metric-display-container>
+      <mdb-radio-list class="mode-selection" selected="{{mode}}">
+        <paper-radio-button name="landscape">Landscape</paper-radio-button>
+        <paper-radio-button name="physicalentity">Physical Entity</paper-radio-button>
+        <paper-radio-button name="lobprocess">LOB/ Process</paper-radio-button>
+      </mdb-radio-list>
+    </div>
+    <template is="dom-if" if='[[_isMode(mode,"physicalentity")]]'>
+      <div class="physical-entity">
+        <mdb-radio-list selected="{{physicalEntitySearchBy}}">
+          <paper-radio-button name="application">Application</paper-radio-button>
+          <paper-radio-button name="database">Database</paper-radio-button>
+          <paper-radio-button name="schema">Schema</paper-radio-button>
+          <paper-radio-button name="table">Table</paper-radio-button>
+        </mdb-radio-list>
+        <mdb-search-box placeholder="Search by [[physicalEntitySearchBy]]" filter="{{physicalEntitySearchParam}}"></mdb-search-box>
+      </div>
+    </template>
+    <template is="dom-if" if='[[_isMode(mode,"lobprocess")]]'>
+      <div class="lob-process">
+        <mdb-radio-list class="lob-process-selection" selected="{{lobProcessSearchBy}}">
+          <paper-radio-button name="lob">LOB</paper-radio-button>
+          <paper-radio-button name="process">Process</paper-radio-button>
+        </mdb-radio-list>
+        <mdb-search-box placeholder="Search by [[lobProcessSearchBy]]"></mdb-search-box>
+      </div>
+    </template>
+    <div class="modifier">
+      <template is="dom-if" if='[[!showMessage]]'>
+        <mdb-radio-list class="radio-list" selected="{{landscapeSearchBy}}">
+          <paper-radio-button name="scanned">Scanned</paper-radio-button>
+          <paper-radio-button name="humanverified">Human Verified</paper-radio-button>
+          <paper-radio-button name="regcertified">Reg. Certified</paper-radio-button>
+        </mdb-radio-list>
+      </template>
+      <template is="dom-if" if='[[showMessage]]'>
+        <h2 class="message">[[message]]</h2>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-assessment-summary',
+
+      properties: {
+        assessmentStat: {
+          type: String,
+          value: ''
+        },
+
+        mode: {
+          type: String,
+          value: 'landscape',
+          reflectToAttribute: true
+        },
+
+        landscapeSearchBy: {
+          type: String,
+          value: 'scanned',
+          reflectToAttribute: true,
+          notify: true
+        },
+
+        physicalEntitySearchBy: {
+          type: String,
+          value: 'application',
+          reflectToAttribute: true,
+          notify: true
+        },
+
+        lobProcessSearchBy: {
+          type: String,
+          value: 'lob',
+          reflectToAttribute: true,
+          notify: true
+        },
+
+        lobProcessSearchParam: {
+          type: String,
+          value: 'scanned',
+          reflectToAttribute: true,
+          notify: true
+        },
+
+        showMessage: {
+          type: Boolean,
+          value: false
+        },
+
+        message: String
+      },
+
+      _isMode: function (current, check) {
+        return current === check;
+      }
+
+    });
+  </script>
+</dom-module>

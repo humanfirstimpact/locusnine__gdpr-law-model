@@ -1,0 +1,67 @@
+
+
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-styles/color.html">
+<link rel="import" href="../paper-styles/default-theme.html">
+
+<dom-module id="side-menu-shared-styles">
+  <template>
+    <style>
+      /* need a wrapper element to make this higher specificity than the :host rule in paper-item */
+      .selectable-content > ::content > .iron-selected {
+        font-weight: normal;
+        color: #fff;
+        background: var(--app-primary-color, #5da9dd);
+        outline: 0;
+
+        @apply(--side-menu-selected-item);
+      }
+
+      .selectable-content > ::content > [disabled] {
+        color: var(--side-menu-disabled-color, --disabled-text-color);
+      }
+
+      .selectable-content > ::content > *:focus {
+        position: relative;
+        outline: 0;
+
+        @apply(--side-menu-focused-item);
+      }
+
+      .selectable-content > ::content > *:focus:after {
+        @apply(--layout-fit);/*
+        background: currentColor;
+        opacity: var(--dark-divider-opacity);
+        content: '';
+        pointer-events: none;
+*/
+        @apply(--side-menu-focused-item-after);
+      }
+      .selectable-content > ::content > *:focus:before {
+        background: transparent;
+        @apply(--side-menu-focused-item-before);
+      }
+
+      .selectable-content > ::content > *[colored]:focus:after {
+        /*opacity: 0.26;*/
+      }
+       ::content paper-item {
+            padding: 0 20px;
+            background: var(--app-menu-item-bg, #262934);
+            text-transform: uppercase;
+            margin-bottom: 1px;
+            color: var(--app-menu-color, #797a81);
+            cursor:pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+        }
+        
+        ::content paper-item:hover {
+            background: var(--menu-bg-color, #2d313e);
+        }
+    </style>
+  </template>
+</dom-module>

@@ -1,0 +1,13 @@
+{
+  "applications" : [ {
+    "id" : "107733172",
+    "label" : "Banking Operation",
+    "predictedColumns" : 10,
+    "confirmedColumns" : 7
+  }, {
+    "id" : "107733174",
+    "label" : "Customer Management System",
+    "predictedColumns" : 12,
+    "confirmedColumns" : 5
+  } ]
+}

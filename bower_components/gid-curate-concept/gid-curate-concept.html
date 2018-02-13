@@ -1,0 +1,766 @@
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       <!--
+  Wrapper component for concepts
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+<!--
+`gid-curate-concept`
+
+A data component to curate concept
+
+    <gid-curate-concept api-url="<your-api-url>" api-token="<your-api-token>" 
+    user="<your-user-id>" concept="<concept-id>" curate=true response={{response}}>
+    </gid-curate-concept>
+    
+To curate a concept, the user needs to follow the steps mentioned below:
+
+ - The concept id to be curated is specified in the 'concept' field
+ - The user id needs to be provided in 'user' parameter.
+ - The 'api-url' needs to be provided to specify the rest end point.
+ - The 'api-token' would contain the access token to access the mentioned rest end point.
+ - The properties 'synonyms', 'patterns', 'relatedDomains', 'exampleValues' and 'exampleColumns' are the parameters that can be 
+ curated against the mentioned concept id.
+ - To curate the concept, user needs to set the 'curate' flag to 'true' in order to trigger the rest call.
+ - The 'response' property would return the response whether the concept has been curated successfully or not.    
+
+The properties 'concept', 'user', 'curate' and 'response' are mandatory.
+
+The field 'curate' needs to set to 'true' in order to curate a concept.
+
+The field 'response' returns the response provided by the rest call.
+
+If 'api-url' is not provided, then the component would fetch sample data from mock json.
+
+API endpoint:
+
+    PUT /domains/{id}/curation
+
+Input:
+
+- User Id* (Query Param)
+
+- Domain Id* (URL Param)
+
+Note: The inputs marked with '*' are mandatory inputs.
+
+- ~~List of recommended applications to start with~~
+
+- Trigger that user has switched from define to explore
+
+- Explicit yes or no on most of the synonyms, patterns and related concepts
+
+- Explicit yes or no on most of the example columns and some of the example values
+
+- ~~Search string for synonyms, patterns or related concepts~~
+
+Sample Input: (as JSON payload)
+
+	    {
+	        "synonyms":[
+	            {"id":"100052","assessment":"Y"},
+	            {"id":"100051","assessment":"Y"},
+	        ],
+	        "patterns":[
+	            {"id":"100152","assessment":"Y"},
+	            {"id":"100151","assessment":"Y"},
+	        ],
+	        "relatedDomains":[
+	            {"id":"100052","assessment":"Y"},
+	            {"id":"100051","assessment":"Y"},
+	        ],
+	        "exampleValues":[
+	            {"id":"100052","assessment":"Y"},
+	            {"id":"100051","assessment":"Y"},
+	        ],
+	        "exampleColumns":[
+	            {"id":"100052","assessment":"Y"},
+	            {"id":"100051","assessment":"Y"},
+	        ],
+	    }
+	
+Output:
+	- 5 synonyms (with likelihood)
+	- 5 patterns (with likelihood)
+	- 5 related concepts (with likelihood)
+	
+	- list of 10 example columns and 100 example values (prioritised by relevance)
+	
+	- output 2 + revised list of synonyms, patterns and related concepts 
+		
+	- search results
+		
+	{
+	    "synonyms": [
+	        {
+	            "id": "700129",
+	            "label": "product_desc",
+	            "assessment": "Y",
+	            "relevance": 20
+	        },
+	        {
+	            "id": "700132",
+	            "label": "cust_name",
+	            "assessment": "N",
+	            "relevance": 27
+	        },
+	        {
+	            "id": "700136",
+	            "label": "cust_id",
+	            "assessment": "N",
+	            "relevance": 55.00000000000001
+	        },
+	        {
+	            "id": "700125",
+	            "label": "user_name",
+	            "assessment": "N",
+	            "relevance": 11
+	        },
+	        {
+	            "id": "700131",
+	            "label": "f_name",
+	            "assessment": "N",
+	            "relevance": 11
+	        },
+	        {
+	            "id": "700128",
+	            "label": "product_cd",
+	            "assessment": "N",
+	            "relevance": 40
+	        },
+	        {
+	            "id": "700127",
+	            "label": "last_name",
+	            "assessment": "N",
+	            "relevance": 20
+	        },
+	        {
+	            "id": "700134",
+	            "label": "first_name",
+	            "assessment": "N",
+	            "relevance": 22
+	        },
+	        {
+	            "id": "700133",
+	            "label": "customer_name",
+	            "assessment": "N",
+	            "relevance": 11
+	        },
+	        {
+	            "id": "700126",
+	            "label": "l_name",
+	            "assessment": "N",
+	            "relevance": 11
+	        },
+	        {
+	            "id": "700124",
+	            "label": "product",
+	            "assessment": "N",
+	            "relevance": 40
+	        },
+	        {
+	            "id": "700135",
+	            "label": "cust_phone",
+	            "assessment": "N",
+	            "relevance": 9
+	        },
+	        {
+	            "id": "700130",
+	            "label": "cust_fname",
+	            "assessment": "N",
+	            "relevance": 9
+	        }
+	    ],
+	    "patterns": [
+	        {
+	            "id": "600408",
+	            "label": "Zzzzzzz",
+	            "assessment": "N",
+	            "count": 23
+	        },
+	        {
+	            "id": "600405",
+	            "label": "Zzzzz",
+	            "assessment": "N",
+	            "count": 14
+	        },
+	        {
+	            "id": "600401",
+	            "label": "Zzzzzz",
+	            "assessment": "N",
+	            "count": 11
+	        },
+	        {
+	            "id": "600406",
+	            "label": "Zzzzzzzz-Zzzzzz",
+	            "assessment": "N",
+	            "count": 1
+	        },
+	        {
+	            "id": "600399",
+	            "label": "Zzzzzzzz",
+	            "assessment": "N",
+	            "count": 25
+	        },
+	        {
+	            "id": "600407",
+	            "label": "Zzzz",
+	            "assessment": "N",
+	            "count": 8
+	        },
+	        {
+	            "id": "600403",
+	            "label": "Zzzzzzzzzzzz",
+	            "assessment": "N",
+	            "count": 1
+	        },
+	        {
+	            "id": "600409",
+	            "label": "Zzz",
+	            "assessment": "N",
+	            "count": 1
+	        },
+	        {
+	            "id": "600404",
+	            "label": "Zzzzzzzzzz",
+	            "assessment": "N",
+	            "count": 3
+	        },
+	        {
+	            "id": "600400",
+	            "label": "Zzzzzzzzzzz",
+	            "assessment": "N",
+	            "count": 1
+	        },
+	        {
+	            "id": "600402",
+	            "label": "ZzZzzzzzz",
+	            "assessment": "N",
+	            "count": 1
+	        },
+	        {
+	            "id": "600410",
+	            "label": "Zzzzzzzzz",
+	            "assessment": "N",
+	            "count": 13
+	        }
+	    ],
+	    "relatedDomains": [
+	        {
+	            "id": "100376",
+	            "label": "Email-Address",
+	            "assessment": "N",
+	            "relevance": 18
+	        },
+	        {
+	            "id": "100358",
+	            "label": "Birth-Date",
+	            "assessment": "N",
+	            "relevance": 16
+	        },
+	        {
+	            "id": "100352",
+	            "label": "Address",
+	            "assessment": "N",
+	            "relevance": 12
+	        },
+	        {
+	            "id": "100386",
+	            "label": "First-Name",
+	            "assessment": "N",
+	            "relevance": 18
+	        },
+	        {
+	            "id": "100033",
+	            "label": "City",
+	            "assessment": "N",
+	            "relevance": 2
+	        },
+	        {
+	            "id": "100387",
+	            "label": "Gender",
+	            "assessment": "N",
+	            "relevance": 17
+	        },
+	        {
+	            "id": "100501",
+	            "label": "person-id",
+	            "assessment": "N",
+	            "relevance": 17
+	        }
+	    ],
+	    "exampleValues": [
+	        {
+	            "id": "3642043d",
+	            "label": "Breckell",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "ace70260",
+	            "label": "Pallister",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "0a0bdcae",
+	            "label": "Cleere",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "9430c213",
+	            "label": "Ruppertz",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "40653d98",
+	            "label": "Newcomen",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "3ecdaab9",
+	            "label": "Mulvenna",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "afacd702",
+	            "label": "Crutchley",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "9ed6b924",
+	            "label": "Smidmore",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "46f1198c",
+	            "label": "Baynes",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "68144aa9",
+	            "label": "Sterzaker",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "03d4b129",
+	            "label": "Echallier",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "e0a61327",
+	            "label": "Corps",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "f21512c4",
+	            "label": "Orrom",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "427b01d1",
+	            "label": "Sylvester",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "e9a03cbc",
+	            "label": "Vidineev",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "5450481e",
+	            "label": "Ellinor",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "fc56d55e",
+	            "label": "Karpman",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "ad0e463b",
+	            "label": "Berzons",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "94aceefd",
+	            "label": "Danshin",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "2b24a83f",
+	            "label": "Christensen",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "845ce769",
+	            "label": "McKinstry",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "12d7588c",
+	            "label": "Knibb",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "16a47b3e",
+	            "label": "Bassindale",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "b6aed81a",
+	            "label": "Donaher",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "4cba59ba",
+	            "label": "Conti",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "edf4c548",
+	            "label": "Gentzsch",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "a8243e82",
+	            "label": "Geldeard",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "ec9f7c38",
+	            "label": "Somerlie",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "c360f7ef",
+	            "label": "Flea",
+	            "assessment": "N"
+	        },
+	        {
+	            "id": "f20df0f3",
+	            "label": "Dilland",
+	            "assessment": "N"
+	        }
+	    ],
+	    "exampleColumns": [
+	        {
+	            "id": "200029",
+	            "label": "ship_city",
+	            "assessment": "Y",
+	            "relevance": 95
+	        },
+	        {
+	            "id": "200003",
+	            "label": "product_code",
+	            "assessment": "Y",
+	            "relevance": 95
+	        },
+	        {
+	            "id": "200013",
+	            "label": "last_name",
+	            "assessment": "N",
+	            "relevance": 1
+	        },
+	        {
+	            "id": "200053",
+	            "label": "X9813_AVOCADO",
+	            "assessment": "N",
+	            "relevance": 95
+	        },
+	        {
+	            "id": "200013",
+	            "label": "last_name",
+	            "assessment": "Y",
+	            "relevance": 95
+	        },
+	        {
+	            "id": "e2c8f630-4a37-38d7-9359-1d1be8375fcd",
+	            "label": "l_name",
+	            "assessment": "N",
+	            "relevance": 1
+	        },
+	        {
+	            "id": "28389982-3cdc-30d6-bc3f-cec02ae547ff",
+	            "label": "last_name",
+	            "assessment": "N",
+	            "relevance": 1
+	        },
+	        {
+	            "id": "200033",
+	            "label": "PRODUCT",
+	            "assessment": "N",
+	            "relevance": 95
+	        },
+	        {
+	            "id": "200076",
+	            "label": "UNIQUE_GROUP",
+	            "assessment": "N",
+	            "relevance": 95
+	        },
+	        {
+	            "id": "8eefd496-038d-3485-9b32-3eece55d3569",
+	            "label": "last_name",
+	            "assessment": "N",
+	            "relevance": 1
+	        },
+	        {
+	            "id": "4ed34e05-5aa8-3e24-b17f-b57305156ad9",
+	            "label": "cust_lname",
+	            "assessment": "N",
+	            "relevance": 1
+	        },
+	        {
+	            "id": "200043",
+	            "label": "SEC_CITY",
+	            "assessment": "N",
+	            "relevance": 95
+	        },
+	        {
+	            "id": "200063",
+	            "label": "SEC_CITY",
+	            "assessment": "N",
+	            "relevance": 95
+	        },
+	        {
+	            "id": "4ed34e05-5aa8-3e24-b17f-b57305156ad9",
+	            "label": "cust_lname",
+	            "assessment": "N",
+	            "relevance": 1
+	        },
+	        {
+	            "id": "200021",
+	            "label": "first_nm",
+	            "assessment": "N",
+	            "relevance": 95
+	        }
+	    ]
+	}
+
+@demo demo/index.html
+-->
+<dom-module id="gid-curate-concept">
+  <template>
+          <!-- fetch entity _path  -->
+        	<gid-api entity = '{{_apiEntity}}' path-key= '{{pathKey}}' path='{{_path}}'></gid-api>
+        <!--  fetch entity path -->
+        
+         <!-- fetch concept details -->	
+			<gid-api auto=false
+			method="POST" api-url={{_curateConceptUrl}} api-content-type = "application/x-www-form-urlencoded"
+			response='{{curateConceptResponse}}' error='{{curateConceptError}}' request-body={{_curateConceptReqBody}}
+			api-params={{_curateConceptParams}} api-token = {{_curateConceptToken}} api-timeout={{_curateConceptTimeout}}>
+		    </gid-api>			
+	    <!-- fetch concept details -->
+
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'gid-curate-concept',
+        properties:{
+        		/*Authorization token for accessing rest api*/
+	        	apiToken: {
+	            	type: String,
+	                notify: true,
+	                value : ''
+	            },
+	            /*Base url*/
+	        	apiUrl:{
+	            	type: String,
+	    	        notify: true,
+	    	        value: ''
+	    	 	},
+	    	 	/*Url sent to gid-api*/
+        	    _curateConceptUrl:{
+                 	type: String,
+        	        notify: true
+        	 	},
+        	 	/*Timeout sent to gid-api*/
+        	 	_curateConceptTimeout : {
+            		type: Number,
+        	        notify: true,
+        	        value : 0
+        	    },
+        	    /*Response sent to gid-api. This is a private property*/
+        	    curateConceptResponse : {
+	     	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : '_curateConceptResponseReceived'
+        	  	},
+        	  	/*Error sent to gid-api. This is a private property*/
+        	  	curateConceptError : {
+	     	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : '_curateConceptErrorReceived'
+        	  	},
+        	  	/*Params sent to gid-api*/
+        	  	_curateConceptParams : {
+	     	   		type: String,
+	     	   		notify : true
+     	   	    },
+     	   	    /*Request body sent to gid-api*/
+	     	   	_curateConceptReqBody : {
+	     	   		type: Object,
+	     	   		notify : true,
+	     	   		value: {}
+	 	   	    },
+	 	   	    /*Token sent to gid-api*/
+	 	   		_curateConceptToken : {
+	     	   		type: String,
+	     	   		notify : true
+     	   	    },
+     	   		/*Object for storing success/error response*/
+     	   	    response: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true
+     	        },
+     	        /*User Id*/
+     	       	user: {
+     	        	type: String,
+     	        	value : '',
+     	        	notify :  true
+     	        },
+     	        /*Concept Id*/
+     	       	concept:{
+     	    	  type: String,
+	   	          value : '',
+	   	          notify :  true
+     	        },
+     	        /*Array of Synonym Ids*/
+     	        synonyms: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: []
+                },
+                /*Array of Pattern Ids*/
+                patterns: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: []
+                },
+                /*Array of Related Domain Ids*/
+                relatedDomains: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: []
+                },
+                /*Array of Example Values Ids*/
+                exampleValues: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: []
+                },
+                /*Array of Example Columns Ids*/
+                exampleColumns: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: []
+                },
+                /*Array of request body properties*/ 
+     	        _reqBodyArr: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: ["synonyms", "patterns", "relatedDomains", "exampleValues", "exampleColumns"]
+                },
+                /*Request body object*/
+                _reqBodyObj: {
+            	   type: Array,
+	           	   notify: true,
+	           	   value: {}
+                },
+                /*The api path key*/
+ 	           _pathKey: {
+ 	            	type: String,
+ 	                notify: true,
+ 	                value: ''
+ 	           },
+ 	           /*The api path*/
+                _path: {
+                	   type: String,
+                    notify: true,
+                    value: '',
+                    observer: '_pathReceived'
+                },
+                /*Api entity sent to gid-api*/
+                _apiEntity: {
+                	   type: String,
+                    notify: true
+                },
+                /*Flag set to 'true' to curate concept*/
+                curate: {
+            	   type: Boolean,
+            	   notify: true,
+            	   value: false,
+            	   observer: '_curateConcept'
+                }
+               
+        },
+        /* Success response handler */
+        _curateConceptResponseReceived : function(newvalue, oldvalue){
+          this._reset();
+          if(newvalue != null){
+	             this.async(function() {
+	         		this.response =  this.response.concat(newvalue);
+	   		 	          }, 500);
+          }
+         	
+         },
+         /* Error response handler */
+         _curateConceptErrorReceived : function(newvalue, oldvalue){
+            this._reset();
+            if(newvalue != null){
+	             this.async(function() {
+	         		this.response =  this.response.concat(newvalue);
+	   		 	          }, 500);
+          }
+         },
+         /* Reset method */
+         _reset:  function(){
+        	 this.response = [];
+        	 this._apiEntity = '';
+             this._path = '';
+   		  	 this.curate = false;
+         },
+         /* Observer of 'curate' flag */
+         _curateConcept: function () {
+        	 if (this.curate) {
+        	 	if (!this.apiUrl) {
+	      			//this._curateConceptUrl = this.importPath + 'assets/json/curate-concept.json';
+	                //this._curateConceptTimeout =  this._curateConceptTimeout - 1;
+      			}
+        		else {
+        			this.pathKey =  'default';
+         			this._apiEntity = 'CURATE-CONCEPT';
+         		}
+         	}
+				
+         },
+         /* Observer for api path */
+         _pathReceived: function(){
+         	if(this._path){
+         		var res = this._path.split(/{([^}]+)}/);
+         		for (var i in res) {
+         			if(!res[i].startsWith("/")){
+         					if(this[res[i]]){
+         						res[i] = this[res[i]];
+         					}
+         			}
+         		}
+       			this._curateConceptUrl = this.apiUrl + res.join("");
+                for (var i in this._reqBodyArr){
+                	if(this[this._reqBodyArr[i]].length){
+                		this._reqBodyObj[this._reqBodyArr[i]]= this[this._reqBodyArr[i]];
+                	}
+                }
+                this._curateConceptReqBody["curate"] = JSON.stringify(this._reqBodyObj);
+                if(this.apiToken){
+       				this._curateConceptToken =  this.apiToken;
+       			}
+       			this._curateConceptTimeout =  this._curateConceptTimeout - 1;
+         		
+         	}
+         }
+      });
+    })();
+  </script>
+</dom-module>

@@ -1,0 +1,7 @@
+{
+  "connection": {
+    "connectionName": "string",
+    "commonName": "string",
+    "message": "string"
+  }
+}

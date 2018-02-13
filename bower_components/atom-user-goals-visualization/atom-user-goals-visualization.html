@@ -1,0 +1,239 @@
+<link href="https://fonts.googleapis.com/css?family=Electrolize" rel="stylesheet">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../mdb-radio-list/mdb-radio-list.html">
+<link rel="import" href="../atom-google-sheet-adapter/atom-google-sheet-adapter.html">
+<link rel="import" href="../paper-radio-button/paper-radio-button.html">
+<link rel="import" href="atom-user-goals-visualization-summary.html">
+<link rel="import" href="atom-user-goals-visualization-details.html">
+
+<!--
+`atom-user-goals-visualization`
+
+
+@demo demo/index.html 
+-->
+
+<dom-module id="atom-user-goals-visualization">
+  <template>
+    <style>
+      :host {
+        display: block;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        text-align: center;
+        background-image: url('default-bg.jpg');
+        position: relative;
+        --mdb-radio-button-font-color: #fff;
+        --mdb-radio-button-border-color: var(--mdb-secondary-text-dark, #777);
+        --mdb-radio-button-checked-font-color: gold;
+        --mdb-radio-button-checked-border-color: gold;
+        --mdb-radio-button-checked-background-color: transparent;
+        --mdb-radio-list-button-checked: {
+          box-shadow: 0 0 15px gold;
+        }
+      }
+    
+      :host .dashboard-strip {
+        height: 135px;
+        display: flex;
+        background-color: rgba(0, 0, 0, 0.3);
+        color: #ffffff;
+        padding: 30px;
+        font-family: 'Electrolize', sans-serif;
+        text-shadow: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+    
+      :host .dashboard-strip--about,
+      :host .dashboard-strip--title,
+      :host .dashboard-strip--option {
+        width: calc(100% / 3);
+      }
+    
+      :host .dashboard-strip span.heading {
+        font-family: 'Electrolize', sans-serif;
+        text-shadow: none;
+        display: block;
+        font-size: 50px;
+      }
+    
+      :host .dashboard-strip span.sub-heading {
+        font-family: 'Electrolize', sans-serif;
+        text-shadow: none;
+        display: block;
+        font-size: 30px;
+      }
+    
+      :host .dashboard-strip p {
+        color: #777777;
+        font-size: 12px;
+        padding: 0px 70px;
+      }
+    
+      :host .dashboard-strip span.font-size-18 {
+        font-size: 18px;
+      }
+    
+      :host #tree-container {
+        text-align: center;
+      }
+    
+      :host mdb-radio-list paper-radio-button {
+        width: 100px;
+        font-family: 'Electrolize', sans-serif;
+        color: var(--mdb-secondary-text-dark, #777);
+        font-size: 16px;
+        padding: 12px;
+        background: transparent;
+        border-width: 2px;
+      }
+    </style>
+    <div class="dashboard-strip">
+      <div class="dashboard-strip--about">
+        <span class="sub-heading">What's This?</span>
+        <p>
+          {{description}}
+        </p>
+      </div>
+      <div class="dashboard-strip--title">
+        <span class="heading">{{productName}}</span>
+        <span class="sub-heading">Who? What? How?</span>
+        <span class="sub-heading font-size-18">
+        A list of system users, their goals and tasks
+      </span>
+      </div>
+      <div class="dashboard-strip--option">
+        <mdb-radio-list selected="{{selectedVisualization}}">
+          <paper-radio-button name="summary">Summary</paper-radio-button>
+          <paper-radio-button name="details">Details</paper-radio-button>
+        </mdb-radio-list>
+      </div>
+    </div>
+    <div id="tree-container">
+      <atom-google-sheet-adapter key="{{key}}"></atom-google-sheet-adapter>
+      <template is="dom-if" if="{{_isDetails(selectedVisualization)}}" restamp>
+        <atom-user-goals-visualization-details goals="{{goals}}"></atom-user-goals-visualization-details>
+      </template>
+      <template is="dom-if" if="{{!_isDetails(selectedVisualization)}}" restamp>
+        <atom-user-goals-visualization-summary goals="{{goals}}"></atom-user-goals-visualization-summary>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'atom-user-goals-visualization',
+
+      properties: {
+        key: {
+          type: String,
+          observer: '_keyChanged'
+        },
+
+        productName: {
+          type: String,
+          value: '',
+        },
+
+        goals: {
+          type: Object,
+          value: {}
+        },
+
+        description: {
+          type: String
+        },
+
+        selectedVisualization: {
+          type: String,
+          value: 'summary'
+        },
+
+        backgroundImage: {
+          type: String,
+          value: 'bg.jpg'
+        },
+
+        fontSizeL1: {
+          type: String
+        },
+
+        fontSizeL2: {
+          type: String
+        },
+
+        fontSizeL3: {
+          type: String
+        },
+
+        fontSizeL4: {
+          type: String
+        },
+
+        fontFamily: {
+          type: String
+        }
+      },
+
+      _isDetails: function () {
+        return this.selectedVisualization === 'details';
+      },
+
+      _keyChanged: function () {
+        if (this.key) {
+          var that = this;
+          var adapter = this.querySelector('atom-google-sheet-adapter');
+          adapter.read('Settings')
+            .then(function (settings) {
+              adapter.read('Goals')
+                .then(function (rows) {
+                  that.dataLoaded = true;
+                  setTimeout(function () {
+
+                    that.productName = settings[0].productname;
+                    that.description = settings[0].description;
+                    that.selectedVisualization = settings[0].defaultvisualization.toLowerCase();
+                    that.set('goals', that._transform(settings, rows))
+
+                  }, 0);
+                });
+            });
+        }
+      },
+
+      _transform: function (settings, rows) {
+        var obj = { name: settings[0].productname },
+          children = [];
+
+        for (var i = 0; i < rows.length; i++) {
+          var row = rows[i],
+            user = children.find(function (e) { return e.name === row.user; }) || children.push({ name: row.user, children: [] }) && children[children.length - 1];
+
+          var goal;
+          if (row.goal) {
+            goal = user.children.find(function (e) { return e.name === row.goal });
+            if (goal) {
+              if (row.task) {
+                goal.children.push({ name: row.task, goodness: parseFloat(row.completion) || 0 })
+              }
+            } else {
+              goal = user.children.push({ name: row.goal, children: [] }) && user.children[user.children.length - 1];
+              if (row.task) {
+                goal.children.push({ name: row.task, goodness: parseFloat(row.completion) || 0 })
+              }
+            }
+          }
+        }
+
+        obj.children = children;
+        return obj;
+      }
+
+    });
+  </script>
+</dom-module>

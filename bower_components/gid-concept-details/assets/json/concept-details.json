@@ -1,0 +1,98 @@
+{
+		"id": "100462",
+		"label": "SAMPLE FICO-Score",
+		"predictedColumns": 5,
+		"confirmedColumns": 3,
+		"eta": 0,
+		"coverage": 0.001,
+		"impactArea": [{
+				"id": "120002",
+				"label": "SAMPLE Credit Risk"
+			},
+			{
+				"id": "120001",
+				"label": "SAMPLE GDPR"
+			}
+		],
+		"classificationAccuracyPercentage": 5,
+		"applications": [{
+				"id": "100492",
+				"label": "SAMPLE Universal Biller"
+			},
+			{
+				"id": "100252",
+				"label": "SAMPLE Supplier Management Program"
+			}
+		],
+		"synonyms": [{
+				"id": "100052",
+				"label": "SAMPLE DOB",
+				"relevance": 45,
+				"verified": "Y"
+			},
+			{
+				"id": "100053",
+				"label": "SAMPLE Birthday",
+				"relevance": 65,
+				"verified": "N"
+			}
+		],
+		"patterns": [{
+				"id": "100152",
+				"label": "SAMPLE DD/MM/YY",
+				"relevance": 37,
+				"verified": "F"
+			},
+			{
+				"id": "100153",
+				"label": "SAMPLE MM/YY/DD",
+				"relevance": 54,
+				"verified": "Y"
+			}
+		],
+		"relatedDomains": [{
+				"id": "100652",
+				"label": "SAMPLE First Name",
+				"relevance": 44,
+				"verified": "Y"
+			},
+			{
+				"id": "100653",
+				"label": "SAMPLE Last Name",
+				"relevance": 32,
+				"verified": "Y"
+			}
+		],
+		"exampleValues": [{
+				"id": "200652",
+				"label": "SAMPLE 21/03/2007",
+				"relevance": 90,
+				"verified": "Y"
+			},
+			{
+				"id": "200653",
+				"label": "SAMPLE 08/07/2006",
+				"relevance": 80,
+				"verified": "Y"
+			}
+		],
+		"exampleColumns": [{
+				"id": "300652",
+				"label": "SAMPLE DOB",
+				"relevance": 90,
+				"verified": "Y"
+			},
+			{
+				"id": "300653",
+				"label": "SAMPLE BIRTH_DAY",
+				"relevance": 80,
+				"verified": "Y"
+			},
+			{
+				"id": "300654",
+				"label": "SAMPLE ORDER_DATE",
+				"relevance": 50,
+				"verified": "Y"
+			}
+		]
+}

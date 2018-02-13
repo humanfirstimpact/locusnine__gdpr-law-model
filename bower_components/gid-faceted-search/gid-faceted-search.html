@@ -1,0 +1,1306 @@
+<!--
+  Wrapper component for faceted search
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+<link rel="import" href="../gid-concept-details/gid-concept-details.html">
+<script src="../lodash/dist/lodash.min.js"></script>
+<script src="../polymer-global-variables/dist/polymer-global-variables.js" charset="utf-8"></script>
+<!--
+## gid-faceted-search
+
+A data component for faceted search
+	<gid-faceted-search api-url="<your-api-url>" api-token="<your-api-token>"
+    user="<your-user-id>" concept="<concept-id>" trigger-filter=true|false 
+    search-value="<searched-value>" search-facet-type="Synonyms|Patterns|Related Concepts"
+    mode="DEFINE|EXPLORE" response = {{response}}>
+    </gid-faceted-search>
+   
+## Fetching nearby columns
+   
+If the concept details response id not having example columns, the user tries to fetch nearby columns using
+the following steps:
+
+	<gid-faceted-search api-url ="<your-api-url>" api-token = "<your-api-token>"
+    user="<your-user-id>" concept="<concept-id>" mode="DEFINE|EXPLORE" response = {{response}}>
+    </gid-faceted-search>
+    
+ - The concept id is to be specified in the 'concept' field
+ - The user id needs to be provided in 'user' parameter.
+ - The 'api-url' needs to be provided to specify the rest end point.
+ - The 'api-token' would contain the access token to access the mentioned rest end point.
+ - 'mode' specifies whether the user is in the 'EXPLORE' or 'DEFINE' mode.
+ - The 'response' property would return the response whether the nearby columns has been fetched successfully or not.
+ 
+
+    
+Input:
+ - User Id*
+ - Concept Id*
+ - Mode*
+
+Sample Input: (Query params)
+ - GET /columns?near="Demo Concept"
+ 
+Output:
+- Example columns
+
+The output of this components will be as follows:
+
+	    {
+	    "synonyms": [{
+	        "id": "-5098369111309729914",
+	        "label": "FirstName",
+	        "assessment": "M",
+	        "relevance": 100
+	    }],
+	    "patterns": [
+	        {
+	            "id": "6498495470483422233",
+	            "label": "Zzzzz",
+	            "assessment": "M",
+	            "relevance": 100
+	        },
+	        {
+	            "id": "-4882268586167748962",
+	            "label": "Zzzzzzz",
+	            "assessment": "M",
+	            "relevance": 100
+	        },
+	        {
+	            "id": "3489288055803033456",
+	            "label": "Zzzzzzzz",
+	            "assessment": "M",
+	            "relevance": 100
+	        },
+	        {
+	            "id": "8174186128319395272",
+	            "label": "Zzzz",
+	            "assessment": "M",
+	            "relevance": 100
+	        },
+	        {
+	            "id": "-7047601890608006487",
+	            "label": "Zzzzzz",
+	            "assessment": "M",
+	            "relevance": 100
+	        }
+	    ],
+	    "exampleValues": [
+	        {
+	            "id": "bd9115c236b8baae4f7e001315adb65c",
+	            "label": "Janet",
+	            "assessment": "M",
+	            "relevance": 100
+	        },
+	        {
+	            "id": "0acf4539a14b3aa27deeb4cbdf6e989f",
+	            "label": "Michael",
+	            "assessment": "M",
+	            "relevance": 100
+	        },
+	        {
+	            "id": "e3fb62ebfa4f36acf5cbff6a6ed0f2e0",
+	            "label": "Anne",
+	            "assessment": "M",
+	            "relevance": 100
+	        },
+	        {
+	            "id": "684c851af59965b680086b7b4896ff98",
+	            "label": "Robert",
+	            "assessment": "M",
+	            "relevance": 100
+	        },
+	        {
+	            "id": "6ed61d4b80bb0f81937b32418e98adca",
+	            "label": "Steven",
+	            "assessment": "M",
+	            "relevance": 100
+	        },
+	        {
+	            "id": "680e89809965ec41e64dc7e447f175ab",
+	            "label": "Laura",
+	            "assessment": "M",
+	            "relevance": 100
+	        },
+	        {
+	            "id": "d914e3ecf6cc481114a3f534a5faf90b",
+	            "label": "Andrew",
+	            "assessment": "M",
+	            "relevance": 100
+	        },
+	        {
+	            "id": "764b1284a3e013e3a4d0d5c8a9ee8719",
+	            "label": "Margaret",
+	            "assessment": "M",
+	            "relevance": 100
+	        },
+	        {
+	            "id": "7b0f81bdd2b24ba32cb27f6c16e6b900",
+	            "label": "Nancy",
+	            "assessment": "M",
+	            "relevance": 100
+	        }
+	    ],
+	    "relatedDomains": [],
+	    "exampleColumns": [{
+	        "id": "-3047345076560186832",
+	        "label": "FirstName",
+	        "assessment": "M",
+	        "relevance": 100
+	    }]
+	}
+
+
+	
+## Performing faceted filtering
+For performing faceted filtering, please follow the following steps:
+
+Scenario 1 : User checks on Country synonym:
+
+	<gid-faceted-search api-url ="<your-api-url>" api-token = "<your-api-token>"
+    user="<your-user-id>" synonyms="<synonym-name>" mode="DEFINE|EXPLORE" response = {{response}}>
+    </gid-faceted-search>
+    
+ - The user id needs to be provided in 'user' parameter.
+ - The 'api-url' needs to be provided to specify the rest end point.
+ - The 'api-token' would contain the access token to access the mentioned rest end point.
+ - The 'synonyms' property holds the checked synonym
+ - The 'response' property would return the success/error response.
+ 
+    
+Input:
+ - User Id*
+ - Synonyms
+
+Sample Input: (Query params)
+ GET /columns?filter="label eq 'Country'"
+ 
+Output:
+- Patterns
+- Related Domains
+- Example Values
+- Example Columns
+
+
+The output of this components will be as follows:
+
+	    {
+    "patterns": [
+        {
+            "id": "3489288055803033456",
+            "label": "Zzzzzzzz",
+            "relevance": 100
+        },
+        {
+            "id": "8174186128319395272",
+            "label": "Zzzz",
+            "relevance": 100
+        },
+        {
+            "id": "-7047601890608006487",
+            "label": "Zzzzzz",
+            "relevance": 100
+        },
+        {
+            "id": "-4882268586167748962",
+            "label": "Zzzzzzz",
+            "relevance": 100
+        },
+        {
+            "id": "6498495470483422233",
+            "label": "Zzzzz",
+            "relevance": 100
+        },
+        {
+            "id": "9153641015323997956",
+            "label": "Zzz",
+            "relevance": 50
+        },
+        {
+            "id": "8768531530027382048",
+            "label": "Zzzzzzzzzz",
+            "relevance": 50
+        },
+        {
+            "id": "77791190138567198",
+            "label": "Zzzzzzzzz",
+            "relevance": 50
+        }
+    ],
+    "exampleValues": [
+        {
+            "id": "e311dd5fd4cdbba780ea0d0062df7788",
+            "label": "Christina",
+            "relevance": 50
+        },
+        {
+            "id": "300bf52dd231262bc2b99237e727246d",
+            "label": "Hanna",
+            "relevance": 50
+        },
+        {
+            "id": "1a46a0b6fe9d440d68e07c9619c0ba0a",
+            "label": "Horst",
+            "relevance": 50
+        },
+        {
+            "id": "4af09080574089cbece43db636e2025f",
+            "label": "Elizabeth",
+            "relevance": 50
+        },
+        {
+            "id": "4a181673429f0b6abbfd452f0f3b5950",
+            "label": "Antonio",
+            "relevance": 50
+        },
+        {
+            "id": "527bd5b5d689e2c32ae974c6229ff785",
+            "label": "John",
+            "relevance": 50
+        },
+        {
+            "id": "505c660dbdd33aa583a9098540b34a8b",
+            "label": "Marten",
+            "relevance": 50
+        },
+        {
+            "id": "ce6fb3d9e17cfd3798a5df27dd7718b1",
+            "label": "Yoshy",
+            "relevance": 50
+        },
+        {
+            "id": "38fe8951595f01a3c16f3d50ea0bcc53",
+            "label": "Matti",
+            "relevance": 50
+        },
+        {
+            "id": "263bce650e68ab4e23f28263760b9fa5",
+            "label": "Maria",
+            "relevance": 50
+        },
+        {
+            "id": "7e0d7f8a5d96c24ffcc840f31bce72b2",
+            "label": "Ann",
+            "relevance": 50
+        },
+        {
+            "id": "87e8454e25a9a774fe78bca2b9426aa9",
+            "label": "Laurence",
+            "relevance": 50
+        },
+        {
+            "id": "f7681cf19437185495019eab90c4243e",
+            "label": "Frederique",
+            "relevance": 50
+        },
+        {
+            "id": "fc77dba827fcc88e0243404572c51325",
+            "label": "Georg",
+            "relevance": 50
+        },
+        {
+            "id": "bc65c677d90a7cdbfb6d643fcb78ac93",
+            "label": "Carine",
+            "relevance": 50
+        },
+        {
+            "id": "276b6c4692e78d4799c12ada515bc3e4",
+            "label": "Ana",
+            "relevance": 50
+        },
+        {
+            "id": "2c20cb5558626540a1704b1fe524ea9a",
+            "label": "Fran",
+            "relevance": 50
+        },
+        {
+            "id": "ef6e65efc188e7dffd7335b646a85a21",
+            "label": "Thomas",
+            "relevance": 50
+        },
+        {
+            "id": "bd9115c236b8baae4f7e001315adb65c",
+            "label": "Janet",
+            "relevance": 50
+        },
+        {
+            "id": "0acf4539a14b3aa27deeb4cbdf6e989f",
+            "label": "Michael",
+            "relevance": 50
+        },
+        {
+            "id": "e3fb62ebfa4f36acf5cbff6a6ed0f2e0",
+            "label": "Anne",
+            "relevance": 50
+        },
+        {
+            "id": "684c851af59965b680086b7b4896ff98",
+            "label": "Robert",
+            "relevance": 50
+        },
+        {
+            "id": "6ed61d4b80bb0f81937b32418e98adca",
+            "label": "Steven",
+            "relevance": 50
+        },
+        {
+            "id": "680e89809965ec41e64dc7e447f175ab",
+            "label": "Laura",
+            "relevance": 50
+        },
+        {
+            "id": "d914e3ecf6cc481114a3f534a5faf90b",
+            "label": "Andrew",
+            "relevance": 50
+        },
+        {
+            "id": "764b1284a3e013e3a4d0d5c8a9ee8719",
+            "label": "Margaret",
+            "relevance": 50
+        },
+        {
+            "id": "7b0f81bdd2b24ba32cb27f6c16e6b900",
+            "label": "Nancy",
+            "relevance": 50
+        }
+    ],
+    "exampleColumns": [
+        {
+            "id": "-9104863538168975153",
+            "label": "First Name",
+            "relevance": 100
+        },
+        {
+            "id": "-3047345076560186832",
+            "label": "FirstName",
+            "relevance": 62.5
+        }
+    ],
+    "relatedDomains": []
+}
+	
+	
+Scenario 2 : User checks on Country synonym and checks a pattern 'Zzzz':
+
+	<gid-faceted-search api-url ="<your-api-url>" api-token = "<your-api-token>"
+    user="<your-user-id>" synonyms="<synonym-name>" patterns="Zzzz" trigger-filter= true|false mode="DEFINE|EXPLORE" response = {{response}}>
+    </gid-faceted-search>
+    
+ - The user id needs to be provided in 'user' parameter.
+ - The 'api-url' needs to be provided to specify the rest end point.
+ - The 'api-token' would contain the access token to access the mentioned rest end point.
+ - The 'synonyms' property holds the checked synonym
+ - The 'patterns' property holds the patterns array
+ - To trigger the rest call, the 'trigger-filter' flag must be set to 'true'.
+ - The 'response' property would return the success/error response.
+ 
+
+    
+Input:
+ - User Id*
+ - Mode
+ - Synonyms
+ - Patterns
+
+Sample Input: (Query params)
+ GET /columns?filter="label eq 'Country' and (patterns every ['Zzzz’])"
+
+Output:
+- Related Domains
+- Example Values
+- Example Columns
+
+
+The output of this components will be as follows:
+
+	    {
+    "exampleValues": [
+        {
+            "id": "527bd5b5d689e2c32ae974c6229ff785",
+            "label": "John",
+            "relevance": 50
+        },
+        {
+            "id": "2c20cb5558626540a1704b1fe524ea9a",
+            "label": "Fran",
+            "relevance": 50
+        },
+        {
+            "id": "e3fb62ebfa4f36acf5cbff6a6ed0f2e0",
+            "label": "Anne",
+            "relevance": 50
+        }
+    ],
+    "exampleColumns": [
+        {
+            "id": "-9104863538168975153",
+            "label": "First Name",
+            "relevance": 100
+        },
+        {
+            "id": "-3047345076560186832",
+            "label": "FirstName",
+            "relevance": 100
+        }
+    ],
+    "relatedDomains": []
+}
+
+## Searching synonyms or patterns or related concepts
+For searching, please follow the following steps:
+
+Scenario 1 : User searches a synonym 'City':
+
+	<gid-faceted-search api-url ="<your-api-url>" api-token = "<your-api-token>"
+    user="<your-user-id>" search-value="City" search-facet-type="Synonyms"  search=true response = {{response}}>
+    </gid-faceted-search>
+    
+ - The user id needs to be provided in 'user' parameter.
+ - The 'api-url' needs to be provided to specify the rest end point.
+ - The 'api-token' would contain the access token to access the mentioned rest end point.
+ - The searched value is specified in the 'search-value' parameter.
+ - The facet type is specified in the 'search-facet-type' parameter. Possible values are Synonyms|Patterns|Related Concepts.
+ - To trigger the rest call for searching, the 'search' flag must be set to 'true'.
+ - The 'response' property would return the success/error response.
+ 
+
+    
+Input:
+ - User Id*
+ - Mode
+ - Searched Value
+ - Facet Type
+  
+Sample Input: (Query params)
+ GET /columns?filter=label co 'City'&showLabelsOnly=true
+
+Output:
+- Synonyms
+
+
+The output of this components will be as follows:
+
+	    {
+			    "synonyms": [
+		    {
+		        "id": "-9145617860147986575",
+		        "label": "CityName"
+		    },
+		    {
+		        "id": "6517649952213973882",
+		        "label": "CITY_NAME"
+		    },
+		    {
+		        "id": "6139631488560281627",
+		        "label": "City"
+		    },
+		    {
+		        "id": "6139631488560281627",
+		        "label": "CITY"
+		    },
+		    {
+		        "id": "-8984601159472564314",
+		        "label": "CUSTMR_CITY"
+		    },
+		    {
+		        "id": "-3828364467426411433",
+		        "label": "CITY_TOWN"
+		    },
+		    {
+		        "id": "-2926665638333170600",
+		        "label": "City Name"
+		    },
+		    {
+		        "id": "-3737328151570138659",
+		        "label": "store_city"
+		    },
+		    {
+		        "id": "4091553293280624104",
+		        "label": "customer_city"
+		    },
+		    {
+		        "id": "-5697281256097038564",
+		        "label": "ShipCity"
+		    },
+		    {
+		        "id": "4729928111753410716",
+		        "label": "REG_CITY"
+		    }
+		]
+	}
+	
+Scenario 2 : User searches a pattern 'ZZZZZ-Z':
+
+	<gid-faceted-search api-url ="<your-api-url>" api-token = "<your-api-token>"
+    user="<your-user-id>" search-value="ZZZZZ-Z" search-facet-type="Patterns"  search=true response = {{response}}>
+    </gid-faceted-search>
+    
+ - The user id needs to be provided in 'user' parameter.
+ - The 'api-url' needs to be provided to specify the rest end point.
+ - The 'api-token' would contain the access token to access the mentioned rest end point.
+ - The searched value is specified in the 'search-value' parameter.
+ - The facet type is specified in the 'search-facet-type' parameter. Possible values are Synonyms|Patterns|Related Concepts.
+ - To trigger the rest call for searching, the 'search' flag must be set to 'true'.
+ - The 'response' property would return the success/error response.
+ 
+
+    
+Input:
+ - User Id*
+ - Mode
+ - Searched Value
+ - Facet Type
+  
+Sample Input: (Query params)
+ GET /patterns?filter=label eq 'ZZZZZ-Z'
+
+Output:
+- Patterns
+
+
+The output of this components will be as follows:
+
+	    {
+	    "patterns": [{
+		    "id": "516991293232198988",
+		    "label": "ZZZZZ-Z"
+		}]
+	}
+
+
+If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
+
+Note: The inputs marked with '*' are mandatory inputs.
+
+@demo demo/index.html
+-->
+<dom-module id="gid-faceted-search">
+  <template>
+          <!-- fetch concept details  -->
+        	<gid-concept-details user='1' api-url='{{apiUrl}}'
+	        concept='{{concept}}' api-token = '{{apiToken}}'
+	        conceptdetails='{{conceptdetails}}'>
+	        </gid-concept-details>
+         <!--  fetch concept details -->
+        
+         <!-- fetch entity path  -->
+        	<gid-api entity = '{{_apiEntity}}' path-key= '{{_pathKey}}' path='{{_path}}'></gid-api>
+         <!--  fetch entity path -->
+        
+         <!-- fetch nearby columns -->	
+			<gid-api auto=false
+			method="GET" api-url={{_facetedSearchUrl}} response='{{facetedSearchResponse}}'
+			error = '{{facetedSearchError}}'
+			api-params={{_facetedSearchParams}} api-token={{_facetedSearchToken}}
+			api-timeout={{_facetedSearchTimeout}}> </gid-api>			
+	     <!-- fetch nearby columns -->	
+       
+
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'gid-faceted-search',
+        properties:{
+	        	/*User Id*/
+	 	       	user: {
+	 	        	type: String,
+	 	        	value : '',
+	 	        	notify :  true
+	 	        },
+	 	        /*Concept Id*/
+	 	       	concept:{
+	 	    	  type: String,
+	   	          value : '',
+	   	          notify :  true
+	 	       },
+	 	      _paramVal:{
+	 	    	 type: String,
+	   	         value : '',
+	   	         notify :  true 
+	 	      },
+              /*Array listing the various parameters and properties*/
+              _paramsArr: {
+        	       type: Array,
+	           	   notify: true,
+	           	   value:  [{
+		           	 	"name": "synonyms",
+		           	 	"map": "synonyms",
+		           	 	"isParam": "Y",
+		           	 	"isProp": "Y"
+		           	 }, {
+		           	 	"name": "patterns",
+		           	 	"map": "patterns",
+		           	 	"isParam": "Y",
+		           	 	"isProp": "Y"
+		           	 }, {
+		           	 	"name": "relatedDomains",
+		           	 	"map": "related",
+		           	 	"isParam": "Y",
+		           	 	"isProp": "N"
+		           	 }, {
+		           	 	"name": "related",
+		           	 	"map": "related",
+		           	 	"isParam": "N",
+		           	 	"isProp": "Y"
+		           	 }, {
+		           	 	"name": "exampleValues",
+		           	 	"map": "values",
+		           	 	"isParam": "Y",
+		           	 	"isProp": "N"
+		           	 }, {
+		           	 	"name": "values",
+		           	 	"map": "values",
+		           	 	"isParam": "N",
+		           	 	"isProp": "Y"
+		           	 }, {
+		           	 	"name": "exampleColumns",
+		           	 	"map": "columns",
+		           	 	"isParam": "Y",
+		           	 	"isProp": "N"
+		           	 }, {
+		           	 	"name": "columns",
+		           	 	"map": "columns",
+		           	 	"isParam": "N",
+		           	 	"isProp": "Y"
+	           	 }]
+              },
+              /*Array listing the various search parameters*/
+              _searchParamsArr: {
+            	  type: Array,
+            	  notify:  true,
+            	  value:[{
+            			"type": "synonyms",
+            			"map": "synonyms",
+            			"apiEntity": "SEARCH-SYNONYMS"
+            		},
+            		{
+            			"type": "patterns",
+            			"map": "patterns",
+            			"apiEntity": "SEARCH-PATTERNS"
+            		},
+            		{
+            			"type": "related concepts",
+            			"map": "relatedDomains",
+            			"apiEntity": "SEARCH-RELATED-DOMAINS"
+            		}
+            	]
+              },
+              /*Keys of concept details object*/
+              conceptDetailKeys: {
+            	  type: Array,
+	           	  notify: true,
+	           	  value:  ["id", "label", "predictedColumns", "confirmedColumns", "coverage", "classificationAccuracyPercentage","eta","owner", "lobs"]
+              },
+              /*Mode can either be 'EXPLORE' or 'DEFINE'. The default mode is 'EXPLORE'*/
+              mode: {
+            	    type: String,
+	                notify: true,
+	                value : 'EXPLORE'
+              },
+        	  /*String for synonyms parameter*/ 
+	  	       synonyms: {
+		           	   type: String,
+		           	   notify: true,
+		           	   value: ''
+	           },
+	           /*Array for patterns parameter*/
+	           patterns: {
+		           	   type: Array,
+		           	   notify: true,
+		           	   value: []
+	           },
+	           /*Array for related domains parameter*/
+	           related: {
+		           	   type: Array,
+		           	   notify: true,
+		           	   value: []
+	           },
+	           /*Array for example values parameter*/
+	           values: {
+		           	   type: Array,
+		           	   notify: true,
+		           	   value: []
+	           },
+	           /*Array for example columns parameter*/
+	           columns: {
+		           	   type: Array,
+		           	   notify: true,
+		           	   value: []
+	           },
+	           /*Trigger filter. Default is 'false'*/
+        	  triggerFilter: {
+        		  type: Boolean,
+        		  notify: true,
+        		  value: false,
+        		  observer: '_observeTriggerFilter'
+	            },
+	           /*Authorization token for accessing rest api*/
+	        	apiToken: {
+	            	type: String,
+	                notify: true,
+	                value : ''
+	            },
+	            /*Base url*/
+	        	apiUrl:{
+	            	type: String,
+	    	        notify: true,
+	    	        value: ''
+	    	 	},
+	    	   /*Url*/
+        	   _facetedSearchUrl:{
+                	type: String,
+        	        notify: true
+        	 	},
+        	 	/*Params*/
+     	   	    _facetedSearchParams : {
+     	   	    	type: String,
+     	   	    	notify: true
+     	   	    },
+     	   		/*Timeout*/
+        	 	_facetedSearchTimeout : {
+            		type: Number,
+        	        notify: true,
+        	        value : 0
+        	    },
+     	   	    /*Token*/
+     	   	    _facetedSearchToken : {
+     	   	    	type: String,
+     	   	    	notify: true
+     	   	    },
+     	   		/*Response sent to gid-api. This is a private property*/
+        	    facetedSearchResponse : {
+	     	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : '_facetedSearchResponseReceived'
+        	  	},
+        	  	/*Error sent to gid-api. This is a private property*/
+        	  	facetedSearchError : {
+	     	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : '_facetedSearchErrorReceived'
+        	  	},
+     	   	    /*Array for storing concept details*/
+     	   	    conceptdetails: {
+     	          	type: Array,
+     	          	value: [],
+     	          	notify: true,
+     	          	observer: '_conceptDetailsArrObserver'
+     	        },
+     	       /*Response object for synonyms, patterns, related domains, example values, example columns*/
+     	        response: {
+     	        	type: Array,
+       	         	value: [],
+       	          	notify: true
+     	        },
+     	      /*Concept label*/
+     	       _conceptLabel:{
+     	    	  type: String,
+	   	          value : '',
+	   	          notify :  true
+     	       },
+     	      /*Concept id*/
+     	       _conceptId:{
+     	    	  type: String,
+	   	          value : '',
+	   	          notify :  true
+     	       },
+     	      /*The api path key*/
+	           _pathKey: {
+	            	type: String,
+	                notify: true,
+	                value: ''
+	           },
+	           /*The api path*/
+               _path: {
+               	   type: String,
+                   notify: true,
+                   value: '',
+                   observer: '_pathReceived'
+               },
+               /*Api entity sent to gid-api*/
+               _apiEntity: {
+               	   type: String,
+                   notify: true
+               },
+               /*Trigger to fetch near columns*/
+               _fetchColumnsNear: {
+            	  type: Boolean,
+         		  notify: true,
+         		  value: false
+               },
+               /*Trigger to fetch clusters*/
+               _fetchClustersNear: {
+            	  type: Boolean,
+          		  notify: true,
+          		  value: false
+               },
+               /*Params value*/
+               _paramVal: {
+            	   type: String,
+                   notify: true,
+                   value: ''
+               },
+               /*Value that is searched*/
+               searchValue: {
+            	   type: String,
+                   notify: true,
+                   value: ''
+               },
+               /*Facet type that is searched. Possible values are 'Synonyms', 'Patterns' and 'Related Concepts*/
+               searchFacetType: {
+            	   type: String,
+                   notify: true,
+                   value: '' 
+               },
+               /*Triggers search*/
+               search: {
+            	   type: Boolean,
+	   	           value: false,
+	   	           notify: true,
+	   	           observer: '_observeSearchFlag'
+               }
+               
+        },
+        
+         /* Reset method */
+         _reset: function () {
+        	// this.conceptdetails = [];
+        	 this.triggerFilter = false;
+        	 this.search =  false;
+        	 this.searchValue = '';
+        	 this.searchFacetType = '';
+        	 this._paramVal = '';
+      		 this._apiEntity = '';
+             this._path = '';
+         },
+         
+         /* Observer of concept details array */
+         _conceptDetailsArrObserver: function () {
+        	 var that = this;
+        	 Polymer.globalsManager.set('_fetchColumnsNear', false);
+        	 Polymer.globalsManager.set('_fetchClustersNear', false);
+        	 if (this.conceptdetails.length > 0) {
+        		 Polymer.globalsManager.set('conceptdetails',  this.conceptdetails[0]);
+        		 this.conceptdetails.forEach( function(i) { 
+        			 Polymer.globalsManager.set('_conceptLabel', i.label);
+        			 Polymer.globalsManager.set('_conceptId', i.id);
+        			 if(i.exampleColumns.length === 0){
+        				 if (!that.apiUrl) {
+        					 //TODO
+               			}
+                 		else {
+                 			Polymer.globalsManager.set('_fetchColumnsNear', true);
+                 			that._initFilter();
+                  		}
+        			 }
+        			 else{
+        				 Polymer.globalsManager.set('_fetchClustersNear', true);
+        				 that._initFilter();
+        			 }
+        		} );
+         	}
+         },
+         /* Set pathkey  and entity for faceted column search */
+         _set: function(){
+        	 this._apiEntity = '';
+             this._path = '';
+        	 this._pathKey =  'default';
+        	 if(this.search){
+        		 for (var i in this._searchParamsArr){
+        			 if(this.searchFacetType.toLowerCase() === this._searchParamsArr[i].type){
+        				 this._apiEntity = this._searchParamsArr[i].apiEntity;
+        			 }
+        		 }
+        	 }
+        	 else{
+        		 if(Polymer.globalsManager.get('_fetchClustersNear')){
+            		 this._apiEntity = 'CLUSTERS';
+            	 }
+            	 else  if(Polymer.globalsManager.get('_fetchColumnsNear')){
+            		 this._apiEntity = 'FACETED-COLUMNS';
+            	 }
+        	 }
+        	 
+         },
+         /* Observer for api path */
+         _pathReceived: function(){
+         	if(this._path){
+         		var res = this._path.split(/{([^}]+)}/);
+         		for (var i in res) {
+         			if(!res[i].startsWith("/")){
+         					if(this[res[i]]){
+         						res[i] = this[res[i]];
+         					}
+         			}
+         		}
+       			this._facetedSearchUrl = this.apiUrl + res.join("");
+       			var obj = {};
+       			if(this.search){
+       				if(this._paramVal){
+       					obj["filter"] = this._paramVal;
+       					if(this.searchFacetType.toLowerCase() === "synonyms"){
+       						obj["showLabelsOnly"] = true;
+       					}
+       				}
+       			}
+       			else{
+       				if(Polymer.globalsManager.get('_fetchColumnsNear')){
+           				if(this._paramVal){
+           					obj["near"] = Polymer.globalsManager.get('_conceptLabel');
+           					obj["filter"] = this._paramVal;
+           				}
+           				else{
+           					obj["near"] = Polymer.globalsManager.get('_conceptLabel');
+           				}
+           			}
+           			else if(Polymer.globalsManager.get('_fetchClustersNear')){
+           		//		this._facetedSearchUrl = this.importPath + 'assets/json/clusters.json';
+           				if(this._paramVal){
+           					obj["near"] = Polymer.globalsManager.get('_conceptId');
+           					obj["filter"] = this._paramVal;
+           				}
+           				else{
+           					obj["near"] = Polymer.globalsManager.get('_conceptId');
+           				}
+           			}
+       			}
+       			this._facetedSearchParams = JSON.stringify(obj);
+   				this._setAttributes();
+   				
+         	}
+         },
+         /* Set timeout and token */
+         _setAttributes: function(){
+        	 if(this.apiToken){
+   				this._facetedSearchToken =  this.apiToken;
+   			}
+   			this._facetedSearchTimeout =  this._facetedSearchTimeout - 1;
+         },
+         /* Success response handler */
+         _facetedSearchResponseReceived : function(newvalue, oldvalue){
+        	 this.response = [];
+        	 var conceptdetails = Polymer.globalsManager.get('conceptdetails');
+      		 var conceptDetailObj = {};
+ 	          if(newvalue != null){
+	             this.async(function() {
+	            	 if(this.search){
+	            		 this.response =  this.response.concat(newvalue);
+	            	 }
+ 		             else{
+ 		            	var temp = {};
+ 		            	var clusterdCols = [];
+ 		            	var exmplColArr = [];
+ 		            	temp = this._constructTemporaryObject(temp);
+ 		            	if(Polymer.globalsManager.get('_fetchClustersNear')){
+	            			if(newvalue.hasOwnProperty("synonyms")){
+	            				temp["synonyms"] = newvalue["synonyms"];
+ 		            		}
+	            			/* Assigning properties to 'temp' object */
+ 		            		for(var i = 0; i<newvalue["clusters"].length; i++){
+ 		            			clusterdCols = newvalue["clusters"][i]["columns"];
+ 		            			for(var j=0; j<clusterdCols.length; j++){
+ 		            					exmplColArr = this._addExampleColumns(clusterdCols, exmplColArr, j);
+		            				for(var key in clusterdCols[j]){
+		            					if(clusterdCols[j].hasOwnProperty(key)){
+		            						if(typeof(clusterdCols[j][key]) === "object"){
+	 		            						temp[key] = temp[key].concat(clusterdCols[j][key]);
+	 		            					}
+		     		            		}
+		            					
+ 	 	 		            		}
+ 		            			}
+ 		            		}
+ 		            		temp["exampleColumns"] = exmplColArr;
+ 		            		/* When filtering (faceted search), do not add previous domain definition to response for clusters or columns call */
+ 		            	    if(!this.triggerFilter){
+ 		            		  temp = this._addValidatedFields(temp, conceptdetails);
+		            		}
+ 		            	}
+ 		            	else if(Polymer.globalsManager.get('_fetchColumnsNear')){
+ 		            		/* When filtering (faceted search), do not add previous domain definition to response for clusters or columns call */
+ 		            		if(!this.triggerFilter){
+ 		            			temp = this._addValidatedFields(newvalue, conceptdetails);
+ 		            		}else{
+                                temp = newvalue;
+                            }
+ 		            	}
+ 		            	temp = this._addRequiredFields(temp, conceptdetails);
+ 		            	if(this.triggerFilter){
+ 		      			   temp = this._delProps(temp);
+                        }
+ 		            	else{
+ 		            			/* Setting concept related details */
+ 		            			for(var i=0; i<this.conceptDetailKeys.length; i++){
+ 		            				if(conceptdetails.hasOwnProperty(this.conceptDetailKeys[i])){
+ 		            					conceptDetailObj[this.conceptDetailKeys[i]] = conceptdetails[this.conceptDetailKeys[i]];
+ 		            				}
+ 		            			}
+ 		            	}
+                         if(Polymer.globalsManager.get('_fetchClustersNear')){
+                             //if cluster near do sort by descending
+                             var sorted = {};
+                             for (var facetType in temp) {
+                                 if (temp.hasOwnProperty(facetType)) {
+                                     sorted[facetType] = _.sortBy(temp[facetType], ['relevance']).reverse();
+                                 }
+                             }
+                             _.merge(sorted, conceptDetailObj);
+                             this.response =  this.response.concat(sorted);
+                         }else{
+                             //else sort is not needed
+                             _.merge(temp, conceptDetailObj);
+                             this.response =  this.response.concat(temp);
+                         }
+
+		                if(localStorage.getItem('debug')){
+		                	console.log("final response = " + JSON.stringify(this.response));
+		                } 
+ 		             }
+ 		            	
+	         		this._reset();
+	   		 	          }, 500);
+ 	          }
+          	
+          },
+          /* Construct temporary object */
+          _constructTemporaryObject: function(temp){
+        	  for (var idx in this._paramsArr){
+	            	if(this._paramsArr[idx].isParam === 'Y'){
+	            		temp[this._paramsArr[idx].name] = [];
+	            	}
+           	}
+        	  
+        	 return temp; 
+          },          
+          /* When filtering, remove all object (i.e synonyms, patterns etc.) from final response which are selected.
+          Eg. if any 'pattern' is selected, final response shouldn't contain 'pattern' property in object */
+          _delProps: function(temp){
+        	  for (var k in this._paramsArr){
+            		if(!_.isEmpty(this[this._paramsArr[k].map])){
+	  			    	if(temp.hasOwnProperty(this._paramsArr[k].name)){
+	  			    		delete temp[this._paramsArr[k].name];
+	  			    	}
+            		}
+            	} 
+        	  return temp; 
+          },         
+          
+          /* Adding example columns to response */
+          _addExampleColumns:  function(clusterdCols, exmplColArr, counter){
+        	  exmplColArr.push({
+        	        id: clusterdCols[counter].id,
+        	        label: clusterdCols[counter].label,
+        	        relevance: clusterdCols[counter].relevance
+        	    });
+        	  return exmplColArr;
+          },
+          /* Add all 'Y' marked assessment from previous domain definition in clusters and columns response */
+          _addValidatedFields: function(obj, conceptdetails){
+        	  for(var key in obj){
+	        	  for(var i=0; i<conceptdetails[key].length; i++){
+							if(typeof(conceptdetails[key]) === "object"){
+								if(conceptdetails[key][i]["assessment"] === 'Y'){
+									obj[key] = obj[key].concat(conceptdetails[key][i]);
+								}
+							}
+						}
+        	  }
+        	  return obj;
+          },
+          
+          /* Add assessment and relevance field in response */
+          _addRequiredFields:  function(obj, conceptdetails){
+        		  var foundMatch = false;
+        		  var matchedIndex = '';
+				  var matchedAssessment = 'M';
+				  var matchedRelevance = '';
+        		  for (var key in obj){
+              		obj[key] = _.uniqBy(obj[key], "id"); 
+              	  }
+            	  for (var key in obj) {
+           			for(var index=0; index<obj[key].length; index++){
+           				foundMatch = false;
+           				if(typeof(obj[key]) === "object"){
+           					if(this.triggerFilter){
+           						obj[key][index]["assessment"] = 'M';
+           					}
+           					else{
+           						if(obj[key][index].hasOwnProperty("assessment")){
+       								matchedAssessment = obj[key][index]["assessment"];
+       							}
+           						if(conceptdetails[key].length > 0 ){
+               						for(var i=0; i<conceptdetails[key].length; i++){
+                   						if(typeof(conceptdetails[key]) === "object"){
+            	       						if(obj[key][index]["id"] === conceptdetails[key][i]["id"]){
+            	       							foundMatch = true;
+            	       							matchedAssessment = conceptdetails[key][i]["assessment"];
+            	       							matchedRelevance = conceptdetails[key][i]["relevance"]; 
+            	       							break;
+            	       						}
+            	       						else{
+            	       							matchedAssessment = 'M';
+            	       						}
+                   						}
+                   					}
+               					}
+           						obj[key][index]["assessment"] = matchedAssessment;
+           						if(!_.isEmpty(matchedRelevance)){
+           							obj[key][index]["relevance"] = matchedRelevance;
+           						}
+           						matchedAssessment = 'M';
+               					if(foundMatch){
+               						if(localStorage.getItem('debug')){
+               							console.log(obj);
+               						}
+               						continue;
+               					}
+           					}
+           				}
+           			}
+           		}
+        	
+        	
+        	return obj;
+          },
+          /* Error response handler */
+          _facetedSearchErrorReceived : function(newvalue, oldvalue){
+        	  this.response = [];
+    	          if(newvalue != null){
+                      this.async(function () {
+                    	  if(Polymer.globalsManager.get('_fetchClustersNear')){
+                    		  if(!this.triggerFilter){
+                    			  Polymer.globalsManager.set('_fetchClustersNear', false);
+                        		  Polymer.globalsManager.set('_fetchColumnsNear', true);
+                       			  this._initFilter(); 
+                    		  }
+                    		  else{
+                    			  var temp = {};
+                    			  temp = this._constructTemporaryObject(temp);
+                    			  temp = this._delProps(temp);
+                    			  _.merge(temp, newvalue.response);
+                    			  this.response = this.response.concat(temp);
+                    		  }
+                    		  
+                    	  }
+                    	  else if(Polymer.globalsManager.get('_fetchColumnsNear')){
+                    		  var temp = {};
+         		              temp = this._constructTemporaryObject(temp);
+                    		  if(this.triggerFilter){
+                    			  temp = this._delProps(temp);
+                    		  }
+                    		  _.merge(temp, newvalue.response);
+       		            	this.response = this.response.concat(temp);
+                    	  }
+                    	  else{
+                              this.response =  this.response.concat(newvalue.response);
+                          }
+                          this._reset();
+                      }, 500);
+    	          }
+          },
+          /* Initial filtering for filtering out the values whose assessment is 'NO' */
+          _initFilter: function(){
+        	  this._paramVal = '';
+    		  var j = 0;
+
+			  for (var i in this._paramsArr){
+  				if(this.conceptdetails[0].hasOwnProperty(this._paramsArr[i].name)){
+                		if(this.conceptdetails[0][this._paramsArr[i].name].length > 0){
+				        	    	var notVerified = [];
+									for(var index in this.conceptdetails[0][this._paramsArr[i].name]){
+										if(this.conceptdetails[0][this._paramsArr[i].name][index]["assessment"] === 'N'){
+											if(this._paramsArr[i].name === "exampleColumns"){
+												notVerified = notVerified.concat(this.conceptdetails[0][this._paramsArr[i].name][index]["id"]);
+											}
+											else{
+												notVerified = notVerified.concat(this.conceptdetails[0][this._paramsArr[i].name][index]["label"]);
+											}
+										}
+    		    					
+    		    					}
+									if(notVerified.length > 0){
+										if(j>0){
+                                            if(this._paramVal!=""){
+                                                this._paramVal = this._paramVal + " and " + "(";
+                                            }else{
+                                                this._paramVal = this._paramVal + "(";
+                                            }
+		                      			}
+										this._paramVal = this._paramVal + this._paramsArr[i].map + ' '+ "not ['" + notVerified.join("','")+ "']";
+									}
+    		    			if(j>0 && notVerified.length > 0){
+    		    				this._paramVal = this._paramVal + ')';
+    		    			}
+    		    			j = j+1;
+                	
+                }
+  			  }
+  			  }
+			  Polymer.globalsManager.set('initFilterParam',this._paramVal);
+			  this._set();
+          },
+          /*Observer of 'triggerFilter' flag and faceted filtering handler*/
+          _observeTriggerFilter:  function(){
+        	  if(this.triggerFilter){
+        		  this._paramVal = '';
+        		  var j = 0;
+        			  for (var i in this._paramsArr){
+        				 if(this[this._paramsArr[i].name]){
+                        	if(this[this._paramsArr[i].name].length > 0){
+                        			if(j>0){
+                        				this._paramVal = this._paramVal + " and " + "(";
+                        			}
+                		    		if(this._paramsArr[i].name === "synonyms"){
+                		    			this._paramVal = this._paramVal + "label eq '"+ this[this._paramsArr[i].map] + "'";
+            		    			}
+            		    			else{
+            		    				this._paramVal = this._paramVal + this._paramsArr[i].map + " every ['" + this[this._paramsArr[i].map].join("','")+ "']";
+            		    			}
+            		    			if(j>0){
+            		    				this._paramVal = this._paramVal + ')';
+            		    			}
+            		    			j = j+1;
+                        	}
+                        	
+        				 }
+                        }
+        		  if(Polymer.globalsManager.get('initFilterParam')){
+        			  if(this._paramVal){
+        				  this._paramVal =  this._paramVal + ' and ' + Polymer.globalsManager.get('initFilterParam'); 
+        			  }
+        			  else{
+        				  this._paramVal = Polymer.globalsManager.get('initFilterParam'); 
+        			  }
+        		  }
+        		  else{
+        			  this._paramVal = this._paramVal;
+        		  }
+        		  
+                  this._set();
+        	  }
+        	 
+          },
+          /*Observer of 'search' flag and search functionality handler*/
+          _observeSearchFlag: function(){
+        	  this._paramVal = '';
+        	  if(this.search && this.searchValue){
+        		  for (var i in this._searchParamsArr){
+         			 if(this.searchFacetType.toLowerCase() === this._searchParamsArr[i].type){
+	        			  if(this.searchFacetType.toLowerCase()  === "patterns"){
+	        				  this._paramVal = this._paramVal + "label eq '"+ this.searchValue + "'";
+	        			  }
+	        			  else{
+	        				  this._paramVal = this._paramVal + "label co '"+ this.searchValue + "'";
+	        			  }
+         			 }
+       			 }
+        			  this._set();
+       		  }
+          }
+      });
+    })();
+  </script>
+</dom-module>

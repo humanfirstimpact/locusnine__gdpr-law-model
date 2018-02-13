@@ -1,0 +1,15 @@
+{
+  "applications" : [ {
+    "id" : "107733172",
+    "label" : "Banking Operation"
+  }, {
+    "id" : "107733174",
+    "label" : "Customer Management System"
+  }, {
+    "id" : "107733175",
+    "label" : "CRM"
+  }, {
+    "id" : "107733176",
+    "label" : "BO"
+  } ]
+}

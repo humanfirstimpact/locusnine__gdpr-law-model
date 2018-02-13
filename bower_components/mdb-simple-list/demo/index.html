@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>mdb-simple-list demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../paper-item/paper-icon-item.html">
+  <link rel="import" href="../../iron-icon/iron-icon.html">
+  <link rel="import" href="../mdb-simple-list.html">
+
+  <style is="custom-style" include="demo-pages-shared-styles">
+
+  </style>
+</head>
+
+<body>
+  <div class="vertical-section-container centered">
+    <h3>Basic mdb-simple-list with no items demo</h3>
+    <demo-snippet>
+      <template>        
+        <mdb-simple-list empty-message="No Items">
+          <template>
+            <paper-item>
+              {{item.name}}
+            </paper-item>
+          </template>
+        </mdb-simple-list>
+      </template>
+    </demo-snippet>
+  </div>
+  <div class="vertical-section-container centered">
+    <h3>Basic mdb-simple-list demo</h3>
+    <demo-snippet>
+      <template>        
+        <mdb-simple-list empty-message="No Items" items='[{"name":"One"},{"name":"Two"},{"name":"Three"},{"name":"Four"},{"name":"Five"},{"name":"Six"},{"name":"Seven"},{"name":"Eight"},{"name":"Nine"},{"name":"Ten"},{"name":"Eleven"}]'>
+          <template>
+            <paper-item>
+              {{item.name}}
+            </paper-item>
+          </template>
+        </mdb-simple-list>
+      </template>
+    </demo-snippet>
+  </div>
+  <div class="vertical-section-container centered">
+    <h3>Custom Styled mdb-simple-list demo</h3>
+    <demo-snippet>
+      <template>
+        <style is="custom-style">
+           :root .custom-styled {
+            --mdb-simple-list: {
+              display: flex;
+              flex-direction: column;
+              flex-wrap: wrap;
+              border: 1px solid #e1e6ed;
+              background: #fcfdff;
+              height: 288px;
+              padding-top: 20px;
+              padding-bottom: 0px;
+            }
+            --mdb-list-item: {
+              min-height: 15px;
+              font-weight: 100;
+              margin-top: 0.7em;
+              margin-bottom: 0.7em;
+              margin-left: var(--standard-padding, 20px);
+              margin-right: auto;
+            }
+            --mdb-list-item-focused: {
+              border-radius: 25px;
+            }            
+            --mdb-list-item-selected: {
+              border-radius: 25px;
+              color: #fff;
+              background-color: #5caadb;
+            }            
+          }
+        </style>
+        <mdb-simple-list class="custom-styled"  empty-message="No Items" items='[{"name":"One"},{"name":"Two"},{"name":"Three"},{"name":"Four"},{"name":"Five"},{"name":"Six"},{"name":"Seven"},{"name":"Eight"},{"name":"Nine"},{"name":"Ten"},{"name":"Eleven"}]'>
+          <template>
+            <paper-item>
+              {{item.name}}
+            </paper-item>
+          </template>
+        </mdb-simple-list>
+      </template>
+    </demo-snippet>
+  </div>
+</body>
+
+</html>

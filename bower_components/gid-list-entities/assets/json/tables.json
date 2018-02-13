@@ -1,0 +1,46 @@
+{
+  "tables": [
+    {
+      "label": "SAMPLE-B2B-ORDER",
+      "id": "100689439",
+      "schema": "28379352",
+      "catalog": "10000001"
+    },
+    {
+      "label": "Sample CUST_INFO",
+      "id": "100689440",
+      "schema": "28379352",
+      "catalog": "10000001"
+    },
+    {
+      "label": "Sample DIAGNOSIS",
+      "id": "100689441",
+      "schema": "28379352",
+      "catalog": "10000001"
+    },
+    {
+      "label": "Sample EMP",
+      "id": "100689442",
+      "schema": "28379352",
+      "catalog": "10000001"
+    },
+    {
+      "label": "Sample MEMBERS",
+      "id": "100689448",
+      "schema": "28379352",
+      "catalog": "10000001"
+    },
+    {
+      "label": "Sample ORDER_INFO",
+      "id": "100689451",
+      "schema": "28379352",
+      "catalog": "10000001"
+    },
+    {
+      "label": "Sample SUPPLIERS",
+      "id": "100689455",
+      "schema": "28379352",
+      "catalog": "10000001"
+    }
+  ]
+}

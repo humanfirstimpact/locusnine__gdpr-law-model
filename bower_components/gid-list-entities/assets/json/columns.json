@@ -1,0 +1,9 @@
+{
+	"columns": [{
+		"id": "200001",
+		"label": "Sample id"
+	}, {
+		"id": "200009",
+		"label": "Sample ship-city"
+	}]
+}

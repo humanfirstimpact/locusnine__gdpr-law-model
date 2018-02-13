@@ -1,0 +1,187 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`atom-modal-dialog`
+
+
+@demo demo/index.html 
+-->
+
+<dom-module id="atom-modal-dialog">
+  <template>
+    <style>
+       :host {
+        display: block;
+        @apply(--paper-font-common-base);
+      }
+
+       :host #header {
+        display: flex;
+        justify-content: space-between;
+      }
+
+       :host #header h3 {
+        margin-top: 0;
+        margin-bottom: 0;
+        font-size: 20px;
+      }
+
+       :host paper-dialog {
+        min-width: 300px;
+        @apply(--atom-dialog);
+      }
+
+       :host #modal #footer {
+        display: flex;
+        margin: 24px 8px 8px 8px;
+        padding: 0;
+        border-top: 1px solid #f0f4f9;
+      }
+
+       :host #modal paper-button {
+        --paper-button: {
+          vertical-align: text-bottom;
+          color: #5caadb;
+          font-weight: 600;
+        }
+      }
+
+       :host #overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: #444;
+        opacity: 0.5;
+        z-index: 100;
+      }
+
+      .primaryActionGroup{
+        margin-left: auto;
+      }
+
+      .primaryActionGroup paper-button{
+        --paper-button:{
+          @apply(--atom-modal-dialog-primary-action-buttons);
+        }
+      }
+
+      .secondaryAction paper-button{
+        --paper-button:{
+          @apply(--atom-modal-dialog-secondary-action-button);
+        }
+      }
+
+      .hide{
+        display: none;
+      }
+    </style>
+    <template is="dom-if" if="[[_isModalOpen(modalOpen)]]">
+      <div id="overlay" on-tap="close">
+      </div>
+    </template>
+    <paper-dialog id="modal">
+      <div id="header">
+        <h3>[[modalTitle]]</h3>
+      </div>
+      <div id="body">
+        <content select='.addnew'></content>
+        <div class$="[[_getHiddenClassIfFalse(secondaryActionAllowed)]]">
+          <content select='.delete'></content>
+        </div>
+      </div>
+      <div id="footer">
+        <div class='secondaryAction'>
+          <template is="dom-if" if="[[secondaryActionAllowed]]">
+            <paper-button data-action="secondary" on-tap="_triggerAction">[[secondaryActionLabel]]</paper-button>
+          </template>
+        </div>
+        <div class='primaryActionGroup'>
+          <paper-button id="cancel" on-tap="close">[[closeLabel]]</paper-button>
+          <template is="dom-if" if="[[primaryActionAllowed]]">
+            <paper-button data-action="primary" on-tap="_triggerAction">[[primaryActionLabel]]</paper-button>
+          </template>
+        </div>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'atom-modal-dialog',
+
+      properties: {
+        modalTitle: {
+          type: String,
+          value: 'Modal title'
+        },
+
+        primaryActionAllowed: {
+          type: Boolean,
+          value: false
+        },
+
+        primaryActionLabel: {
+          type: String,
+          value: 'Primary action'
+        },
+
+        secondaryActionAllowed: {
+          type: Boolean,
+          value: false
+        },
+
+        secondaryActionLabel: {
+          type: String,
+          value: 'Secondary action'
+        },
+
+        closeLabel: {
+          type: String,
+          value: 'Cancel'
+        },
+
+        modalOpen: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        }
+      },
+
+      attached: function () {
+        if (this.modalOpen) {
+          this._openModal();
+        }
+      },
+
+      open: function () {
+        this.modalOpen = true;
+        this.$.modal.open();
+      },
+
+      close: function () {
+        this.modalOpen = false;
+        this.$.modal.close();
+      },
+
+      _isModalOpen: function (open) {
+        return open;
+      },
+
+      _triggerAction: function (e) {
+        this.fire(e.currentTarget.getAttribute('data-action'));
+      },
+
+      _getHiddenClassIfFalse: function(boolVal){
+        if(!boolVal)
+          return 'hide';
+        return '';
+      }
+
+    });
+  </script>
+</dom-module>

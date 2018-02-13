@@ -1,0 +1,294 @@
+<!--
+  Wrapper component for concepts
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+<!--
+`gid-create-concept`
+
+
+A data component to create concept
+
+    <gid-create-concept api-url ="<your-api-url>" api-token = "<your-api-token>"
+    user="<your-user-id>" concept="<concept-label>" create=true response = {{response}}>
+    </gid-create-concept>
+        
+To create a concept, the user needs to follow the steps mentioned below:
+
+ - The desired concept label is to be specified in the 'concept' field
+ - The user id needs to be provided in 'user' parameter.
+ - The 'api-url' needs to be provided to specify the rest end point.
+ - The 'api-token' would contain the access token to access the mentioned rest end point.
+ - The properties 'applications', 'lobs' and 'impact-area' specifies the list of application(s), lob(s) and 
+   impact area(s) where the concept would belong to.
+ - To create the concept, user needs to set the 'create' flag to 'true' in order to trigger the rest call.
+ - The 'response' property would return the response whether the concept has been created successfully or not.
+ 
+The fields 'concept', 'user', 'create' and 'response' are  mandatory.
+
+The field 'create' needs to be set to 'true' to create a concept.
+
+The property 'response' returns the response of the rest call.
+
+If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
+
+
+API endpoint:
+
+    POST /concepts
+
+Input:
+
+- User Id*
+- Label of the concept*
+- List of applications
+- LOB Id
+- List of impact Area
+
+Note: The inputs marked with '*' are mandatory inputs.
+
+Sample Input: (as JSON payload)
+
+	    {
+			"domain": {
+			  "label" : "Domain Name",
+			  "lobs" : ["lob-id"]
+			}	        
+	    }
+	
+Output:
+
+	      {
+	        "domain" : {"id":"domain-id"}
+	      }
+      
+
+@demo demo/index.html
+-->
+<dom-module id="gid-create-concept">
+  <template>
+          <!-- fetch entity path  -->
+        	<gid-api entity = '{{_apiEntity}}' path-key= '{{_pathKey}}' path='{{_path}}'></gid-api>
+        <!--  fetch entity path -->
+        
+         <!-- fetch concept details -->	
+			<gid-api auto=false
+				method="POST" api-content-type = "application/x-www-form-urlencoded" api-url={{_createConceptUrl}} response='{{createConceptResponse}}'
+				api-params={{_createConceptParams}} api-token = {{_createConceptToken}} request-body={{_createConceptRequestBody}} 
+				api-timeout={{_createConceptTimeout}} error = '{{createConceptErrorResponse}}'>
+		    </gid-api>			
+	    <!-- fetch concept details -->
+
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'gid-create-concept',
+        properties:{
+        		/*Authorization token for accessing rest api*/
+	        	apiToken: {
+	            	type: String,
+	                notify: true,
+	                value : ''
+	            },
+	            /*Base url*/
+	        	apiUrl:{
+	            	type: String,
+	    	        notify: true,
+	    	        value: ''
+	    	 	},
+	    	 	/*Url sent to gid-api*/
+	    	 	_createConceptUrl:{
+                	type: String,
+        	        notify: true
+        	 	},
+        	 	/*Timeout sent to gid-api*/
+        	 	_createConceptTimeout : {
+            		type: Number,
+        	        notify: true,
+        	        value : 0
+        	    },
+        	    /*Response sent to gid-api. This is a private property*/
+        	    createConceptResponse : {
+	     	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : '_createConceptResponseChanged'
+        	  	},
+        	  	/*Params sent to gid-api*/
+        	  	_createConceptParams : {
+	     	   		type: String,
+	     	   		notify : true
+     	   	    },
+     	   		/*Request body sent to gid-api*/
+	     	   	_createConceptRequestBody : {
+	     	   		type: Object,
+	     	   		notify : true,
+	     	   		value : {}
+	 	   	    },
+	 	   		/*Token sent to gid-api*/
+	 	   	    _createConceptToken : {
+	 	   	    	type: String,
+	 	   	    	notify: true
+	 	   	    },
+	 	   		/*Error sent to gid-api. This is a private property*/
+	 	   		createConceptErrorResponse : {
+		 	   		type: String,
+	 	   	    	notify: true,
+	 	   	    	observer : '_errorResponseReceived'
+	 	   		},
+	 	   		/*Object for storing success/error response*/
+	 	   	    response: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true
+     	        },
+     	       /*Array listing the parameters*/
+     	       	_paramsArr: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: ["label", "applications", "lobs", "impactArea", "owner"]
+                },
+                /*Parameter object*/
+                _paramsObj: {
+            	   type: Array,
+	           	   notify: true,
+	           	   value: {}
+                },
+                /*Label property*/
+     	      	label: {
+	           	   type: String,
+	           	   notify: true,
+	           	   value: ''
+              	},
+              	/*Array of application ids*/
+              	applications: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: []
+              	},
+              	/*Array of lob ids*/
+              	lobs: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: []
+              	},
+              	/*Array of impact areas*/
+              	impactArea: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: []
+              	},
+              	/*User id is stored here. This is a private property*/
+              	owner: {
+	           	   type: String,
+	           	   notify: true,
+	           	   value: ''
+              	},
+              	/*User Id*/
+              	user: {
+     	        	type: String,
+     	        	value : '',
+     	        	notify :  true
+     	        },
+     	       /*The api path key*/
+     	       	_pathKey: {
+               	   type: String,
+                   notify: true,
+                   value: ''
+                },
+                /*The api path*/
+                _path: {
+               	   type: String,
+                   notify: true,
+                   value: '',
+                   observer: '_pathReceived'
+                },
+                /*Api entity sent to gid-api*/
+                _apiEntity: {
+               	   type: String,
+                   notify: true
+                },
+               /*This flag needs to be set 'true' to create a concept*/
+                create: {
+                	type: Boolean,
+             		notify: true,
+             		value: false,
+             		observer: '_createConcept'
+                }
+               
+        },
+        /* Success response handler */
+        _createConceptResponseChanged : function(newvalue, oldvalue){
+          this.response = [];
+		  this._reset();
+	          if(newvalue != null){
+		             this.async(function() {
+		         		this.response =  newvalue.domain;
+		   		 	          }, 500);
+	          }
+         	
+         },
+         /* Error response handler */
+         _errorResponseReceived :  function(newvalue, oldvalue){
+        	 this.response = [];
+   		  	 this._reset();
+	        	if(newvalue !== null){
+	        		this.async(function() {
+		         		this.response =  newvalue.response;
+		   		 	          }, 500);
+	        	}
+	     },
+	     /* Reset method */
+		 _reset: function(){
+			this._apiEntity = '';
+            this._path = '';
+			this.create = false;
+		 },
+		 /* Observer of 'create' flag */
+         _createConcept: function () {
+        	 if (this.create) {
+        		this.owner =  this.user;
+        	 	if (!this.apiUrl) {
+// 	      			this._createConceptUrl = this.import_path + 'assets/json/' + this.entity.toLowerCase() + '.json';
+// 	                this._createConceptTimeout =  this._createConceptTimeout - 1;
+      			}
+        		else {
+        			this._pathKey =  'default';
+         			this._apiEntity = 'CREATE-CONCEPT';
+         		}
+         	}
+				
+         },
+         /* Observer for api path */
+         _pathReceived: function(){
+         	if(this._path){
+         		var res = this._path.split(/{([^}]+)}/);
+         		var obj = {};
+         		for (var i in res) {
+         			if(!res[i].startsWith("/")){
+         					if(this[res[i]]){
+         						res[i] = this[res[i]];
+         					}
+         			}
+         		}
+       			this._createConceptUrl = this.apiUrl + res.join("");
+                for (var i in this._paramsArr){
+                	if(this[this._paramsArr[i]]){
+                		obj[this._paramsArr[i]]= this[this._paramsArr[i]];;
+                		}
+                	
+                }
+                this._paramsObj["domain"] =  obj;
+       			this._createConceptRequestBody["definition"] = JSON.stringify(this._paramsObj);
+       			if(this.apiToken){
+       				this._createConceptToken =  this.apiToken;
+       			}
+       			this._createConceptTimeout =  this._createConceptTimeout - 1;
+         		
+         	}
+         }
+      });
+    })();
+  </script>
+</dom-module>

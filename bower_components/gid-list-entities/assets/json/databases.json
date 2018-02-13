@@ -1,0 +1,59 @@
+{
+  "databases": [
+	{
+	  "id": "28639055",
+	  "label": "Sample BANK@210",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28639071",
+	  "label": "Sample RETAIL",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28639087",
+	  "label": "Sample TELECOM@210",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28639103",
+	  "label": "Sample CRM@210",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28639119",
+	  "label": "Sample DW@210",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28639135",
+	  "label": "Sample SALESDB@210",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28639151",
+	  "label": "Sample PRODUCT_HUB@210",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28639168",
+	  "label": "Sample ORACLE@CODD",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "28639287",
+	  "label": "Sample ORACLE@FEYNMAN",
+	  "catalog": "10000001"
+	},
+	{
+	  "id": "36311852",
+	  "label": "Sample CRM_8@Cucumber",
+	  "catalog": "10000001"
+	}
+  ],
+  "_meta": {
+	"total": 41,
+	"limit": 10,
+	"offset": 0
+  }
+}

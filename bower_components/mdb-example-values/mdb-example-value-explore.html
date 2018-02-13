@@ -1,0 +1,46 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+
+<dom-module id="mdb-example-value-explore">
+    <template>
+        <style>
+             :host {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                width: 100%;
+            }
+
+             :host paper-checkbox {
+                --paper-checkbox-label-color: var(--mdb-secondary-text-dark, #000);
+            }
+        </style>
+        <paper-checkbox checked="{{checked}}" on-change='_selectionChanged'>
+            [[example.label]] ([[example.relevance]]%)
+        </paper-checkbox>
+    </template>
+    <script>
+        Polymer({
+            is: 'mdb-example-value-explore',
+
+            properties: {
+                example: {
+                    type: Object,
+                    value: {}
+                },
+
+                checked: {
+                    type: Boolean,
+                    value: false
+                }
+            },
+
+            _selectionChanged: function(e){
+                this.fire('example-value-selection-changed', {
+                    value : this.example,
+                    checked: e.currentTarget.checked
+                });
+            }
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,27 @@
+{
+  "name": "mdb-assessment-summary",
+  "main": "mdb-assessment-summary.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "mdb-metric-display": "git://github.com/makedatabetter-dev/mdb-metric-display.git",
+    "mdb-radio-list": "git://github.com/makedatabetter-dev/mdb-radio-list.git",
+    "mdb-search-box": "git://github.com/makedatabetter-dev/mdb-search-box.git"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/makedatabetter-dev/mdb-assessment-summary",
+  "version": "0.0.7",
+  "_release": "0.0.7",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.7",
+    "commit": "e094fc9b0a8ce4b1adc43d58e670627eb6ca2c51"
+  },
+  "_source": "git://github.com/makedatabetter-dev/mdb-assessment-summary.git",
+  "_target": "*",
+  "_originalSource": "git://github.com/makedatabetter-dev/mdb-assessment-summary.git"
+}

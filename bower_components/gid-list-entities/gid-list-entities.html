@@ -1,0 +1,388 @@
+<!--
+  Wrapper data component for list entities
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+<script src="../lodash/dist/lodash.min.js"></script>
+<script src="../polymer-global-variables/dist/polymer-global-variables.js" charset="utf-8"></script>
+
+<!--
+
+A data component to get list of various types entities
+
+    <gid-list-entities user='1' entity='ENTITY-NAME' entities='{{entities}}'></gid-list-entities>
+
+##### **Inputs:**
+
+- `user` - user id  (mandatory)
+
+- `entity` - name of the entity in capital (mandatory). See the *Supported Entities* table for more details.
+
+- `apiUrl` - api endpoint url. If this attribute is not provided, then the component would fetch sample response from mock json
+
+- This component supports a list of filter attributes combined with appropriate entity. See the *Supported Entities* table for more details. For example, to get list of databases filtered by a concept and an application use the following code,
+
+
+    <gid-list-entities "https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev" user='1' entity='DATABASE' concept='concept-id' application='app-id' entities='{{entities}}'></<gid-list-concepts>
+
+The property 'entities' returns the response against the rest call.	
+	
+- `limit`  & `offset` - use limit and offset parameters to paginate records
+
+- `sort` property is used for sorting the data. Values can be 'recency',  'relevance' or 'none'.
+
+- `all` - this property needs to be set to 'true' in order to fetch all the values of the mentioned entity.
+
+##### Outputs:
+
+- list of entity with its basic details
+
+##### **Supported Entities**
+
+| Entity Name  		| Attributes                               		|
+| ------------ 		| ---------------------------------------- 		|
+| COLUMNS      		| concept, application, database, schema, table |
+| TABLES       		| concept, application, database, schema   		|
+| SCHEMAS      		| concept, application, database           		|
+| DATABASES    		| concept, application                     		|
+| APPLICATIONS 		| concept                                  		|
+| CONCEPTS     		| lob                                      		|
+| LOBS         		|                                          		|
+| DATABASE-TYPES 	|                                        		|
+| DISPOSITIONS 		|                                        		|
+
+
+@demo demo/index.html
+-->
+<dom-module id="gid-list-entities">
+    <template>
+        <!-- fetch entity _path  -->
+        <gid-api path-key = '{{_pathKey}}' entity = '{{_apiEntity}}' path='{{_path}}'></gid-api>
+        <!--  fetch entity path -->
+
+        <!-- fetch entities -->
+        <gid-api auto=false
+                 method="GET" api-url={{_entityUrl}}  response={{entityResponse}} error = {{entityError}}
+                 api-params={{_entityParams}} api-token = {{_entityToken}} api-timeout={{_entityTimeout}}></gid-api>
+        <!-- fetch entities -->
+
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            Polymer({
+                is: 'gid-list-entities',
+                properties: {
+                	/*Authorization token for accessing rest api*/
+                	apiToken: {
+                    	type: String,
+                        notify: true,
+                        value : ''
+                    },
+                    /*Base url*/
+                	apiUrl: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Entity url sent to gid-api*/
+                    _entityUrl: {
+                        type: String,
+                        notify: true
+                    },
+                    /*Entity timeout sent to gid-api*/
+                    _entityTimeout: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    /*Entity response sent to gid-api. This is a private property*/
+                    entityResponse: {
+                        type: Object,
+                        notify: true,
+                        observer: '_entityResponseChanged'
+                    },
+                    /*Entity error sent to gid-api. This is a private property*/
+                    entityError: {
+    		 	   		type: String,
+    	 	   	    	notify: true,
+    	 	   	    	reflectToAttribute: true,
+    	 	   	    	observer : '_entityErrorReceived'
+    	 	   		},
+    	 	   		/*Entity params sent to gid-api*/
+                    _entityParams: {
+                        type: String,
+                        notify: true
+                    },
+                    /*Entity token sent to gid-api*/
+                    _entityToken: {
+                    	type: String,
+                        notify: true
+                    },
+                    /*Object for storing success/error response*/
+                    entities: {
+                        type: Array,
+                        value: [],
+                        notify: true
+                    },
+                    /*Array listing the parameters*/
+                    _paramsArr: {
+     	           	   type: Array,
+     	           	   notify: true,
+     	           	   value: ["offset", "limit", "sort"]
+                     },
+                    /*Lob Id*/
+                    lob: {
+                    	type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Concept Id*/
+                    concept: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Application Id*/
+                    application: {
+                    	type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Database Id*/
+                    database: {
+                    	type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Schema Id*/
+                    schema: {
+                    	type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Table Id*/
+                    table: {
+                    	type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Limit parameter to paginate records*/
+                    limit: {
+                    	type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    /*Offset parameter to paginate records*/
+                    offset: {
+                    	type: String,
+                    	notify: true,
+                    	value: ''
+                    },
+                    /*This property needs to be set to 'true' in order to fetch all the values of the mentioned entity*/
+                    all: {
+                    	type: Boolean,
+                    	notify: true,
+                    	value: false
+                    },
+                    /* Sort property*/
+                    sort: {
+                    	type: String,
+                    	notify: true,
+                    	value: ''
+                    },
+                    /*Entity to be fetched*/
+                    entity: {
+                        type: String,
+                        notify: true,
+                        value: '',
+                        observer: '_entityObserver'
+                    },
+                    /*The api path key*/
+                    _pathKey: {
+               			type:String,
+               			notify:true,
+               			value: ''
+               		},
+               		/*The api path*/
+                    _path: {
+                    	type: String,
+                        notify: true,
+                        value: '',
+                        observer: '_pathReceived'
+                    },
+                    /*Api entity sent to gid-api*/
+                    _apiEntity: {
+                    	type: String,
+                        notify: true
+                    },
+                    /*Sub entity*/
+                    _subEntity: {
+                    	type: String,
+                    	notify: true,
+                    	value: ''
+                    }
+
+                },
+
+                /* Success response handler */
+                _entityResponseChanged: function (newvalue, oldvalue) {
+                    this.entities = [];
+                    var temp = [];
+                    var foundMatch = false;
+                    this._reset();
+                    if (newvalue != null) {
+                        this.async(function () {
+                        	if(Polymer.globalsManager.get('_fetchAll')){
+                        			temp = newvalue[this.entity.toLowerCase()];
+                        			var _prevResponse = [];
+                        			_prevResponse = Polymer.globalsManager.get('_prevResponse');
+	                       			for(var index=0; index<temp.length; index++){
+	                       				foundMatch = false;
+               							var matchedIndex = '';
+               							var matchedPredictedColumns = 0;
+               							var matchedConfirmedColumns = 0;
+                   						for(var i=0; i<_prevResponse.length; i++){
+                	       						if(temp[index]["id"] === _prevResponse[i]["id"]){
+                	       							foundMatch = true;
+                	       							matchedPredictedColumns = _prevResponse[i]["predictedColumns"];
+                	       							matchedConfirmedColumns = _prevResponse[i]["confirmedColumns"]; 
+                	       							break;
+                	       						}
+                       					}
+                   						temp[index]["predictedColumns"]  = matchedPredictedColumns;
+                   						temp[index]["confirmedColumns"]  = matchedConfirmedColumns;
+	                       						
+                       					if(foundMatch){
+                       						if(localStorage.getItem('debug')){
+                       							console.log(temp);
+                       						}
+                       						continue;
+                       					}
+                        		}
+	                       		this.entities = temp;
+                        	}
+                        	else{
+                        		this.entities = newvalue[this.entity.toLowerCase()];
+                                Polymer.globalsManager.set('_prevResponse', this.entities);
+                        	}
+                        }, 500);
+                    }
+
+                },
+
+                /* Error response handler */
+                _entityErrorReceived :  function(newvalue, oldvalue){
+	               	 this.entities = [];
+	          		 this._reset();
+	       	        	if(newvalue !== null){
+	       	        		this.async(function() {
+	       		         		this.entities =  newvalue.response;
+	       		   		 	          }, 500);
+	       	        	}
+       	     	},
+
+       	     	/* Method to _reset '_apiEntity' 'all and '_path' properties */
+       	     	_reset: function(){
+	       	     	this._apiEntity = '';
+	       	     	this._subEntity = '';
+	                this._path = '';
+	                this.all = false;
+       	     	},
+
+       	     	/* Entity observer */
+                _entityObserver: function () {
+                	if (this.entity) {
+                	 	if (!this.apiUrl) {
+        	      			this._entityUrl = this.importPath + 'assets/json/' + this.entity.toLowerCase() + '.json';
+        	                this._entityTimeout =  this._entityTimeout - 1;
+              			}
+                		else {
+                			if(this.entity.toLowerCase() === 'columns'){
+                                if(this.table){
+                                    this._subEntity = 'table';
+                                }
+                                else if(this.schema){
+                                    this._subEntity = 'schema';
+                                }
+                                else if(this.database){
+                                    this._subEntity = 'database';
+                                }
+                                else if(this.application){
+                                    this._subEntity = 'application';
+                                }
+                                else{
+                                    console.log("Please provide application parameter");
+                                }
+                			}
+
+                            if(this.all){
+                            	Polymer.globalsManager.set('_fetchAll', true);
+                				this._pathKey =  'all';
+                			}
+                			else{
+                				Polymer.globalsManager.set('_fetchAll', false);
+                				this._pathKey = 'default'
+                			}
+
+                            if(!this.all
+                                    && !this.concept
+                                    && this.entity.toLowerCase() !== 'lobs'
+                                    && this.entity.toLowerCase() !== 'concepts'
+                                    && this.entity.toLowerCase() !== 'database-types'
+                                    && this.entity.toLowerCase() !== 'dispositions'
+                            ){
+                                console.log("Please provide either concept parameter or all parameter");
+                            }else{
+                			    this._setApiEntity();
+                            }
+
+                 		}
+                 	}
+
+                },
+				/* Set '_apiEntity' property */
+                _setApiEntity: function(){
+                		if(this._subEntity){
+                			var temp = '';
+                			temp = this.entity + '.' + this._subEntity;
+                			this._apiEntity = temp;
+                		}
+                		else{
+                			this._apiEntity = this.entity;
+                		}
+                },
+
+                /* Observer for api path */
+                _pathReceived: function(){
+                	if(this._path){
+                		var res = this._path.split(/{([^}]+)}/);
+                		for (var i in res) {
+                			if(!res[i].startsWith("/")){
+                					if(this[res[i]]){
+                						res[i] = this[res[i]];
+                					}
+                			}
+                		}
+               			this._entityUrl = this.apiUrl + res.join("");
+               			var paramsObj = {};
+               			for (var i in this._paramsArr){
+                        	if(this[this._paramsArr[i]]){
+                        		paramsObj[this._paramsArr[i]]= this[this._paramsArr[i]];
+                        		}
+
+                        }
+               			this._entityParams = JSON.stringify(paramsObj);
+               			if(this.apiToken){
+               				this._entityToken =  this.apiToken;
+               			}
+               			this._entityTimeout =  this._entityTimeout - 1;
+
+                	}
+                }
+            });
+        })();
+
+
+    </script>
+</dom-module>

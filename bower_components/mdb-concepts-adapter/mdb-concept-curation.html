@@ -1,0 +1,274 @@
+<link rel="import" href="../polymer/polymer.html">
+<script src="../lodash/dist/lodash.min.js"></script>
+<link rel="import" href='./common-api-behavior.html' />
+<link rel="import" href='./filter-definitions.html' />
+<link rel="import" href='../mdb-http-client/mdb-http-client.html' />
+
+<dom-module id='mdb-concept-curation'>
+    <template>
+        <mdb-http-client id='httpClient'></mdb-http-client>
+    </template>
+
+    <script>
+
+        Polymer({
+            is: 'mdb-concept-curation',
+
+            properties:{
+
+            },
+
+            behaviors: [ApiConfigurationBehavior],
+
+            _relativePaths: {
+                getConceptListingPath: function(){
+                    return 'domains';
+                },
+                getConceptDetailsPath: function(conceptId){
+                    return [this.getConceptListingPath(), conceptId].join('/');
+                },
+                getPatternsPath: function(){
+                    return "patterns";
+                },
+                getSynonymsPath: function(){
+                    return "columns";
+                },
+                getRelatedConceptsPath: function(){
+                    return "domains";
+                },
+                getClustersPath: function(){
+                    return 'clusters'
+                },
+                getConceptBootstrapPath: function(){
+                    return 'columns';
+                },
+                getConceptCurationPath: function(conceptId){
+                    return ['domains', conceptId, 'curation'].join('/');
+                }
+            },
+
+            _facetTypes: ['synonym', 'pattern', 'relatedDomain', 'exampleColumn', 'exampleValue'],
+
+            curateConceptAsync: function(concept){
+                return this._ensureValidApiConfiguration()
+                .then(function(){
+                    var url = [this.apiUrlBase, this._relativePaths.getConceptCurationPath(concept.id)].join('/');
+                    var authHeader = this._getAuthorizationHeader();
+
+                    var postBody = {curate: {}};
+
+                    this._getPluralizedFacetTypes().forEach(function(pluralizedFacetType){
+                        if((concept[pluralizedFacetType] || []).length > 0)
+                            postBody.curate[pluralizedFacetType] = concept[pluralizedFacetType];
+                    });
+
+                    var headers = Object.assign(authHeader, {'Content-Type': 'application/x-www-form-urlencoded'});
+                    postBody.curate = JSON.stringify(postBody.curate);
+
+                    return this.$.httpClient.postAsync(url, headers, postBody).then(function(response){
+                        return response.detail.value;
+                    });
+                }.bind(this));
+            },
+
+            getConceptDetailsAsync: function(conceptId){
+                return this._ensureValidApiConfiguration()
+                .then(function(){
+                    if(!conceptId)
+                        return Promise.reject("User Id not specified");
+
+                    var url = [this.apiUrlBase, this._relativePaths.getConceptDetailsPath(conceptId)].join('/');
+                    var authHeader = this._getAuthorizationHeader();
+                    
+                    return this.$.httpClient.getAsync(url, authHeader, {}).then(function(response){
+                        var conceptDetails = response.detail.value;
+                        if((conceptDetails.exampleColumns || []).length == 0)
+                            conceptDetails.isBootstrapNeeded = true;
+                        else
+                            conceptDetails.isBootstrapNeeded = false;
+
+                        return conceptDetails;
+                    });
+                }.bind(this));
+            },
+
+            getConceptFacetsAsync: function(conceptId, facetFilters, existingConceptDetails){
+                var conceptDetailsPromise;
+                if(existingConceptDetails)
+                    conceptDetailsPromise = Promise.resolve(existingConceptDetails);
+                else
+                    conceptDetailsPromise = this.getConceptDetailsAsync(conceptId, facetFilters);
+                
+                return conceptDetailsPromise.then(function(conceptDefinition){
+                    var filterParam = this._serializeFacetFilters(facetFilters);
+
+                    var resolutionPromise;
+                    if(conceptDefinition.isBootstrapNeeded)
+                        resolutionPromise = this._getBootstrappedConceptFacets(conceptDefinition.label, filterParam);
+                    else
+                        resolutionPromise = this._getFacetsForIdentifiedCluster(conceptDefinition.id, filterParam);
+
+                    return resolutionPromise.then(function(conceptFacets){
+                        return this._getFacetsUpdatedWithCurrentDefinition(conceptFacets, conceptDefinition);
+                    }.bind(this));
+                }.bind(this));
+            },
+
+            getConceptsAsync: function(userId, paging, filterTerm){
+                return this._ensureValidApiConfiguration()
+                .then(function(){
+                    if(!userId)
+                        return Promise.reject("User Id not specified");
+                    
+                    var queryParams = this._getQueryParams(userId, paging);
+                    var authHeader = this._getAuthorizationHeader();
+                    var url = [this.apiUrlBase, this._relativePaths.getConceptListingPath()].join('/');
+                    
+                    if(filterTerm){
+                        var filterVal = FilterFactory.contains('label', filterTerm);
+                        queryParams.filter = filterVal.toString();
+                    }
+
+                    return this.$.httpClient.getAsync(url, authHeader, queryParams).then(function(response){
+                        return response.detail.value;
+                    });
+                }.bind(this));
+            },
+
+            //cluster corresponds to a domain(concept)
+            _getFacetsForIdentifiedCluster: function(clusterId, filterParam){
+                var url = [this.apiUrlBase, this._relativePaths.getClustersPath()].join('/');
+                var queryParams = {near: clusterId};
+                if(filterParam && filterParam.length > 0)
+                    queryParams.filter = filterParam;
+
+                var authHeader = this._getAuthorizationHeader();
+
+                return this.$.httpClient.getAsync(url, authHeader, queryParams).then(function(response){
+                    return this._parseClusterResults(response.detail.value);
+                }.bind(this), function(errorData){
+                    var errorDetails = errorData.detail.value;
+                    
+                    if(errorDetails.status == 404)
+                        return {};
+
+                    var errorMessage = (errorDetails.response || {}).userMessage || "Unknown error occured";
+                    return Promise.reject(errorMessage);
+                });
+            },
+
+            _getFacetsUpdatedWithCurrentDefinition: function(conceptFacets, currentConceptDefinition){
+                this._updateAssessmentsFromCurrentDefinition(conceptFacets, currentConceptDefinition);
+
+                this._addMissingFacetsFromCurrentDefinition(conceptFacets, currentConceptDefinition);
+
+                return Object.assign({}, currentConceptDefinition, conceptFacets);
+            },
+
+            _updateAssessmentsFromCurrentDefinition: function(conceptFacets, currentConceptDefinition){
+                var defaultAssessment = 'M';
+                this._getPluralizedFacetTypes().forEach(function(pluralizedFacetType){
+                    if((conceptFacets[pluralizedFacetType] || []).length == 0)
+                        return;
+                    
+                    conceptFacets[pluralizedFacetType].forEach(function(facet){
+                        var collectionToFindIn = currentConceptDefinition[pluralizedFacetType];
+                        if(collectionToFindIn.columns)
+                            collectionToFindIn = collectionToFindIn.columns;
+                        var currentFacetDefinition = (collectionToFindIn || []).find(function(_currentFacetDefinition){
+                            return _currentFacetDefinition.id == facet.id;
+                        });
+
+                        if(currentFacetDefinition && currentFacetDefinition.assessment)
+                            facet.assessment = currentFacetDefinition.assessment;
+                        else
+                            facet.assessment = defaultAssessment;
+                    });
+                }.bind(this));
+            },
+
+            _addMissingFacetsFromCurrentDefinition: function(conceptFacets, currentConceptDefinition){
+                this._getPluralizedFacetTypes().forEach(function(pluralizedFacetType){
+                    var mergedCollection = _.unionBy(currentConceptDefinition[pluralizedFacetType] || [], conceptFacets[pluralizedFacetType] || [], function(facet){
+                        return facet.id;
+                    });
+
+                    conceptFacets[pluralizedFacetType] = mergedCollection;
+                }.bind(this));
+            },
+
+            _getPluralizedFacetTypes: function(){
+                return this._facetTypes.map(function(facetType){
+                    return facetType + 's';
+                });
+            },
+
+            _parseClusterResults: function(response){
+                var parsed = {exampleColumns : []};
+
+                parsed.synonyms = response.synonyms || [];
+
+                (response.clusters || []).forEach(function(cluster){
+                    (cluster.columns || []).forEach(function(clusterColumn){
+                        parsed.exampleColumns.push({
+                            id: clusterColumn.id,
+                            label: clusterColumn.label,
+                            relevance: clusterColumn.relevance
+                        });
+                        parsed.patterns = (parsed.patterns || []).concat(clusterColumn.patterns || []);
+                        parsed.relatedDomains = (parsed.relatedDomains || []).concat(clusterColumn.relatedDomains || []);
+                        parsed.exampleValues = (parsed.exampleValues || []).concat(clusterColumn.exampleValues || []);
+                    });
+                });
+
+                return parsed;
+            },
+
+            _getBootstrappedConceptFacets: function(conceptName, filterParam){
+                var url = [this.apiUrlBase, this._relativePaths.getConceptBootstrapPath()].join('/');
+                var queryParams = {near: conceptName};
+                if(filterParam && filterParam.length > 0)
+                    queryParams.filter = filterParam;
+                var authHeader = this._getAuthorizationHeader();
+
+                return this.$.httpClient.getAsync(url, authHeader, queryParams).then(function(response){
+                    return response.detail.value;
+                });
+            },
+
+            _getQueryParams: function(userId, paging){
+                var queryParams = {
+                    user: userId
+                };
+
+                paging = paging || {};
+
+                queryParams.offset = paging.offset || 0;
+                if(paging.limit)
+                    queryParams.limit = paging.limit;
+
+                return queryParams;
+            },
+
+            _serializeFacetFilters: function(facetFilters){
+                if(!facetFilters)
+                    return "";
+
+                var filters = [];
+                this._getPluralizedFacetTypes().forEach(function(pluralizedFacetType){
+                    var filterValues = facetFilters[pluralizedFacetType] || [];
+                    if(filterValues.length == 0)
+                        return;
+
+                    filters.push(FilterFactory.matchAll(pluralizedFacetType, filterValues));
+                });
+
+                if(filters.length == 0)
+                    return "";
+
+                return FilterFactory.all(filters).toString();
+            }
+        });
+
+    </script>
+</dom-module>

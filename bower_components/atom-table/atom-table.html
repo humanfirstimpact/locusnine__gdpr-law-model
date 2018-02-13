@@ -1,0 +1,634 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../atom-modal-dialog/atom-modal-dialog.html">
+<link rel="import" href="../paper-styles/typography.html">
+<link rel="import" href="../mdb-search-box/mdb-search-box.html">
+
+<!--
+`atom-table`
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--atom-table` | Mixin applied to all atom table host | `{}`
+`--atom-table-cell` | Mixin applied to all atom table cells | `{}`
+`--atom-table-header-cell` | Mixin applied to atom table header cells | `{}`
+`--atom-table-body-cell` | Mixin applied to atom table body cells | `{}`
+`--atom-table-odd-row-cell` | Mixin applied to atom table odd row body cells | `{}`
+`--atom-table-page-size` | Mixin applied to atom table page size element | `{}`
+`--atom-table-page-num` | Mixin applied to atom table page number element | `{}`
+`--atom-table-paging-buttons-container` | Mixin applied to atom table paging buttons container | `{}`
+`--atom-table-paging-buttons` | Mixin applied to atom table paging buttons | `{}`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="atom-table">
+  <template>
+    <style>
+      :host {
+        display: block;
+        background: var(--atom-table-bg, #fff);
+        --vaadin-grid-cell: {
+          @apply(--atom-table-cell);
+        }
+        --vaadin-grid-header-cell: {
+          @apply(--atom-table-header-cell);
+          white-space: normal;
+        }
+        --vaadin-grid-body-cell: {
+          @apply(--atom-table-body-cell);
+          flex-direction: column;
+          justify-content: center;
+        }
+        --vaadin-grid-body-row-odd-cell: {
+          @apply(--atom-table-odd-row-cell);
+        }
+
+        --paper-icon-button-disabled: {
+          opacity: 0.5;
+        }
+        --mdb-search-box-container: {
+          margin: 10px 0;
+        }
+      }
+
+      :host[allow-paging] {
+        overflow: auto;
+      }
+
+      :host vaadin-grid {
+        max-height: 400px;
+        @apply(--atom-table);
+      }
+
+      :host vaadin-grid ::content vaadin-grid-sorter #indicators {
+        width: 20px;
+        position: absolute;
+        left: -25px;
+      }
+
+      :host vaadin-grid ::content vaadin-grid-sorter #indicators::before {
+        font-size: 20px;
+        margin-top: -10px;
+      }
+
+      :host vaadin-grid ::content vaadin-grid-sorter #content {
+        order: 2;
+      }
+
+      :host vaadin-grid ::content vaadin-grid-sorter:not([direction]) #indicators::before {
+        content: "";
+      }
+
+      :host vaadin-grid ::content vaadin-grid-sorter[direction=asc] #indicators::before {
+        content: "\2191";
+      }
+
+      :host vaadin-grid ::content vaadin-grid-sorter[direction=desc] #indicators::before {
+        content: "\2193";
+      }
+
+      :host vaadin-grid.empty {
+        height: initial;
+      }
+
+      :host iron-icon.add-new-icon {
+        --iron-icon-fill-color: var(--atom-table-add-item-color);
+      }
+
+      :host paper-button.add-new {
+        color: var(--atom-table-add-item-color);
+        font-size: 14px;
+      }
+
+      :host[allow-paging] vaadin-grid {
+        max-height: none;
+        height: initial;
+      }
+
+      :host .actions,
+      :host .paging,
+      :host .columnPaging {
+        @apply(--layout);
+        @apply(--layout-center);
+        @apply(--layout-end-justified);
+        color: var(--table-font-color, --mdb-secondary-text-dark);
+      }
+
+      :host .paging,
+      :host .columnPaging {
+        @apply(--atom-table-paging-buttons-container);
+      }
+
+      :host h6 {
+        font-size: var(-table-paging-font-size, 14px);
+        font-weight: normal;
+        margin: 20px 10px;
+      }
+
+      :host select {
+        border: 0;
+        color: inherit;
+      }
+
+      :host .pagingButtons paper-icon-button {
+        @apply(--atom-table-paging-buttons);
+      }
+
+      :host .empty-message {
+        background-color: #fcfdff;
+        height: 100px;
+        border-bottom: 1px solid #e1e6ed;
+        position: relative;
+      }
+
+      :host .no-columns .empty-message {
+        border-top: 1px solid #e1e6ed;
+      }
+
+      :host .empty-message p {
+        position: absolute;
+        top: 25%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 20px;
+        font-weight: 400;
+      }
+
+      :host atom-modal-dialog {
+        --atom-dialog: {
+          min-width: 400px;
+          overflow: auto;
+        }
+      }
+    </style>
+    <div class="actions">
+      <template is="dom-if" if="{{allowGlobalSearch}}">
+        <mdb-search-box on-search-term-entered='_handleSearchTerm' placeholder="{{searchPlaceholder}}">
+          <paper-icon-button icon="search" name="search" suffix></paper-icon-button>
+        </mdb-search-box>
+      </template>
+      <template is="dom-if" if="{{allowAddNew}}">
+        <paper-button class="add-new" on-tap="_addItem">
+          <iron-icon class='add-new-icon' icon="icons:add"></iron-icon>
+          ADD NEW
+        </paper-button>
+      </template>
+    </div>
+    <div class$="[[_getGridClass(columns, items)]]">
+      <vaadin-grid id="grid" items="[[items]]" active-item="{{activeItem}}" class$="[[_isEmpty(items)]]">
+        <content select="vaadin-grid-column"></content>
+        <template is="dom-if" if="[[allowEdit]]">
+          <vaadin-grid-column flex-grow='[[editColumnFlexGrow]]' width="[[editColumnWidth]]">
+            <template>
+              <paper-icon-button id="edit" icon="icons:more-vert" style="position:absolute;right:0;" on-tap="_editItem"></paper-icon-button>
+            </template>
+          </vaadin-grid-column>
+        </template>
+      </vaadin-grid>
+      <template is="dom-if" if="[[!_recordsExist(items)]]">
+        <template is="dom-if" if="[[!dataLoadInProgress]]">
+          <div class="empty-message">
+            <p>[[emptyMessage]]</p>
+          </div>
+        </template>
+      </template>
+    </div>
+    <template is="dom-if" if="{{allowPaging}}">
+      <div class="paging">
+        <h6>Rows per page</h6>
+        <select id="pageSize" class="pageSize" value="{{pageSize::change}}">
+          <option>10</option>
+          <option>20</option>
+          <option>50</option>
+        </select>
+        <h6 class="pageNum">[[_getStart(items,pageNum,pageSize,totalRecords)]]-[[_getEnd(items,pageNum,pageSize,totalRecords)]] of [[totalRecords]]</h6>
+        <div class="pagingButtons">
+          <paper-icon-button id="prevPage" icon="icons:chevron-left" on-tap="_prevPage"></paper-icon-button>
+          <paper-icon-button id="nextPage" icon="icons:chevron-right" on-tap="_nextPage"></paper-icon-button>
+        </div>
+      </div>
+    </template>
+    <template is="dom-if" if="[[allowColumnPaging]]">
+      <div class="columnPaging">
+        <h6>Columns per page</h6>
+        <select id="columnPageSize" class="pageSize" value="{{columnPageSize::change}}">
+          <option>3</option>
+          <option>5</option>
+          <option>7</option>
+          <option>10</option>
+        </select>
+        <h6 class="pageNum">[[_getStart(columns,columnPageNum,columnPageSize, totalColumns)]]-[[_getEnd(columns,columnPageNum,columnPageSize,totalColumns)]]
+          of [[totalColumns]]</h6>
+        <div class="pagingButtons">
+          <paper-icon-button disabled$="[[_isCurrentColumnPageFirst]]" id="prevColumnPage" icon="icons:chevron-left" on-tap="_prevColumnPage"></paper-icon-button>
+          <paper-icon-button disabled$="[[_isCurrentColumnPageLast]]" id="nextColumnPage" icon="icons:chevron-right" on-tap="_nextColumnPage"></paper-icon-button>
+        </div>
+      </div>
+    </template>
+    <atom-modal-dialog id="modal" secondary-action-allowed="[[_allowDelete(allowDelete,_isEdit)]]" secondary-action-label="{{modalSecondaryActionLabel}}"
+      primary-action-allowed="[[_allowSave(allowAddNew,allowEdit)]]" primary-action-label="{{_getPrimaryActionLabel(_isEdit, modalPrimaryActionLabel, modalAddActionLabel, modalEditActionLabel)}}">
+      <content select=".addnew"></content>
+      <content select=".delete"></content>
+    </atom-modal-dialog>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'atom-table',
+
+      properties: {
+        dataProvider: {
+          type: Object
+        },
+
+        dataLoadInProgress: {
+          type: Boolean,
+          value: false
+        },
+
+        editColumnFlexGrow:{
+          type: String,
+          value: '0'
+        },
+
+        editColumnWidth: {
+          type: String,
+          value: '30px'
+        },
+
+        idField: {
+          type: String,
+          value: '_id'
+        },
+        allowFilters: {
+          type: Boolean,
+          value: false
+        },
+        allowPaging: {
+          type: Boolean,
+          value: false
+        },
+        allowColumnPaging: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        pageSize: {
+          type: Number,
+          value: 10
+        },
+        columnPageSize: {
+          type: Number,
+          value: 3,
+          notify: true
+        },
+        pageNum: {
+          type: Number,
+          value: 1
+        },
+        columnPageNum: {
+          type: Number,
+          value: 1,
+          notify: true
+        },
+        searchPlaceholder: {
+          type: String,
+          value: 'Search on table'
+        },
+        _isCurrentColumnPageFirst: {
+          type: Boolean,
+          value: true
+        },
+
+        _isCurrentColumnPageLast: {
+          type: Boolean,
+          value: false
+        },
+
+        totalRecords: {
+          type: Number,
+          value: 0,
+          readOnly: true
+        },
+        totalColumns: {
+          type: Number,
+          value: 0
+        },
+        entityType: {
+          type: String,
+          observer: '_entityTypeChanged'
+        },
+        allowAddNew: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        allowEdit: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        allowDelete: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        updateModel: {
+          type: Object,
+          value: undefined,
+          notify: true
+        },
+        allowGlobalSearch: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        columns: {
+          type: Array,
+          value: []
+        },
+        items: {
+          type: Array,
+          value: [],
+          observer: '_itemsChanged'
+        },
+        activeItem: {
+          notify: true
+        },
+        emptyMessage: {
+          type: String,
+          value: 'No items found'
+        },
+        _isEdit: {
+          type: Boolean,
+          value: false,
+          observer: '_isEditChanged'
+        },
+        modalPrimaryActionLabel: {
+          type: String,
+          value: 'Save'
+        },
+        modalSecondaryActionLabel: {
+          type: String,
+          value: 'Delete'
+        },
+
+        modalAddActionLabel: {
+          type: String,
+          value: null
+        },
+
+        modalEditActionLabel: {
+          type: String,
+          value: null
+        },
+
+        operationValidators: {
+          type: Object
+        },
+        failureCallbacks: {
+          type: Object
+        },
+
+        filterTerm: {
+          type: String,
+          observer: '_fetchItems'
+        }
+      },
+
+      observers: [
+        '_fetchItems(dataProvider,pageSize,pageNum)',
+        '_checkColumnPaging(totalColumns, columnPageNum)'
+      ],
+
+      listeners: {
+        'modal.primary': '_save',
+        'modal.secondary': '_delete'
+      },
+
+      _itemsChanged: function () {
+        this.$.grid.clearCache();
+      },
+
+      _prevPage: function () {
+        if (this._getStart() > 1) {
+          this.pageNum = this.pageNum - 1;
+        }
+      },
+
+      _nextPage: function () {
+        if (this._getEnd() < this.totalRecords) {
+          this.pageNum = this.pageNum + 1;
+        }
+      },
+
+      _getStart: function (items, pageNum, pageSize, totalRecords) {
+        var end = this._getEnd(items, pageNum, pageSize, totalRecords);
+
+        return end > 0 ? ((parseInt(pageNum) || this.pageNum) - 1) * (parseInt(pageSize) || this.pageSize) + 1 : 0;
+      },
+
+      _getEnd: function (items, pageNum, pageSize, totalRecords) {
+        var end = (parseInt(pageNum) || this.pageNum) * (parseInt(pageSize) || this.pageSize),
+          total = typeof totalRecords === typeof 0 ? totalRecords : this.totalRecords;
+
+        return end <= total ? end : total;
+      },
+
+      _addItem: function (e) {
+        this.set('updateModel', {});
+        this._isEdit = false;
+
+        this._showModal();
+      },
+
+      _editItem: function (e) {
+        this.set('updateModel', JSON.parse(JSON.stringify(e.model.item)));
+
+        this._isEdit = true;
+        this._showModal();
+      },
+
+      _handleSearchTerm: function (e) {
+        this.filterTerm = e.detail.searchTerm;
+      },
+
+      _showModal: function () {
+        var modal = this.querySelector('atom-modal-dialog');
+        if (modal) modal.open();
+      },
+
+      _closeModal: function () {
+        var modal = this.querySelector('atom-modal-dialog');
+        this.set('updateModel', undefined);
+        if (modal) modal.close();
+      },
+
+      _fetchItems: function () {
+        var that = this;
+        var dataHookPresent = this.dataProvider && this.dataProvider.fetchAll && typeof this.dataProvider.fetchAll === typeof function () { };
+        if (!dataHookPresent)
+          return;
+
+        this.set('dataLoadInProgress', true);
+
+        var args = {
+          pnum: this.pageNum,
+          psize: this.pageSize,
+          filterTerm: this.filterTerm
+        };
+
+        //If column paging allowed, set arguments for the same
+        if (this.allowColumnPaging) {
+          args.colPnum = this.columnPageSize;
+          args.colPsize = this.columnPageSize
+        }
+
+        this.dataProvider.fetchAll(args)
+          .then(function (response) {
+            that.set('items', response.results);
+            that.set('dataLoadInProgress', false);
+            that._setTotalRecords(response.pagingInfo.total)
+          }).catch(function (error) {
+            that.set('dataLoadInProgress', false);
+          });
+      },
+
+      _save: function (e) {
+        var that = this;
+        var operationType = 'save';
+        this._validateOperationAsync(operationType, this.updateModel)
+          .then(function () {
+            if (that.dataProvider && that.dataProvider.save && typeof that.dataProvider.save === typeof function () { }) {
+              that.dataProvider.save(JSON.parse(JSON.stringify(that.updateModel || {})))
+                .then(function (model) {
+                  that.fire('entity-saved', model);
+                  that._closeModal();
+                  that._fetchItems();
+                }).catch(function (error) {
+                  that._invokeFailureCallback(operationType, error);
+                });
+            }
+          });
+      },
+
+      _delete: function (e) {
+        var that = this;
+        var operationType = 'delete';
+        this._validateOperationAsync(operationType, this.updateModel)
+          .then(function () {
+            if (that.allowDelete && that.dataProvider && that.dataProvider.destroy && typeof that.dataProvider.destroy === typeof function () { }) {
+              that.dataProvider.destroy(JSON.parse(JSON.stringify(that.updateModel)))
+                .then(function (model) {
+                  that.fire('entity-deleted', model);
+                  that._closeModal();
+                  that._fetchItems();
+                }).catch(function (error) {
+                  that._invokeFailureCallback(operationType, error);
+                });
+            }
+          });
+      },
+
+      _validateOperationAsync: function (operationType, model) {
+        var defaultValidation = Promise.resolve();
+
+        var applicableValidator = null;
+
+        var validator = (this.operationValidators || {})[operationType];
+
+        if (validator)
+          return validator(model);
+
+        return defaultValidation;
+      },
+
+      _invokeFailureCallback: function (operationType, errorObject) {
+        var callBack = (this.failureCallbacks || {})[operationType];
+
+        if (callBack)
+          callBack(errorObject);
+      },
+
+      _isEditChanged: function () {
+        this._updateModalTitle();
+      },
+
+      _entityTypeChanged: function () {
+        this._updateModalTitle();
+      },
+
+      _updateModalTitle: function () {
+        this.$.modal.modalTitle = (this._isEdit ? 'Edit' : 'Add new') + ' ' + (this.entityType || '')
+      },
+
+      _allowSave: function () {
+        return this.allowAddNew || this.allowEdit;
+      },
+
+      _allowDelete: function (allowdelete, isedit) {
+        return this._isEdit && this.allowDelete ? true : false;
+      },
+
+      _recordsExist: function () {
+        return !!(this.items || []).length;
+      },
+
+      _isEmpty: function () {
+        return !this._recordsExist() ? 'empty' : '';
+      },
+
+      _getGridClass: function (columns, items) {
+        return 'grid' + (columns.length > 0 ? '' : ' no-columns') + (items.length > 0 ? '' : ' no-items');
+      },
+
+      _prevColumnPage: function () {
+        this.columnPageNum = this._getPrevColumnPage();
+      },
+
+      _getPrevColumnPage: function () {
+        if (this.columnPageNum > 1) {
+          return this.columnPageNum - 1;
+        }
+
+        return this.columnPageNum;
+      },
+
+      _nextColumnPage: function () {
+        this.columnPageNum = this._getNextColumnPage();
+      },
+
+      _getNextColumnPage: function () {
+        if (this._getEnd(this.columns, this.columnPageNum, this.columnPageSize, this.totalColumns) < this.totalColumns) {
+          return this.columnPageNum + 1;
+        }
+
+        return this.columnPageNum;
+      },
+
+      _checkColumnPaging: function () {
+        this._isCurrentColumnPageFirst = this.columnPageNum == this._getPrevColumnPage();
+
+        this._isCurrentColumnPageLast = this.columnPageNum == this._getNextColumnPage();
+      },
+
+      _getPrimaryActionLabel: function () {
+        if (this._isEdit)
+          return this.modalEditActionLabel || this.modalPrimaryActionLabel;
+
+        return this.modalAddActionLabel || this.modalPrimaryActionLabel;
+      }
+    });
+  </script>
+</dom-module>

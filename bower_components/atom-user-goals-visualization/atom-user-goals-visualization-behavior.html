@@ -1,0 +1,110 @@
+<script>
+    window.atom = window.atom || {};
+    window.atom.UserGoalsVisualizationBehavior = {
+        properties: {
+            goals: {
+                type: Object,
+                observer: '_goalsChanged'
+            }
+        },
+
+        ready: function () {
+            this.scopeSubtree(this.$.chart, true);
+        },
+
+        attached: function () {
+            if (this.goals) this._goalsChanged();
+        },
+
+        initialize: function (options) {
+            options = options || {};
+
+            var that = this;
+
+            this.el = options.el;
+            this.data = options.data || {};
+            this.viewerWidth = window.innerWidth;
+            this.viewerHeight = window.innerHeight;
+            this.panSpeed = options.panSpeed || 200;
+            this.panBoundary = options.panBoundary || 20; // Within 20px from edges will pan when dragging.
+            this.duration = options.duration || 750;
+
+            this.zoomListener = d3.behavior.zoom().scaleExtent([0.1, 3]).on("zoom", function () {
+                that._zoom.call(that);
+            });
+            this.tree = d3.layout.tree();
+            this.diagonal = d3.svg.diagonal()
+                .projection(function (d) {
+                    return [d.y, d.x];
+                });
+
+            this.initializeChild(options);
+        },
+
+        initializeChild: function (options) { },
+
+        _goalsChanged: function (value) {
+            //Render only if data has been loaded
+            if (value && value.hasOwnProperty('name')) {
+                this.initialize();
+                this.render();
+            }
+        },
+
+        _click: function (d) {            
+            this._toggleChildren(d);
+            this._update(d);
+        },
+
+        _toggleChildren: function (d) {
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else if (d._children) {
+                d.children = d._children;
+                d._children = null;
+            }
+            return d;
+        },
+
+        _zoom: function () {
+            this.container.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
+        },
+
+        _fill: function (node) {
+            var fill;
+            var status = this._getStatus(node);
+            switch (status) {
+                case 'inprogress':
+                    fill = 'gold'
+                    break;
+                case 'done':
+                    fill = '#00fcda';
+                    break;
+                default:
+                    fill = '#777';
+                    break;
+            }
+            return fill;
+        },
+
+        _getStatus: function _getStatus(node) {
+            var status = 'todo';
+            if (node.children && node.children.length > 0) {
+                var statuses = node.children.map(function (child) {
+                    return _getStatus(child);
+                });
+
+                var todo = statuses.filter(function (e) { return e === 'todo' }),
+                    inprogress = statuses.filter(function (e) { return e === 'inprogress' }),
+                    done = statuses.filter(function (e) { return e === 'done' });
+
+                status = todo.length === node.children.length ? 'todo' : todo.length !== node.children.length && done.length !== node.children.length ? 'inprogress' : 'done';
+            } else {
+                status = !node.goodness ? 'todo' : node.goodness === 1 ? 'done' : 'inprogress';
+            }
+            return status;
+        }
+    };
+
+</script>

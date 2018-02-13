@@ -1,0 +1,25 @@
+{
+  "name": "mdb-search-box",
+  "main": "mdb-search-box.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "paper-input": "PolymerElements/paper-input#^1.1.24"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/makedatabetter-dev/mdb-search-box",
+  "version": "0.1.5",
+  "_release": "0.1.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.5",
+    "commit": "e090c3b2150554fbd0dc915997e98e9dc04e7e9c"
+  },
+  "_source": "git://github.com/makedatabetter-dev/mdb-search-box.git",
+  "_target": "*",
+  "_originalSource": "git://github.com/makedatabetter-dev/mdb-search-box.git"
+}

@@ -1,0 +1,149 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`mdb-radio-list`
+pill box selection component
+
+
+The following custom properties and mixins are also available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--mdb-radio-list-container` | Mixin applied to the radio list container | `{}`
+`--mdb-radio-list-button` | Mixin applied to the radio list buttons | `{}`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-radio-list">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--paper-font-common-base);
+      }
+
+      :host paper-radio-group {
+        white-space: nowrap;
+        @apply(--mdb-radio-list-container);
+      }
+
+      :host ::content paper-radio-button {
+        border: 1px solid;
+        border-color: var(--mdb-radio-button-border-color, --mdb-border-color);
+        color: var(--mdb-radio-button-font-color, --mdb-disabled-text-dark);
+        background-color: white;
+        @apply(--mdb-radio-list-button);
+      }
+
+      :host[size="small"] ::content paper-radio-button {
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+
+      :host[size="large"] ::content paper-radio-button {
+        padding-top: 0px;
+        padding-bottom: 3px;
+        padding-left: 17px;
+        padding-right: 17px;
+        font-size: 20px;
+      }
+
+      :host ::content paper-radio-button:not(:last-child) {
+        border-right-color: transparent;
+      }
+
+      :host ::content paper-radio-button[aria-checked="true"] {
+        border-color: var(--mdb-radio-button-checked-border-color, --mdb-accent-color-highlight);
+        background-color: var(--mdb-radio-button-checked-background-color, --mdb-accent-color-highlight);
+        color: var(--mdb-radio-button-checked-font-color, --mdb-primary-text-light);
+        @apply(--mdb-radio-list-button-checked)
+      }
+
+      :host ::content paper-radio-button[aria-checked="true"]+paper-radio-button {
+        border-left-color: transparent;
+      }
+    </style>
+    <paper-radio-group selected="{{selected}}" on-tap=changeHandler>
+      <content select="paper-radio-button"></content>
+    </paper-radio-group>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-radio-list',
+
+      properties: {
+        name: {
+          type: String,
+          value: 'mdb-radio-list',
+          readOnly: true
+        },
+
+        selected: {
+          type: String,
+          reflectToAttribute: true,
+          notify: true
+        },
+
+        size: {
+          type: String,
+          reflectToAttribute: true,
+          value: 'large',
+          observer: '_enumSize'
+        },
+      },
+
+      changeHandler: function (e) {
+        this.fire('recommendation-changed-Top', { "vale": e.target.innerText });
+      },
+
+      _enumSize: function (newValue, oldValue) {
+        var validColors = ['small', 'large'];
+        if (validColors.indexOf(newValue) === -1) {
+          // Put the size back, and maybe throw in a line to throw an error
+          this.size = oldValue;
+        }
+      },
+
+      attached: function () {
+        var customStyles = {
+          '--paper-radio-button-checked-color': 'transparent',
+          '--paper-radio-button-unchecked-color': 'transparent',
+          '--paper-radio-button-checked-ink-color': 'transparent',
+          '--paper-radio-button-unchecked-ink-color': 'transparent',
+          '--paper-radio-button-label-color': this.getComputedStyleValue('--mdb-radio-list-font-color') || '#bbb',
+          '--paper-radio-button-size': '0',
+          '--paper-radio-button-label-spacing': '0'
+        };
+        var buttons = this.querySelectorAll('paper-radio-button');
+        for (i = 0; i < buttons.length; i++) {
+          var button = buttons[i];
+          (function (e) {
+            e.addEventListener('checked-changed', function () {
+              e.noink = true;
+
+              if (this.checked) {
+                this.customStyle['--paper-radio-button-label-color'] = this.getComputedStyleValue('--mdb-radio-button-checked-font-color') || '#fff'
+              } else {
+                this.customStyle['--paper-radio-button-label-color'] = customStyles['--paper-radio-button-label-color'];
+              }
+              this.updateStyles();
+            });
+
+            //paper-radio-button style customizations
+            for (var i in customStyles) {
+              e.customStyle[i] = customStyles[i];
+            }
+            e.updateStyles();
+          })(button);
+        }
+      }
+
+    });
+  </script>
+</dom-module>

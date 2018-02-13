@@ -1,0 +1,167 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+
+<dom-module id="mdb-dimension-finder-item">
+    <template>
+        <style>
+            :host {
+                @apply(--layout-horizontal);
+                @apply(--layout-center);
+                padding: 5px 5px 5px 9px;
+                cursor: pointer;
+                color: var(--dimension-text-color, --mdb-secondary-text-dark);
+
+            }
+
+            :host[selected] {
+                background: var(--dimension-selected-bg, #fff);
+                color: var(--dimension-selected-color, --app-primary-color);
+                @apply(--dimension-selected-text);
+            }
+
+            :host[selected] paper-button {
+                color: var(--dimension-text-color, --mdb-secondary-text-dark);
+                @apply(--dimension-selected-button);
+            }
+
+            :host[checked] paper-button {
+                border-color: var(--dimension-checked-color, --app-primary-color);
+                color: var(--dimension-checked-color, --app-primary-color);
+                @apply(--dimension-checked-button);
+            }
+
+            :host {
+                --paper-button: {
+                    min-width: 20px;
+                    min-height: 20px;
+                    background: transparent;
+                    border-radius: 10px;
+                    padding: 2px 13px;
+                    box-sizing: border-box;
+                    border: 1px solid var(--dimension-text-color, --mdb-secondary-text-dark);
+                }
+            }
+
+            :host[empty-recommendation] paper-button {
+                padding: 0;
+            }
+
+            .item-name {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex: 1 1 0%;
+                -ms-flex: 1 1 0%;
+                font-size: var(--mdb-font-small, 12px);
+            }
+
+            .icon,
+            iron-icon {
+                width: 20px;
+                height: 20px;
+            }
+        </style>
+        <template is="dom-if" if="[[showHumanVerification]]">
+            <span class="icon">
+                <template is="dom-if" if="[[humanVerified]]">
+                    <iron-icon icon="icons:face"></iron-icon>
+                </template>
+                <template is="dom-if" if="[[!humanVerified]]">
+                    <iron-icon icon="icon"></iron-icon>
+                </template>
+            </span>
+        </template>
+
+        <template is="dom-if" if="[[!showHumanVerification]]">
+            <iron-icon icon="icon"></iron-icon>
+        </template>
+
+        <span class="item-name" title="[[name]]">[[name]]</span>
+        <template is="dom-if" if="[[showItemCheckbox]]">
+            <paper-button toggles active={{checked}} on-change="_checkedChanged">[[recommendation]]</paper-button>
+        </template>
+
+        <iron-icon class="arrow" icon="icons:chevron-right"></iron-icon>
+    </template>
+    <script>
+        Polymer({
+            is: 'mdb-dimension-finder-item',
+
+            properties: {
+                id: {
+                    type: String
+                },
+
+                name: {
+                    type: String
+                },
+
+                systemRecommended: {
+                    type: Boolean,
+                    value: false
+                },
+
+                humanVerified: {
+                    type: Boolean,
+                    value: false
+                },
+
+                recommendation: {
+                    type: Number,
+                    value: 0,
+                    observer: '_changeRecommendation'
+                },
+
+                showItemCheckbox: {
+                    type: Boolean,
+                    value: false
+                },
+
+                showSystemRecommendation: {
+                    type: Boolean,
+                    value: false
+                },
+
+                showHumanVerification: {
+                    type: Boolean,
+                    value: false
+                },
+
+                checked: {
+                    type: Boolean,
+                    value: false,
+                    reflectToAttribute: true
+                },
+
+
+                emptyRecommendation: {
+                    type: Boolean,
+                    value: false,
+                    reflectToAttribute: true
+                }
+            },
+            ready: function () {
+                this._changeRecommendation();
+            },
+            _changeRecommendation: function () {
+                this.emptyRecommendation = this.recommendation ? false : true;
+            },
+            _checkedChanged: function (e) {
+                this.checked = e.currentTarget.active;
+                this.fire('dimension-checked', {
+                    id: this.id,
+                    checked: this.checked,
+                    name: this.name,
+                    humanVerified: this.humanVerified,
+                    showHumanVerification: this.showHumanVerification,
+                    systemRecommended: this.systemRecommended,
+                    showSystemRecommendation: this.showSystemRecommendation,
+                    showItemCheckbox: this.showItemCheckbox,
+                    recommendation: this.recommendation
+                });
+            }
+        });
+    </script>
+</dom-module>

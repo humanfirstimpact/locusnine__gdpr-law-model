@@ -1,0 +1,22 @@
+{
+  "domains": [
+    {
+      "id": "-7914875599710897033",
+      "label": "FICO_SCORE",
+      "owner": {
+        "id": "111001",
+        "label": "Angela"
+      },
+      "predictedColumns": 0,
+      "confirmedColumns": 0,
+      "eta": -1,
+      "coverage": 0,
+      "classificationAccuracyPercentage": 5
+    }
+  ],
+  "_meta": {
+    "total": 2,
+    "offset": 0,
+    "limit": 10
+  }
+}

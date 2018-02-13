@@ -1,0 +1,92 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<dom-module id='mdb-http-client'>
+
+    <template>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'mdb-http-client',
+
+            properties:{
+
+            },
+
+            _defaultHeaderValues:{
+                contentType: 'application/json'
+            },
+
+            _httpHeaderNames:{
+                contentType: 'Content-Type'
+            },
+
+            _verbs: {
+                get: 'GET',
+                put: 'PUT',
+                post: 'POST',
+                delete: 'DELETE',
+                patch: 'PATCH'
+            },
+
+            _errors: {
+                missingUrl: "URL is mandatory"
+            },
+
+            _getAjaxProvider: function(verb, url, headers, queryParams, body){
+                var provider = document.createElement('iron-ajax');
+                
+                provider.method = verb;
+                provider.url = url;
+
+                if(queryParams)
+                    provider.params = queryParams;
+
+                if(body)
+                    provider.body = body;
+
+                headers = headers || {};
+                if(!headers[this._httpHeaderNames.contentType])
+                    headers[this._httpHeaderNames.contentType] = this._defaultHeaderValues.contentType;
+
+                provider.headers = headers;
+
+                return provider;
+            },
+
+            _makeRequest: function(provider){
+                return new Promise(function(resolve, reject){
+                    provider.addEventListener('last-response-changed', function(response){
+                        resolve(response);
+                    });
+
+                    provider.addEventListener('last-error-changed', function(error){
+                        reject(error);
+                    });
+
+                    provider.generateRequest();
+                });
+            },
+
+            getAsync: function(url, headers, queryParams){
+                if(!url)
+                    throw this._errors.missingUrl;
+
+                var provider = this._getAjaxProvider(this._verbs.get, url, headers, queryParams);
+                
+                return this._makeRequest(provider);
+            },
+
+            postAsync: function(url, headers, body){
+                if(!url)
+                    throw this._errors.missingUrl;
+
+                var provider = this._getAjaxProvider(this._verbs.post, url, headers, null, body);
+
+                return this._makeRequest(provider);
+            }
+        });
+    </script>
+
+</dom-module>

@@ -1,0 +1,96 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`mdb-help-text`
+Help text element
+
+The following custom properties and mixins are also available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--mdb-help-text-font-size` | Font size of help text | `1em`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-help-text">
+  <template>
+    <style>
+      :host {
+        display: inline;
+        position: relative;
+        @apply(--paper-font-common-base);
+      }
+
+      :host #help {
+        color: var(--icon-color, #aaa);
+        --iron-icon-height: 18px;
+        --iron-icon-width: 18px;
+        padding-bottom: 6px;
+        @apply(--mdb-help-icon);
+      }
+
+      :host paper-tooltip {
+        --paper-tooltip-background: var(--mdb-accent-color-background, #fff);
+        --paper-tooltip-opacity: 1;
+        --paper-tooltip: {
+          box-shadow: 0 0 15px #bfbfbf;
+          font-size: var(--mdb-help-text-font-size, 1em);
+          line-height: 20px;
+          padding: 20px;
+          border-radius: 5px;
+          position: relative;
+          background: #fff;
+          border: 1px solid #bfbfbf;
+          font-weight: 400;
+          color: var(--mdb-disabled-text-dark, #000);
+          width: var(--mdb-help-text-tooltip-width, 300px);
+        }
+      }
+    </style>
+
+    <iron-icon id="help" icon="[[icon]]"></iron-icon>
+    <paper-tooltip animation-delay="[[animationDelay]]" for="help" position="{{position}}">
+      <div class="arrow">
+        [[helpText]]
+      </div>
+    </paper-tooltip>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-help-text',
+
+      properties: {
+        name: {
+          type: String,
+          value: 'mdb-help-text',
+        },
+
+        helpText: {
+          type: String
+        },
+
+        position: {
+          type: String,
+          value: 'right',
+          reflectToAttribute: true
+        },
+        animationDelay: {
+          type: Number,
+          value: 0
+        },
+        icon: {
+          type: String,
+          value: 'icons:help-outline'
+        }
+      },
+
+    });
+  </script>
+</dom-module>

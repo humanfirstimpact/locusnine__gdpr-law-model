@@ -1,0 +1,26 @@
+{
+  "name": "atom-google-sheet-adapter",
+  "main": "atom-google-sheet-adapter.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "iron-ajax": "PolymerElements/iron-ajax#^1.4.4",
+    "google-sheets": "GoogleWebComponents/google-sheets#^1.0.6"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/makedatabetter-dev/atom-google-sheet-adapter",
+  "version": "0.0.1",
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.1",
+    "commit": "7886c75c27c0085ce0d5eeb69c2c4b90c2e67555"
+  },
+  "_source": "git://github.com/makedatabetter-dev/atom-google-sheet-adapter.git",
+  "_target": "*",
+  "_originalSource": "git://github.com/makedatabetter-dev/atom-google-sheet-adapter.git"
+}

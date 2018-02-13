@@ -1,0 +1,142 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`mdb-search-box`
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--mdb-search-box-container` | Mixin applied to the searchbox container | `{}`
+`--mdb-search-box` | Mixin applied to searchbox input | `{}`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-search-box">
+  <template>
+    <style>
+       :host {
+        display: block;
+        --paper-input-container-color: #bbb;
+        --paper-input-container-focus-color: #bbb;
+        --paper-input-container-underline: {
+          color: transparent;
+          height: 0;
+          border: 0;
+        }
+        --paper-input-container-underline-focus: {
+          color: transparent;
+          height: 0;
+          border: 0;
+        }
+        --paper-input-container-underline-disabled: {
+          color: transparent;
+          height: 0;
+          border: 0;
+        }
+        --paper-input-container: {
+          padding-top: 0;
+          padding-bottom: 0;
+          border: 1px solid #e8edf1;
+          margin: var(--standard-padding, 20px);
+          @apply(--mdb-search-box-container);
+        }
+        --paper-input-container-input: {
+          padding: 5px;
+          box-sizing: border-box;
+          padding-left: 10px;
+          font-size: 1em;
+          @apply(--mdb-search-box);
+        }
+        @apply(--paper-font-common-base);
+      }
+    </style>
+    <paper-input no-label-float placeholder="{{placeholder}}" value="{{filter}}" on-keydown="_valueEntered"
+      allowed-pattern='[[allowedPattern]]' minlength='[[minlength]]' maxlength='[[maxlength]]'>
+      <content></content>
+    </paper-input>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-search-box',
+
+      properties: {
+        filter: {
+          type: String,
+          value: '',
+          observer: '_filterChanged',
+          notify: true
+        },
+
+        placeholder: {
+          type: String,
+          value: 'Search',
+          reflectToAttribute: true,
+          notify: true
+        },
+
+        source: {
+          type: Object,
+          observer: '_sourceChanged'
+        },
+
+        searchPath: {
+          type: String
+        },
+
+        searchResults: {
+          type: Array,
+          value: [],
+          readOnly: true,
+          notify: true
+        },
+
+        allowedPattern: {
+          type: String
+        },
+
+        minlength: {
+          type: Number
+        },
+
+        maxlength: {
+          type: Number
+        }
+      },
+
+      _valueEntered: function(e){
+        if (e.keyCode === 13){
+          this.fire('search-term-entered', {
+            searchTerm : this.filter
+          });
+        }
+      },
+
+      _filterChanged: function () {
+        var prop = this.searchPath,
+          filter = (this.filter || '').toLowerCase();
+
+
+        if (this.source instanceof Array) {
+          if (filter) {
+            this._setSearchResults(this.source.filter(function (e) {
+              return typeof e === typeof {} ? e[prop].toLowerCase().indexOf(filter) > -1 : e.toLowerCase().indexOf(filter) > -1;
+            }));
+          } else {
+            this._setSearchResults(this.source);
+          }
+        } else {
+          this._setSearchResults([]);
+        }
+      },
+
+      _sourceChanged: function (source) {
+        this._source = source;
+      }
+
+    });
+  </script>
+</dom-module>

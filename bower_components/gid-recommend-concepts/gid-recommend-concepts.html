@@ -1,0 +1,435 @@
+<!--
+  Wrapper data component for fetching and verifying recommended concepts
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+
+<!--
+`gid-recommend-concepts`
+
+A data component acting as a wrapper  on gid-api used for handling rest calls for  fetching
+recommended concepts against a particular column and then verifying one/more concept(s)
+
+
+   The following is used for fetching the recommended concepts against a particular column.
+  
+   	 <gid-recommend-concepts api-url="<your-api-url>" api-token="<your-api-token>"
+     column="<column-id>" fetch-recommended-concepts=true
+     recommendedconcepts = {{recommendedconcepts}}>
+     </gid-recommend-concepts>
+ 
+ To fetch the recommended concepts, the user needs to follow the steps mentioned below:
+
+ - The 'api-url' needs to be provided to specify the rest end point.
+ - The 'api-token' would contain the access token to access the mentioned rest end point.
+ - The 'column' parameter specifies the column id whose recommended concepts are to be fetched.
+ - To fetch the recommended concepts, user needs to set the 'fetch-recommended-concepts' flag to 'true' in order to trigger the rest call.
+ - The 'recommendedconcepts' property would return the response whether the recommended concepts has been fetched successfully or not.
+ 
+  The field 'column', 'fetch-recommended-concepts' and 'recommendedconcepts' are mandatory.
+  
+  The field 'fetch-recommended-concepts' needs to be set to 'true' in order to fetch recommended concepts
+  
+  The property 'recommendedconcepts' returns the response against the rest call.
+  
+  If 'api-url' is not provided, then the component would fetch sample data from mock json.
+ 
+   API endpoint:
+
+    GET /columns/{id}/domains         
+
+   Input:
+
+     - Column Id* 
+
+   Sample Input: (Query params)
+
+     GET /columns/200009/domains
+     
+   Output:
+
+     - List of recommended concepts
+
+
+   The output of this components will be as follows:
+
+	{    "domains":[{
+			 "id":"4920055981064928686",
+			 "label":"Last Name",
+			 "assessment":"N",
+			 "relevance":"1.54"
+		      },
+		      {
+			 "id":"221188726146740308",
+			 "label":"Date of Birth",
+			 "assessment":"N",
+			 "relevance":"5.88"
+		      },
+		      {
+			 "id":"-886082613329644447",
+			 "label":"First Name",
+			 "assessment":"N",
+			 "relevance":"5.88"
+		      }],
+		   "_meta":{
+		      "total":3,
+		      "offset":0,
+		      "limit":10
+		   }
+	}
+
+
+
+   The following is used for verifying a particular recommended concept.
+    
+		<gid-recommend-concepts  api-url="<your-api-url>" api-token="<your-api-token>"
+		column="<column-id>" concept="<concept-id>"
+		verify-val="<verify-value>" be-verified = true  verifiedconcepts = {{verifiedconcepts}}> 
+		</gid-recommend-concepts>
+		
+  To verify a concept, the user needs to follow the steps mentioned below:
+
+ - The 'api-url' needs to be provided to specify the rest end point.
+ - The 'api-token' would contain the access token to access the mentioned rest end point.
+ - The 'column' parameter specifies the column id.
+ - The 'concept' parameter specifies the concept id to be verified.
+ - The 'verify-val' field specifies whether the concept is to be verified as 'YES', 'NO' or 'MAYBE'.
+ - To verify a concept, user needs to set the 'be-verified' flag to 'true' in order to trigger the rest call.
+ - The 'verifiedconcepts' property would return the response whether the concept has been verified successfully or not.
+
+   The field 'column' , 'concept',  'verify-val', 'be-verified' and 'verifiedconcepts' are mandatory.
+  
+   The field 'be-verified' needs to be set to 'true' in order to verify a particular concept.
+  
+   The property 'verifiedconcepts' returns the response against the rest call.	
+   
+   If 'api-url' is not provided, then the component would fetch sample data from mock json.
+   
+		
+   API endpoint:
+
+    PUT /columns/{columnId}/recommendedconcepts/{conceptId}
+    
+   Sample Input: (Query params)
+
+     PUT /columns/200009/recommendedconcepts/100002/verify?hv=Y
+
+   Input:
+
+     - Column Id*
+     - Concept Id*
+
+   Output:
+
+     - Details of the concept assessment
+     
+   The output of this components will be as follows:
+
+	  {
+	    "id": "4920055981064928686",
+	    "label": "Last Name",
+	    "assessment": "Y",
+	    "relevance": 1.54,
+	    "lastUpdated": 1503508128418
+	  }
+	  
+Note: The inputs marked with '*' are mandatory inputs.
+
+@demo demo/index.html
+-->
+<dom-module id="gid-recommend-concepts">
+	<template>
+
+		<!-- fetch entity _path  -->
+		<gid-api entity = '{{_apiEntity}}' path-key= '{{_pathKey}}' path='{{_path}}'></gid-api>
+		<!--  fetch entity path -->
+
+		<!-- fetch recommended concepts  -->
+		<gid-api auto=false
+				 method='GET' api-url={{_recommendedConceptUrl}} response='{{recommendedConceptResponse}}'
+				 error = '{{recommendedConceptError}}'
+				 api-params={{_recommendedConceptParams}} api-token={{_recommendedConceptsToken}}
+				 api-timeout={{_recommendedConceptTimeout}}></gid-api>
+		<!-- fetch recommended concepts  -->
+
+		<!-- verify concept -->
+		<gid-api auto=false
+				 method='PUT' api-url={{_verifyConceptUrl}} api-content-type = 'application/x-www-form-urlencoded'
+				 response='{{verifyConceptResponse}}' error = '{{verifyConceptError}}'
+				 api-params={{_verifyConceptParams}} api-token={{_verifyConceptToken}}
+				 api-timeout={{_verifyConceptTimeout}}></gid-api>
+		<!-- verify concept -->
+
+	</template>
+	<script>
+		(function () {
+			'use strict';
+			Polymer({
+				is: 'gid-recommend-concepts',
+				properties: {
+					/*Authorization token for accessing rest api*/
+					apiToken: {
+						type: String,
+						notify: true,
+						value : ''
+					},
+					/*Url sent to gid-api for concept verification*/
+					_verifyConceptUrl: {
+						type: String,
+						notify: true
+					},
+					/*Timeout sent to gid-api for concept verification*/
+					_verifyConceptTimeout: {
+						type: Number,
+						notify: true,
+						value: 0
+					},
+					/*Response sent to gid-api for concept verification. This is a private property*/
+					verifyConceptResponse: {
+						type: Object,
+						notify: true,
+						observer: '_verifyResponseReceived'
+					},
+					/*Error sent to gid-api for concept verification. This is a private property*/
+					verifyConceptError : {
+			 	   		type: String,
+		 	   	    	notify: true,
+		 	   	    	observer : '_verifyErrorReceived'
+		 	   		},
+		 	   		/*Params sent to gid-api for concept verification*/
+					_verifyConceptParams: {
+						type: String,
+						notify: true
+					},
+					/*Token sent to gid-api for concept verification*/
+					_verifyConceptToken: {
+						type: String,
+						notify: true
+					},
+					/*Url sent to gid-api for concept recommendation*/
+					_recommendedConceptUrl: {
+						type: String,
+						notify: true
+					},
+					/*Timeout sent to gid-api for concept recommendation*/
+					_recommendedConceptTimeout: {
+						type: Number,
+						notify: true,
+						value: 0
+					},
+					/*Response sent to gid-api for concept verification. This is a private property*/
+					recommendedConceptResponse: {
+						type: Object,
+						notify: true,
+						observer: '_recommendedResponseReceived'
+					},
+					/*Error sent to gid-api for concept verification. This is a private property*/
+					recommendedConceptError : {
+			 	   		type: String,
+		 	   	    	notify: true,
+		 	   	    	observer : '_recommendedErrorReceived'
+		 	   		},
+		 	   		/*Params sent to gid-api for concept recommendation*/
+					_recommendedConceptParams: {
+						type: String,
+						notify: true
+					},
+					/*Token sent to gid-api for concept recommendation*/
+					_recommendedConceptsToken: {
+						type: String,
+						notify: true
+					},
+					/*Concept Id*/
+					concept: {
+						type: String,
+						notify: true,
+						value: ''
+					},
+					/*Column Id*/
+					column: {
+						type: String,
+						notify: true,
+						value: ''
+					},
+					/*Base url*/
+					apiUrl: {
+						type: String,
+						notify: true,
+						value: ''
+					},
+					/*The verification flag. It can be 'Y'(Yes), 'N'(No) or 'M'(Maybe)*/
+					verifyVal:{
+						type: String,
+						notify: true,
+						value: ''
+					},
+					/*This flag needs to be set to 'true' to verify a concept*/
+					beVerified:{
+						type: Boolean,
+						notify: true,
+						value: false,
+						observer: '_beVerifiedObserver'
+					},
+					/*This flag needs to be set to 'true' to fetch recommended concepts*/
+					fetchRecommendedConcepts : {
+						type: Boolean,
+						notify: true,
+						value: false,
+						observer: '_fetchRecommendedConceptsObserver'
+					},
+					/*Object for storing success/error response in case of concept verification*/
+					verifiedconcepts: {
+						type: Array,
+						notify: true
+					},
+					/*Object for storing success/error response in case of concept recommendation*/
+					recommendedconcepts: {
+						type: Array,
+						notify: true
+					},
+					/*The api path*/
+					_path: {
+						type: String,
+						notify: true,
+						value: '',
+						observer: '_pathReceived'
+					},
+					/*Api entity sent to gid-api*/
+					_apiEntity: {
+						type: String,
+						notify: true
+					},
+					/*The api path key*/
+	     	       	_pathKey: {
+	               	   type: String,
+	                   notify: true,
+	                   value: ''
+	                }
+				},
+				/* Observer of api path */
+				_pathReceived: function(){
+					var url = '';
+					var verify = '';
+					if(this._path){
+						var res = this._path.split(/{([^}]+)}/);
+						for (var i in res) {
+							if(!res[i].startsWith("/")){
+								if(this[res[i]]){
+									res[i] = this[res[i]];
+								}
+							}
+						}
+						url = this.apiUrl + res.join("");
+						if(this.column && !this.beVerified){
+							this._recommendedConceptUrl = url;
+							if(this.apiToken){
+								this._recommendedConceptsToken =  this.apiToken;
+							}
+							this._recommendedConceptTimeout =  this._recommendedConceptTimeout - 1;
+						}
+						else if(this.column && this.verifyVal && this.beVerified){
+							this._verifyConceptUrl = url;
+							if(this.verifyVal === "YES"){
+								verify = 'Y';
+							}
+							else if(this.verifyVal === "NO"){
+								verify = 'N';
+							}
+							else{
+								verify = 'M';
+							}
+							this._verifyConceptParams= JSON.stringify({
+								"assessment": verify});
+							if(this.apiToken){
+								this._verifyConceptToken =  this.apiToken;
+							}
+							this._verifyConceptTimeout =  this._verifyConceptTimeout - 1;
+						}
+
+					}
+				},
+				/* Observer of 'fetchRecommendedConcepts' flag */
+				_fetchRecommendedConceptsObserver: function(){
+					if(this.fetchRecommendedConcepts){
+						if(this.column && !this.beVerified){
+							if (!this.apiUrl) {
+								this._recommendedConceptUrl = this.importPath + 'assets/json/recommended-concepts.json';
+								this._recommendedConceptTimeout =  this._recommendedConceptTimeout - 1;
+							}
+							else{
+								this._pathKey =  'default';
+								this._apiEntity = 'RECOMMENDED-CONCEPTS';
+							}
+						}
+					}
+
+				},
+				/* Observer of 'beVerified' flag */
+				_beVerifiedObserver: function () {
+					if(this.beVerified) {
+						if (this.column && this.verifyVal) {
+							if (!this.apiUrl) {
+								//this._verifyConceptUrl = this.importPath + 'assets/json/verify-concept.json';
+								//this._verifyConceptTimeout =  this._verifyConceptTimeout - 1;
+							}
+							else {
+								this._pathKey =  'default';
+								this._apiEntity = 'VERIFY-CONCEPT';
+							}
+						}
+					}
+
+				},
+				/* Concept verification success response handler */
+				_verifyResponseReceived: function (newvalue, oldvalue) {
+					this.verifiedconcepts = [];
+					this._reset();
+					if (newvalue != null) {
+						this.async(function () {
+							this.verifiedconcepts = this.verifiedconcepts.concat(newvalue);
+						}, 500);
+					}
+				},
+				/* Concept verification error response handler */
+				_verifyErrorReceived :  function(newvalue, oldvalue){
+					this.verifiedconcepts = [];
+		   		  	 this._reset();
+			        	if(newvalue !== null){
+			        		this.async(function() {
+				         		this.verifiedconcepts =  newvalue.response;
+				   		 	          }, 500);
+			        	}
+			     },
+			    /* Concept recommendation success response handler */
+				_recommendedResponseReceived: function(newvalue, oldvalue) {
+					this.recommendedconcepts = [];
+					this._reset();
+					if (newvalue != null) {
+						this.async(function () {
+							this.recommendedconcepts = this.recommendedconcepts.concat(newvalue.domains);
+						}, 500);
+					}
+				},
+				/* Concept recommendation error response handler */
+				_recommendedErrorReceived :  function(newvalue, oldvalue){
+					this.recommendedconcepts = [];
+		   		  	 this._reset();
+			        	if(newvalue !== null){
+			        		this.async(function() {
+				         		this.recommendedconcepts =  newvalue.response;
+				   		 	          }, 500);
+			        	}
+			     },
+			   /* Error method */
+				_reset: function(){
+					this._apiEntity = '';
+					this._path = '';
+					this.fetchRecommendedConcepts = false;
+					this.beVerified = false;
+				}
+			});
+		})();
+
+
+	</script>
+</dom-module>

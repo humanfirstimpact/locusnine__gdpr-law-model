@@ -1,0 +1,30 @@
+{
+  "name": "mdb-facet-curator",
+  "main": "mdb-facet-curator.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "mdb-radio-list": "git://github.com/makedatabetter-dev/mdb-radio-list.git",
+    "mdb-search-box": "git://github.com/makedatabetter-dev/mdb-search-box.git",
+    "mdb-title": "git://github.com/makedatabetter-dev/mdb-title.git",
+    "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.24"
+  },
+  "resolutions": {
+    "webcomponentsjs": "^0.7.24"
+  },
+  "homepage": "https://github.com/makedatabetter-dev/mdb-facet-curator",
+  "_release": "6fadb07b72",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "6fadb07b72de9577fc8220087b8c3853e63dff8b"
+  },
+  "_source": "git://github.com/makedatabetter-dev/mdb-facet-curator.git",
+  "_target": "*",
+  "_originalSource": "git://github.com/makedatabetter-dev/mdb-facet-curator.git"
+}

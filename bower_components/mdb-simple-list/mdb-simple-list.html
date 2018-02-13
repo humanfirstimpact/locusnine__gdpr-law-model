@@ -1,0 +1,155 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`mdb-simple-list`
+list component
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--mdb-list-item-font-weight`   | Font weight for list item                                            | `200`
+`--mdb-list-item`               | Mixin applied to list item                                           | `{}`
+`--mdb-list-item-focused`      | Mixin applied to focused list item                                  | `{}`
+`--mdb-list-item-selected`      | Mixin applied to selected list item                                  | `{}`
+`--mdb-simple-list`      | Mixin applied to list container                                  | `{}`
+`--mdb-simple-list-empty`      | Mixin applied to list empty message                                  | `{}`
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-simple-list">
+  <template>
+    <style include="shared-styles">
+       :host {
+        position: relative;
+        display: block;
+        --paper-item: {
+          min-height: auto;
+          font-weight: var(--mdb-list-item-font-weight, 200);
+          height: 30px;
+          padding-top: 5px;
+          padding-bottom: 5px;
+          color: var(--mdb-primary-text-dark, #000);
+          @apply(--mdb-list-item);
+        }
+        --paper-icon-item: {
+          min-height: auto;
+          font-weight: var(--mdb-list-item-font-weight, 200);
+          height: 30px;
+          padding-top: 5px;
+          padding-bottom: 5px;
+          color: var(--mdb-primary-text-dark, #000);
+          @apply(--mdb-list-item);
+        }
+        --paper-item-focused-before: {
+          background-color: transparent;
+          @apply(--mdb-list-item-focused);
+        }
+        --paper-item-focused: {
+          background-color: transparent;
+          @apply(--mdb-list-item-focused);
+        }
+        --paper-item-selected-before: {
+          background-color: transparent;
+          color: var(--mdb-primary-text-light, #fff);
+          @apply(--mdb-list-item-selected);
+        }
+        --paper-item-selected: {
+          background-color: transparent!important;
+          color: var(--mdb-primary-text-light, #fff);
+          @apply(--mdb-list-item-selected);
+        }
+        --paper-item-selected-weight:var(--mdb-list-item-font-weight, 200);
+        @apply(--paper-font-common-base);
+      }
+
+       :host paper-listbox {
+        outline: 0;
+        padding: 0;
+        color: #a1a2a4;
+        @apply(--mdb-simple-list)
+      }
+
+       :host .empty-message {
+        color: var(--mdb-primary-text-dark, #000);
+        @apply(--mdb-simple-list-empty);
+      }
+    </style>
+    <template is="dom-if" if="{{items.length}}" on-dom-change="_renderList">
+      <paper-listbox selected="{{selected}}" class="style-scroll">
+        <template is="dom-repeat" items="{{items}}">
+        </template>
+      </paper-listbox>
+    </template>
+    <template is="dom-if" if="{{!items.length}}">
+      <p class="empty-message">[[emptyMessage]]</p>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mdb-simple-list',
+
+      properties: {
+        name: {
+          type: String,
+          value: 'mdb-simple-list',
+          readOnly: true
+        },
+
+        items: {
+          type: Array,
+          value: [],
+          notify: true,
+          observer: '_renderList'
+        },
+
+        selected: {
+          type: Number,
+          observer: '_selectedChanged'
+        },
+
+        selectedItem: {
+          type: Object,
+          notify: true
+        },
+
+        selectedItems: {
+          type: Array,
+          notify: true
+        },
+
+        emptyMessage: String,
+
+        height: {
+          type: String,
+          value: '400'
+        }
+      },
+
+      _renderList: function () {
+        var template = this.queryEffectiveChildren('template');
+
+        this.selected = undefined;
+        this._instance = this._instance || this.querySelector('paper-listbox');
+        this._repeater = this._repeater || this.querySelector('template[is="dom-repeat"]');
+
+        if (this._instance && this._repeater && template) {
+          this._repeater.templatize(template);
+          this._repeater.items = this.items;
+        }
+      },
+
+      _selectedChanged: function (value) {
+        this.selectedItem = typeof value === typeof 0 ? this.items[value] : undefined;
+      }
+    });
+  </script>
+</dom-module>

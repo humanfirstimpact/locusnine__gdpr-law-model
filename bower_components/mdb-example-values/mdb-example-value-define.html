@@ -1,0 +1,52 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../mdb-radio-list/mdb-radio-list.html">
+<link rel="import" href="../paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<dom-module id="mdb-example-value-define">
+    <template>
+        <style>
+             :host {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                @apply(--paper-font-common-base);
+                color: var(--mdb-secondary-text-dark, #000);
+            }
+
+             :host mdb-radio-list {
+                margin-left: 10px;
+                display: inline;
+            }
+
+             :host paper-radio-button {
+                display: inline;
+            }
+        </style>
+        <span>[[example.label]] ([[example.relevance]]%)</span>
+        <mdb-radio-list size="small" selected="{{example.assessment}}" />
+            <paper-radio-button name="Y" title="YES">
+                &#x2713;
+            </paper-radio-button>
+            <paper-radio-button name="N" title="NO">
+                &#x2717;
+            </paper-radio-button>
+            <paper-radio-button name="M" title="MAYBE">
+                ?
+            </paper-radio-button>
+        </mdb-radio-list>
+    </template>
+    <script>
+        Polymer({
+            is: 'mdb-example-value-define',
+
+            properties: {
+                example: {
+                    type: Object,
+                    value: {}
+                }
+            }
+        });
+    </script>
+</dom-module>

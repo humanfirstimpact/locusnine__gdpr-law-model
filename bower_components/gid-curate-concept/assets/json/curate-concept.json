@@ -1,0 +1,444 @@
+{
+    "synonyms": [
+        {
+            "id": "700129",
+            "label": "sample product_desc",
+            "assessment": "Y",
+            "relevance": 20
+        },
+        {
+            "id": "700132",
+            "label": "sample cust_name",
+            "assessment": "N",
+            "relevance": 27
+        },
+        {
+            "id": "700136",
+            "label": "sample cust_id",
+            "assessment": "N",
+            "relevance": 55.00000000000001
+        },
+        {
+            "id": "700125",
+            "label": "sample user_name",
+            "assessment": "N",
+            "relevance": 11
+        },
+        {
+            "id": "700131",
+            "label": "sample f_name",
+            "assessment": "N",
+            "relevance": 11
+        },
+        {
+            "id": "700128",
+            "label": "sample product_cd",
+            "assessment": "N",
+            "relevance": 40
+        },
+        {
+            "id": "700127",
+            "label": "sample last_name",
+            "assessment": "N",
+            "relevance": 20
+        },
+        {
+            "id": "700134",
+            "label": "sample first_name",
+            "assessment": "N",
+            "relevance": 22
+        },
+        {
+            "id": "700133",
+            "label": "sample customer_name",
+            "assessment": "N",
+            "relevance": 11
+        },
+        {
+            "id": "700126",
+            "label": "sample l_name",
+            "assessment": "N",
+            "relevance": 11
+        },
+        {
+            "id": "700124",
+            "label": "product",
+            "assessment": "N",
+            "relevance": 40
+        },
+        {
+            "id": "700135",
+            "label": "sample cust_phone",
+            "assessment": "N",
+            "relevance": 9
+        },
+        {
+            "id": "700130",
+            "label": "sample cust_fname",
+            "assessment": "N",
+            "relevance": 9
+        }
+    ],
+    "patterns": [
+        {
+            "id": "600408",
+            "label": "Zzzzzzz",
+            "assessment": "N",
+            "count": 23
+        },
+        {
+            "id": "600405",
+            "label": "Zzzzz",
+            "assessment": "N",
+            "count": 14
+        },
+        {
+            "id": "600401",
+            "label": "Zzzzzz",
+            "assessment": "N",
+            "count": 11
+        },
+        {
+            "id": "600406",
+            "label": "Zzzzzzzz-Zzzzzz",
+            "assessment": "N",
+            "count": 1
+        },
+        {
+            "id": "600399",
+            "label": "Zzzzzzzz",
+            "assessment": "N",
+            "count": 25
+        },
+        {
+            "id": "600407",
+            "label": "Zzzz",
+            "assessment": "N",
+            "count": 8
+        },
+        {
+            "id": "600403",
+            "label": "Zzzzzzzzzzzz",
+            "assessment": "N",
+            "count": 1
+        },
+        {
+            "id": "600409",
+            "label": "Zzz",
+            "assessment": "N",
+            "count": 1
+        },
+        {
+            "id": "600404",
+            "label": "Zzzzzzzzzz",
+            "assessment": "N",
+            "count": 3
+        },
+        {
+            "id": "600400",
+            "label": "Zzzzzzzzzzz",
+            "assessment": "N",
+            "count": 1
+        },
+        {
+            "id": "600402",
+            "label": "ZzZzzzzzz",
+            "assessment": "N",
+            "count": 1
+        },
+        {
+            "id": "600410",
+            "label": "Zzzzzzzzz",
+            "assessment": "N",
+            "count": 13
+        }
+    ],
+    "relatedDomains": [
+        {
+            "id": "100376",
+            "label": "sample Email-Address",
+            "assessment": "N",
+            "relevance": 18
+        },
+        {
+            "id": "100358",
+            "label": "sample Birth-Date",
+            "assessment": "N",
+            "relevance": 16
+        },
+        {
+            "id": "100352",
+            "label": "sample Address",
+            "assessment": "N",
+            "relevance": 12
+        },
+        {
+            "id": "100386",
+            "label": "sample First-Name",
+            "assessment": "N",
+            "relevance": 18
+        },
+        {
+            "id": "100033",
+            "label": "sample City",
+            "assessment": "N",
+            "relevance": 2
+        },
+        {
+            "id": "100387",
+            "label": "sample Gender",
+            "assessment": "N",
+            "relevance": 17
+        },
+        {
+            "id": "100501",
+            "label": "sample person-id",
+            "assessment": "N",
+            "relevance": 17
+        }
+    ],
+    "exampleValues": [
+        {
+            "id": "3642043d",
+            "label": "Breckell",
+            "assessment": "N"
+        },
+        {
+            "id": "ace70260",
+            "label": "Pallister",
+            "assessment": "N"
+        },
+        {
+            "id": "0a0bdcae",
+            "label": "Cleere",
+            "assessment": "N"
+        },
+        {
+            "id": "9430c213",
+            "label": "Ruppertz",
+            "assessment": "N"
+        },
+        {
+            "id": "40653d98",
+            "label": "Newcomen",
+            "assessment": "N"
+        },
+        {
+            "id": "3ecdaab9",
+            "label": "Mulvenna",
+            "assessment": "N"
+        },
+        {
+            "id": "afacd702",
+            "label": "Crutchley",
+            "assessment": "N"
+        },
+        {
+            "id": "9ed6b924",
+            "label": "Smidmore",
+            "assessment": "N"
+        },
+        {
+            "id": "46f1198c",
+            "label": "Baynes",
+            "assessment": "N"
+        },
+        {
+            "id": "68144aa9",
+            "label": "Sterzaker",
+            "assessment": "N"
+        },
+        {
+            "id": "03d4b129",
+            "label": "Echallier",
+            "assessment": "N"
+        },
+        {
+            "id": "e0a61327",
+            "label": "Corps",
+            "assessment": "N"
+        },
+        {
+            "id": "f21512c4",
+            "label": "Orrom",
+            "assessment": "N"
+        },
+        {
+            "id": "427b01d1",
+            "label": "Sylvester",
+            "assessment": "N"
+        },
+        {
+            "id": "e9a03cbc",
+            "label": "Vidineev",
+            "assessment": "N"
+        },
+        {
+            "id": "5450481e",
+            "label": "Ellinor",
+            "assessment": "N"
+        },
+        {
+            "id": "fc56d55e",
+            "label": "Karpman",
+            "assessment": "N"
+        },
+        {
+            "id": "ad0e463b",
+            "label": "Berzons",
+            "assessment": "N"
+        },
+        {
+            "id": "94aceefd",
+            "label": "Danshin",
+            "assessment": "N"
+        },
+        {
+            "id": "2b24a83f",
+            "label": "Christensen",
+            "assessment": "N"
+        },
+        {
+            "id": "845ce769",
+            "label": "McKinstry",
+            "assessment": "N"
+        },
+        {
+            "id": "12d7588c",
+            "label": "Knibb",
+            "assessment": "N"
+        },
+        {
+            "id": "16a47b3e",
+            "label": "Bassindale",
+            "assessment": "N"
+        },
+        {
+            "id": "b6aed81a",
+            "label": "Donaher",
+            "assessment": "N"
+        },
+        {
+            "id": "4cba59ba",
+            "label": "Conti",
+            "assessment": "N"
+        },
+        {
+            "id": "edf4c548",
+            "label": "Gentzsch",
+            "assessment": "N"
+        },
+        {
+            "id": "a8243e82",
+            "label": "Geldeard",
+            "assessment": "N"
+        },
+        {
+            "id": "ec9f7c38",
+            "label": "Somerlie",
+            "assessment": "N"
+        },
+        {
+            "id": "c360f7ef",
+            "label": "Flea",
+            "assessment": "N"
+        },
+        {
+            "id": "f20df0f3",
+            "label": "Dilland",
+            "assessment": "N"
+        }
+    ],
+    "exampleColumns": [
+        {
+            "id": "200029",
+            "label": "sample ship_city",
+            "assessment": "Y",
+            "relevance": 95
+        },
+        {
+            "id": "200003",
+            "label": "sample product_code",
+            "assessment": "Y",
+            "relevance": 95
+        },
+        {
+            "id": "200013",
+            "label": "sample last_name",
+            "assessment": "N",
+            "relevance": 1
+        },
+        {
+            "id": "200053",
+            "label": "sample X9813_AVOCADO",
+            "assessment": "N",
+            "relevance": 95
+        },
+        {
+            "id": "200013",
+            "label": "sample last_name",
+            "assessment": "Y",
+            "relevance": 95
+        },
+        {
+            "id": "e2c8f630-4a37-38d7-9359-1d1be8375fcd",
+            "label": "sample l_name",
+            "assessment": "N",
+            "relevance": 1
+        },
+        {
+            "id": "28389982-3cdc-30d6-bc3f-cec02ae547ff",
+            "label": "sample last_name",
+            "assessment": "N",
+            "relevance": 1
+        },
+        {
+            "id": "200033",
+            "label": "sample PRODUCT",
+            "assessment": "N",
+            "relevance": 95
+        },
+        {
+            "id": "200076",
+            "label": "UNIQUE_GROUP",
+            "assessment": "N",
+            "relevance": 95
+        },
+        {
+            "id": "8eefd496-038d-3485-9b32-3eece55d3569",
+            "label": "sample last_name",
+            "assessment": "N",
+            "relevance": 1
+        },
+        {
+            "id": "4ed34e05-5aa8-3e24-b17f-b57305156ad9",
+            "label": "sample cust_lname",
+            "assessment": "N",
+            "relevance": 1
+        },
+        {
+            "id": "200043",
+            "label": "SEC_CITY",
+            "assessment": "N",
+            "relevance": 95
+        },
+        {
+            "id": "200063",
+            "label": "sample SEC_CITY",
+            "assessment": "N",
+            "relevance": 95
+        },
+        {
+            "id": "4ed34e05-5aa8-3e24-b17f-b57305156ad9",
+            "label": "sample cust_lname",
+            "assessment": "N",
+            "relevance": 1
+        },
+        {
+            "id": "200021",
+            "label": "sample first_nm",
+            "assessment": "N",
+            "relevance": 95
+        }
+    ]
+}

@@ -1,0 +1,91 @@
+<link rel="import" href="../gid-list-concepts.html">
+
+<dom-module id="list-concepts">
+  <template>
+  		 <style>
+		  	table, th, td {
+		    border: 1px solid grey;
+		    border-collapse: collapse;
+			}
+			td {
+			    text-align: center;
+			}
+  		</style>
+        <h1>Concepts</h1>
+
+        <gid-list-concepts api-url='https://srv-34-197-77-167.globalids.com:8443/api/v1' user='1' 
+        limit = '1000' offset = '0' api-token = 'MTAxNjUwMzAxMTUwMzk5MTgyNTkxMDA5MDFY'
+        concepts='{{concepts}}'></gid-list-concepts>
+            <template is="dom-if" if="[[conceptListReceived]]">
+	                <table style="width:100%">
+					  <tr>
+					    <th>Concept</th>
+					    <th>Owner</th>
+					    <th>Predicted Columns</th>
+					    <th>Confirmed Columns</th>
+					    <th>ETA</th>
+					    <th>Coverage</th>
+					    <th>Impact Area</th> 
+					    <th>Classification Accuracy Percentage</th>
+					    <th>Applications</th>
+					  </tr>
+					  <template is="dom-repeat" items="[[concepts]]">
+					  <tr>
+					    <td>{{item.label}}</td>
+					    <td>{{item.owner.label}}</td>
+					    <td>{{item.predictedColumns}}</td>
+					    <td>{{item.confirmedColumns}}</td>
+					    <td>{{item.eta}}</td>
+					    <td>{{item.coverage}}</td>				    
+					    <td>
+					     <template is="dom-repeat" items="[[item.impactArea]]">
+					     	{{item.label}} &nbsp;
+					     </template>
+					    </td> 
+					    <td>{{item.classificationAccuracyPercentage}}</td>	    
+					    <td>
+					     <template is="dom-repeat" items="[[item.applications]]">
+					     	{{item.label}} &nbsp;
+					     </template>
+					    </td>
+					  </tr>
+					 </template>
+					</table>
+            </template>
+            <template is="dom-if" if="![[conceptListReceived]]">
+	            <div class="horizontal-section">
+	                <p>{{concepts.0.userMessage}}</p>
+	            </div>
+        	</template>
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'list-concepts',
+        properties:{
+        	    concepts: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true,
+     	          observer: 'conceptsObserver'
+     	        },
+     	        conceptListReceived: {
+     	        	type: Boolean,
+     	        	value: false
+     	        }
+        },
+        conceptsObserver: function () {
+        	 if(this.concepts.length > 0){
+				if(this.concepts[0]['errorCode']){
+					this.conceptListReceived = false;
+				}
+				else{
+					this.conceptListReceived =  true;
+				}
+        	 }
+         }
+      });
+    })();
+  </script>
+</dom-module>

@@ -1,0 +1,110 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../mdb-radio-list/mdb-radio-list.html">
+<link rel="import" href="../paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<!--
+`mdb-concept-recommendation`
+
+
+@demo demo/index.html 
+-->
+
+<dom-module id="mdb-concept-recommendation">
+    <template>
+        <style>
+             :host {
+                @apply(--layout-horizontal);
+                @apply(--layout-center);
+                padding: 10px var(--standard-padding, 20px);
+                border: 1px solid var(--mdb-border-color, #000);
+                background-color: var(--mdb-primary-color-background, #dbdbdb);
+                @apply(--mdb-concept-recommendation);
+
+            }
+            :host mdb-radio-list{
+                    background: #fff;
+            }
+            #property{
+                @apply(--layout-flex);
+            }
+             :host #recommendationContainer #property {
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+             :host paper-radio-button {
+                width: 50px;
+                text-align: center;
+            }
+             :host #recommendationFactor {
+                 padding-left: 10px;
+            }
+            h3{
+                margin: 0;
+                font-weight: 500;
+            }
+        </style>
+            <h3 id="property" title="[[concept.label]]">[[concept.label]]</h3>
+            <mdb-radio-list size="small" selected="{{concept.assessment}}">
+                <paper-radio-button name="Y">
+                    <iron-icon title="Yes" icon="check"></iron-icon>
+                </paper-radio-button>
+                <paper-radio-button name="N">
+                    <iron-icon title="No" icon="clear"></iron-icon>
+                </paper-radio-button>
+                <paper-radio-button name="M">
+                    <iron-icon title="Maybe" icon="help-outline"></iron-icon>
+                </paper-radio-button>
+            </mdb-radio-list>
+            <h3 id="recommendationFactor">[[_getConceptRelevance(concept.*)]]%</span>
+    </template>
+
+    <script>
+        Polymer({
+
+            is: 'mdb-concept-recommendation',
+
+            properties: {
+                concept: {
+                    type: Object,
+                    value: {}
+                },
+
+                column: {
+                    type: Object,
+                    value: {}
+                }
+            },
+
+            observers: [
+                '_conceptUpdated(concept.assessment)'
+            ],
+
+            _conceptUpdated: function () {
+                if (this.concept && this.column) {
+                    switch (this.concept.assessment) {
+                        case 'Y':
+                            this.concept.relevance = 100;
+                            break;
+                        case 'N':
+                            this.concept.relevance = 0;
+                            break;
+                        case 'M':
+                            this.concept.relevance = this._initialRelevance;
+                            break;
+                    }
+
+                    this.fire('recommendation-changed', {
+                        concept: this.concept,
+                        column: this.column
+                    });
+                }
+            },
+
+            _getConceptRelevance: function () {
+                return this.concept && this.concept.relevance || 0;
+            },
+        });
+    </script>
+</dom-module>
